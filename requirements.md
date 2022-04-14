@@ -2,25 +2,25 @@
 
 ## Functional Requirements
 
-1. requirement
-2. requirement
-3. requirement
-4. requirement
-5. requirement
-6. requirement
-7. requirement
-8. requirement
-9. requirement
-10. requirement
-11. requirement
-12. requirement
+1. Login
+2. Log Out
+3. Create Account
+4. Delete Account
+5. Add to Cart
+6. Buy Item
+7. User reviews
+8. Add new item to store
+9. Splash Page
+10. Item Pictures (HP)
+11. Coupons/discount system that can be applied per-item, per-category, or sitewide(HP)
+12. Search functionality with REGEX (HP)
 
 ## Non-functional Requirements
 
-1. non-functional
-2. non-functional
-3. non-functional
-4. non-functional
+1. Implement a dark mode that would change the color of the background and the text
+2. Style and organize the UI with the Bootstrap library
+3. Implement a collapsible menu to display the categories 
+4. Implement a horizontal-scrolling product catalogue for the user to select items
 
 ## Use Cases
 

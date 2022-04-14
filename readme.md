@@ -1,5 +1,5 @@
 # Project Name
 - Sarah Singh (@SarahS16)
-- Name (@username)
-- Name (@username)
-- Name (@username)
+- Selim (@username)
+- Nicholas (@username)
+- Nathan Yee (@NathanCYee)
