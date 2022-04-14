@@ -1,4 +1,3 @@
-## <remove all of the example text and notes in < > such as this one>
 
 ## Functional Requirements
 
