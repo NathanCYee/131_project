@@ -6,7 +6,7 @@
 4. The user shall be able to delete their account which would make the account inaccessible to the user.
 5. The store shall implement a cart system that stores a list of items that the customer is willing to purchase, their quantities, and the total price; the items in the cart shall be connected to a specific customer account instance and accessible through login. 
 6. The customer shall be able to purchase items within their cart by providing their billing and shipping information; upon doing so an order invoice would be created and sent to the merchant for distribution. 
-7. Merchant users shall be able to view their orders, and change their fufillment status.
+7. Merchant users shall be able to view their orders, and change their fulfillment status.
 8. The customer shall be able to write a text based review with a numerical rating for a particular product which shall be visible on the product's page and their numerical rating shall be factored into the total rating of the item. (HP)
 9. A merchant user shall be able to register a new item to the store's catalog; the merchant shall upload product images, a title, price, and description.
 10. The store shall implement a home page for buyer users that will show products that the user could click on.
@@ -14,7 +14,7 @@
 12. The store shall have a discount system that will contain discount codes that can be applied by the customer per-item, per-category, or sitewide. (HP)
 13. Merchant users shall be able to register new discount codes that contain information about their expiration, discount amount, and applicable products. 
 14. When a buyer user inputs a discount code that is valid, the discount associated shall be applied to the applicable item(s) in their cart. (HP)
-15. The site shall implement a search functionality that will query available products. The search shall also support REGEX expressions. Upon recieving user input, the store shall display the search results to the user. (HP)
+15. The site shall implement a search functionality that will query available products. The search shall also support REGEX expressions. Upon receiving user input, the store shall display the search results to the user. (HP)
 16. The user shall be able to change the password of their account when logged in; upon doing so, the old password cannot be used to log in while the new password can be used.
 17. The store shall contain a product page that contains product images of the specified item, the name of the item, and the price, as well as a button that will allow the customer to add the item to their cart.
 18. The store shall be able to display a product catalogue containing all the items in a specified product category.
@@ -112,12 +112,12 @@
 - **Primary Sequence:**
   
   1. User hovers over the category label in the navigation bar and selects a product category
-  2. The system recieves the user request for a product category and fetches all products belonging to the category
+  2. The system receive the user request for a product category and fetches all products belonging to the category
   3. System renders a website containing product pictures and links to each of the products in the category
   4. System returns the rendered website to the user
   5. User is able to use the product catalog to navigate to a desired product
 
-- **Primary Postconditions:** User recieves an up-to-date list of all of the items within a specific category
+- **Primary Postconditions:** User receive an up-to-date list of all the items within a specific category
 
 - **Alternate Sequence:** 
   
@@ -149,7 +149,7 @@
   4. Merchant clicks submit
   5. Primary sequence resumes on step 5
 
-6. Merchant users shall be able to view their orders, and change their fufillment status.
+6. Merchant users shall be able to view their orders, and change their fulfillment status.
 - **Pre-condition:** Merchant has products that have been purchased by a customer
 
 - **Trigger:** Merchant clicks on a "view unfulfilled orders" button on their home page
