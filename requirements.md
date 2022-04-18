@@ -10,15 +10,14 @@
 8. The customer shall be able to write a review for a product and include a numerical rating which shall be visible on the product's page; that numerical rating shall be factored into the total rating of the item.
 9. A merchant user shall be able to register a new item to the store's catalog; the merchant shall upload product images, a title, price, and description.
 10. The store shall implement a home page for buyer users that will show products that the user could click on.
-11. The product pages shall have a section where the uploaded images are visible and browsable. (HP)
-12. The store shall have a discount system that will contain discount codes that can be applied by the customer per-item, per-category, or sitewide. (HP)
-13. Merchant users shall be able to register new discount codes that contain information about their expiration, discount amount, and applicable products. 
-14. When a buyer user inputs a discount code that is valid, the discount associated shall be applied to the applicable item(s) in their cart. (HP)
-15. The site shall implement a search functionality that supports REGEX expressions to query products in the store's inventory.(HP)
-16. The user shall be able to change the password of their account.
-17. The store shall contain a product page that contains the name of the item, and the price, as well as a button that will allow the customer to add the item to their cart.
-18. The store shall be able to display a product catalogue containing all the items in a specified product category.
-19. The login system shall have separate classes for account types: merchant and customer. Upon login, merchants will be given access to a separate set of merchant commands compared to a customer.
+11. The product pages shall have a section where product images uploaded by the merchant are visible and browsable. (HP)
+12. The store shall have a discount system that will contain discount codes that can be applied by the customer to the items in their cart. The discounts can be limited by item, category, or for all products. (HP)
+13. Merchant users shall be able to register new discount codes that contain information about their expiration, discount amount, and applicable products.
+14. The site shall implement a search functionality that supports REGEX expressions to query products in the store's inventory.(HP)
+15. The user shall be able to change the password of their account.
+16. The store shall contain a product page that contains the name of the item, and the price, as well as a button that will allow the customer to add the item to their cart.
+17. The store shall be able to display a product catalogue containing all the items in a specified product category.
+18. The login system shall have separate classes for account types: merchant and customer. Upon login, merchants will be given access to a separate set of merchant commands compared to a customer.
 
 ## Non-functional Requirements
 
