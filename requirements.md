@@ -19,6 +19,10 @@
 17. The store shall be able to display a product catalogue containing all the items in a specified product category.
 18. The login system shall have separate classes for account types: merchant and customer. Upon login, merchants will be given access to a separate set of merchant commands compared to a customer.
 
+- Nathan: 1-4,15,18
+- Sarah: 5,6,12,13
+- Selim: 7,8,9,14
+- Nick: 10,11,16,17
 ## Non-functional Requirements
 
 1. The interface shall implement a dark mode that would change the color of the background to be dark and the text to be light.
