@@ -5,9 +5,9 @@ tests_require = [
 ]
 
 setup(
-    name='gigastore',
+    name='e-buy',
     version='0.0.1',
-    packages=['gigastore'],
+    packages=['e-buy'],
     requires=['pytest', 'flask', 'flask-wtf', 'flask-sqlalchemy', 'flask-login'],
     extras_require={
         'test': tests_require
