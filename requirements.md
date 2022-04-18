@@ -7,7 +7,7 @@
 5. The store shall implement a cart system that stores a list of items that the customer is willing to purchase, their quantities, and the total price; the items in the cart shall be connected to a specific customer account instance and accessible through login. 
 6. The customer shall be able to purchase items within their cart by providing their billing and shipping information; upon doing so an order invoice would be created and sent to the merchant for distribution. 
 7. Merchant users shall be able to view their orders, and change their fulfillment status.
-8. The customer shall be able to write a text based review with a numerical rating for a particular product which shall be visible on the product's page and their numerical rating shall be factored into the total rating of the item. (HP)
+8. The customer shall be able to write a review for a product and include a numerical rating which shall be visible on the product's page; that numerical rating shall be factored into the total rating of the item.
 9. A merchant user shall be able to register a new item to the store's catalog; the merchant shall upload product images, a title, price, and description.
 10. The store shall implement a home page for buyer users that will show products that the user could click on.
 11. The product pages shall have a section where the uploaded images are visible and browsable. (HP)
