@@ -1,36 +1,13 @@
-## Instructions
-
-- Delete this block before adding to your repository. 
-
-- Delete any instructions you see below they will be within < >
-  
-- This schedule should reflect the meetings from the start of the project until the end of the semester.
-
-- Write at least 1 meeting per week until the end of the semester
-
-  
 ## Meetings
 
+### 2022-04-12 at 15:00
+- Attendees: Nicholas, Nathan, Sarah
+- Team Brainstorm (<=1hr)
+  All three attendees collaborated to form a general blueprint of the project. We discussed what functional and non-functional requirements we wanted to implement. We also tried to determine which requirements (functional and non-functional) could be deemed as HP. Further discussion on Discord to organize a meeting time that worked for all four members.
+  - <Nathan> Add name/username to readme file. Flesh out requirements file and add required packages.
+  - <Nicholas> Add name/username to readme file. Implement custom css and bootstrap. Add main block content.
+  - <Sarah> Add name/username to readme file. Update meetings file.
+  - <Selim> Add name/username to readme file.
 
-### 2022-04-15 at 13:30
-<meeting template would go here>
-<only fill in template once you had the meeting>
-<see example on the last date>
-<use date format YYYY-MM-DD at HH:MM>
-
-### 2022-04-22 at 10:30
-<meeting template would go here>
-<only fill in template once you had the meeting>
-
-### 2022-04-29 at 10:30
-- Who attended the meeting
-  -Nathan, Nicholas, Sarah
-
-- Team updates (15min or less)
-  <Each team member gives an update of what they did from the last meeting and what they plan to do next. If they are stuck, bring it up here to see if others can help.>
-  - <name> worked on X. Will work on Y next. 
-  -<Nicholas>
-- pair-programming (optional) (25 mins)
-  <- Pair program on one part of the project. Driver will be the person responsible for that requirement.>
-
-- Summarize group progress
+  - No pair-programming to report
+  - Group was able to come to a consensus on the overall layout and functionality of the website. Ensured that we had enough functional and non-functional requirements to satisfy Milestone 1. Determined a day which all four members could meet. No prior updates available since this was the first meeting.
