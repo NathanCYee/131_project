@@ -10,8 +10,8 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(64), unique=True)
     password_hash = db.Column(db.String(128))
-    cart_items = db.relationship('CartItem', backref='author', lazy='dynamic')
-    orders = db.relationship('Order', backref='author', lazy='dynamic')
+    cart_items = db.relationship('CartItem', backref='user', lazy='dynamic')
+    orders = db.relationship('Order', backref='user', lazy='dynamic')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -26,7 +26,7 @@ class User(UserMixin, db.Model):
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
-    products = db.relationship('Product', backref='author', lazy='dynamic')
+    products = db.relationship('Product', backref='category', lazy='dynamic')
 
 
 class Product(db.Model):
@@ -35,7 +35,7 @@ class Product(db.Model):
     name = db.Column(db.String(128))
     product_price = db.Column(db.Float)
     description = db.Column(db.Text)
-    reviews = db.relationship('Review', backref='author', lazy='dynamic')
+    reviews = db.relationship('Review', backref='product', lazy='dynamic')
 
 
 class CartItem(db.Model):

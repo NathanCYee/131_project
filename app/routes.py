@@ -12,10 +12,10 @@ def home():
 
 @webapp.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
+        username = form.username.data
+        password = form.password.data
         users = User.query.filter_by(username=username)
         if users.count() == 0:
             flash("User not found.")
@@ -34,11 +34,11 @@ def login():
 
 @webapp.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm()
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
+    form = RegisterForm(request.form)
+    if request.method == 'POST' and form.validate():
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
 
         # query for the username and check if it is already taken
         if User.query.filter_by(username=username).count() != 0:
