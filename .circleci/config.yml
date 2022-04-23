@@ -14,14 +14,12 @@ jobs:
           command: pip install .
       - run:
           name: run tests
-          command: pytest --cov=app --junitxml=test-results/junit.xml --cov-report html:htmlcov
+          command: pytest --cov=app --junitxml=test-results/junit.xml --cov-report xml:results.xml
 
       - store_test_results:
           path: test-results
-      - store_artifacts:
-          path: htmlcov
       - codecov/upload:
-          file:
+          file: './results.xml'
 
 workflows:
   build-and-test-workflow:
