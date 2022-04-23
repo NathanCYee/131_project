@@ -10,7 +10,7 @@ setup(
     version='0.0.1',
     packages=['app'],
     install_requires=['pytest', 'pytest-cov', 'Flask', 'flask-wtf', 'flask-sqlalchemy', 'flask-login', 'WTForms',
-                      'SQLAlchemy'],
+                      'SQLAlchemy', 'email_validator'],
     extras_require={
         'test': tests_require
     },
