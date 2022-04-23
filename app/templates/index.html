@@ -2,5 +2,19 @@
 
 
 {% block main %}
-    <div>Inside the div</div>
+    </br>
+    {% if current_user.is_authenticated %}
+        <div class="row">
+            <div class="col-lg">
+                <div class="jumbotron">
+                    <h1 class="display-4">Hello, {{ current_user.username }}</h1>
+                    <p class="lead">Welcome back! Explore popular items below or view your cart.</p>
+                    <hr class="my-4">
+                    <p class="lead">
+                        <a class="btn btn-primary btn-lg" href="/cart" role="button">Cart</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
