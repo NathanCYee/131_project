@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  codecov: codecov/codecov@1.0.2
+
 jobs:
   setup-and-test:
     docker:
@@ -16,7 +19,9 @@ jobs:
       - store_test_results:
           path: test-results
       - store_artifacts:
-		  path: htmlcov
+          path: htmlcov
+      - codecov/upload:
+          file:
 
 workflows:
   build-and-test-workflow:
