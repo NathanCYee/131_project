@@ -1,0 +1,19 @@
+version: 2.1
+
+jobs:
+  setup-and-test:
+    docker:
+      - image: cimg/python:3.8.1
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: pip install .
+      - run:
+          name: run tests
+          command: pytest --cov app
+
+workflows:
+  build-and-test-workflow:
+    jobs:
+      - setup-and-test
