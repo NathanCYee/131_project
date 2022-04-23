@@ -1,19 +1,19 @@
 version: 2.1
-orbs:
-  python: circleci/python@2.0.3
 
-workflows:
-  sample:
-    jobs:
-      - build-and-test
 jobs:
-  build-and-test:
+  setup-and-test:
     docker:
-      - image: cimg/python:3.8
+      - image: cimg/python:3.8.1
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
       - run:
-          name: Run tests
-          command: python -m pytest
+          name: install dependencies
+          command: pip install .
+      - run:
+          name: run tests
+          command: pytest --cov app
+
+workflows:
+  build-and-test-workflow:
+    jobs:
+      - setup-and-test

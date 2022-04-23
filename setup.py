@@ -7,9 +7,9 @@ tests_require = [
 setup(
     name='e-buy',
     version='0.0.1',
-    packages=['e-buy'],
-    requires=['pytest', 'flask', 'flask-wtf', 'flask-sqlalchemy', 'flask-login'],
+    packages=['app'],
+    install_requires=['pytest', 'Flask', 'flask-wtf', 'flask-sqlalchemy', 'flask-login'],
     extras_require={
         'test': tests_require
-    }
+    },
 )
