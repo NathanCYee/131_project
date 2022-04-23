@@ -11,7 +11,7 @@ jobs:
           command: pip install .
       - run:
           name: run tests
-          command: pytest --cov app
+          command: pytest
 
 workflows:
   build-and-test-workflow:
