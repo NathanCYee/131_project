@@ -24,7 +24,7 @@ def login():
             user = users.first()
             if user.check_password(password):
                 login_user(user)
-                return redirect('/')
+                return redirect('/', code=302)
             else:  # redirect with an error message
                 flash("Incorrect password.")
                 return render_template('login.html', form=form)
@@ -55,7 +55,7 @@ def register():
             db.session.add(user)
             db.session.commit()
             login_user(user)
-            return redirect('/')
+            return redirect('/', code=302)
     else:
         return render_template('register.html', form=form)
 
