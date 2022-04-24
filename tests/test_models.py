@@ -81,7 +81,9 @@ def test_product(db):
     assert query_result.count() == 1
     assert query_result.first() == product
 
-    # test the link between a product and a category
-    link_result = Category.query.get(1)
+    # check to make sure the category sees the model
+    assert category.products.count() == 1
+    assert category.products.first() == product
 
-    assert link_result.products.count() == 1
+    # reset the state of the db
+    db.session.flush()
