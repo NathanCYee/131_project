@@ -14,3 +14,7 @@ class RegisterForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
+class CartForm(FlaskForm):
+    quantity = StringField("Quantity", validators=[DataRequired()])
+    submit = SubmitField("Submit")

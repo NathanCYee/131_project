@@ -1,8 +1,9 @@
+from itertools import product
 from app import webapp, db
 from flask import render_template, flash, request, redirect
 from flask_login import current_user, login_user, logout_user, login_required
-from app.forms import LoginForm, RegisterForm
-from app.models import User
+from app.forms import CartForm, LoginForm, RegisterForm
+from app.models import CartItem, Product, User
 
 
 @webapp.route('/')
@@ -65,3 +66,18 @@ def register():
 def logout():
     logout_user()
     return redirect('/')
+
+
+@webapp.route('/cart/<int:prod_id>', methods=['POST'])
+def add_cart(prod_id):
+    form = CartForm(request.form)
+    if request.method == 'POST' and form.validate():
+        quantity = form.quantity.data
+        product = Product.query.filter(Product.id == prod_id)
+        user = User.query.filter(User.id)
+        cart_item = CartItem(id = product, quantity = quantity, user_id = user)
+        db.session.add(cart_item)
+        db.session.commit()
+    #else:
+        #return render_template("product.html", form=form)
+        
