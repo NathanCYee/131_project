@@ -119,17 +119,19 @@ def account_test():
     return "You are logged in"
 
 @webapp.route('/cart/<int:prod_id>', methods=['POST'])
+@login_required
 def add_cart(prod_id):
     form = CartForm(request.form)
     if request.method == 'POST' and form.validate():
         quantity = form.quantity.data
         product = Product.query.filter(Product.id == prod_id)
-        user = User.query.filter(User.id)
+        user = current_user
         cart_item = CartItem(id = product, quantity = quantity, user_id = user)
         db.session.add(cart_item)
+        flash("Item added to cart!")
         db.session.commit()
     #else:
-        #return render_template("product.html", form=form)
+        #return render_template("cart.html", form=form)
 
 @webapp.route("/purchase_cart", methods=['GET', 'POST'])
 def purchase_cart():
