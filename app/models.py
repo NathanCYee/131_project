@@ -9,6 +9,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(64), unique=True)
+    type = db.Column(db.Integer)  # 0 if customer, 1 if merchant
     password_hash = db.Column(db.String(128))
     cart_items = db.relationship('CartItem', backref='user', lazy='dynamic')
     orders = db.relationship('Order', backref='user', lazy='dynamic')
@@ -40,6 +41,7 @@ class Product(db.Model):
 
 class CartItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.category_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     quantity = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
@@ -51,10 +53,15 @@ class CartItem(db.Model):
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    ship_address = db.Column(db.String(128))
+    orders = db.relationship('OrderRows', backref='order', lazy='dynamic')
+
+
+class OrderRows(db.Model):
+    id = db.Column(db.Integer, db.ForeignKey('order.id'))
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     quantity = db.Column(db.Integer)
     product_price = db.Column(db.Float)
-    ship_address = db.Column(db.String(128))
 
 
 class Review(db.Model):
