@@ -130,8 +130,8 @@ def add_cart(prod_id):
         db.session.add(cart_item)
         flash("Item added to cart!")
         db.session.commit()
-    #else:
-        #return render_template("cart.html", form=form)
+    else:
+        return render_template('cart.html', form=form)
 
 @webapp.route("/purchase_cart", methods=['GET', 'POST'])
 def purchase_cart():
