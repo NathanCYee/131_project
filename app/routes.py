@@ -2,7 +2,7 @@ from itertools import product
 from app import webapp, db
 from flask import render_template, flash, request, redirect, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm
+from app.forms import BillingForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm
 from app.models import User
 from app.forms import CartForm, LoginForm, RegisterForm
 from app.models import CartItem, Product, User
@@ -130,4 +130,15 @@ def add_cart(prod_id):
         db.session.commit()
     #else:
         #return render_template("product.html", form=form)
-        
+
+@webapp.route("/purchase_cart", methods=['GET', 'POST'])
+def purchase_cart():
+    form = BillingForm(request.form)
+    if request.method == 'POST' and form.validate():
+        confirm = form.confirm.data
+        if confirm:
+            address = form.address.data
+            user = User.query.filter(User.id)
+            #need to track various quantities due to varying prices?
+            #add all user cart_items
+            total = User.cart_items()

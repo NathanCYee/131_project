@@ -28,3 +28,7 @@ class DeleteAccountForm(FlaskForm):
 class CartForm(FlaskForm):
     quantity = StringField("Quantity", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
+class BillingForm(FlaskForm):
+    confirm = BooleanField("Purchase", validators=[DataRequired()])
+    address = StringField("Address", validators=[DataRequired()])
