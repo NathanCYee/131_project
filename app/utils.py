@@ -30,3 +30,7 @@ def create_order(user: User, products) -> Order:
 
 def get_categories():
     return [c.name for c in Category.query.all()]
+
+
+def get_category_dict():
+    return {c.name: c.id for c in Category.query.all()}

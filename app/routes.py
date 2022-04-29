@@ -1,11 +1,23 @@
 from sqlalchemy import insert
 
 from app import webapp, db
-from flask import render_template, flash, request, redirect, abort
+from flask import render_template as r, flash, request, redirect, abort
 from flask_login import current_user, login_user, logout_user, login_required
 from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm
 from app.models import User, UserRole, Product, Category
-from app.utils import get_merchant, merchant_required
+from app.utils import get_merchant, merchant_required, get_category_dict
+
+
+def add_categories(func):
+    """Decorator function that automatically adds categories"""
+
+    def inner(*args, **kwargs):
+        return func(*args, **kwargs, categories=get_category_dict())
+
+    return inner
+
+
+render_template = add_categories(r)  # decorate function so that you don't have to manually add categories to each
 
 
 @webapp.route('/')
