@@ -1,4 +1,4 @@
-from app.models import User
+from app.models import User, UserRole
 
 
 def test_home(client):
@@ -30,6 +30,8 @@ def test_good_login(db, client):
 
     # clean up any changes
     User.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
     db.session.flush()
 
 
@@ -55,6 +57,11 @@ def test_bad_login(db, client):
         response = client.post('/login',
                                data={'username': wrong_username, 'password': password, 'submit': True})
         assert response.status_code == 200  # 200 response ok, did not redirect
+
+    # clean up any changes
+    User.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
     db.session.flush()
 
 
@@ -85,6 +92,8 @@ def test_logout(db, client):
 
     # clean up any changes
     User.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
     db.session.flush()
 
 
@@ -114,6 +123,8 @@ def test_good_register(db, client):
 
     # clean up any changes
     User.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
     db.session.flush()
 
 
@@ -163,6 +174,8 @@ def test_bad_register(db, client):
 
     # clean up any changes
     User.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
     db.session.flush()
 
 
@@ -197,6 +210,8 @@ def test_good_password_update(db, client):
 
     # clean up any changes
     User.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
     db.session.flush()
 
 
@@ -244,6 +259,8 @@ def test_bad_password_update(db, client):
 
     # clean up any changes
     User.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
     db.session.flush()
 
 
@@ -279,4 +296,6 @@ def test_delete_account(db, client):
 
     # clean up any changes
     User.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
     db.session.flush()

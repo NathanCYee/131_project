@@ -22,11 +22,6 @@ def app():
         from app import db
         db.init_app(app)  # relink it to the app to get the updated uri
         db.create_all()
-        cust = Role(name='customer')
-        merch = Role(name='merchant')
-        db.session.add(cust)
-        db.session.add(merch)
-        db.session.commit()
     yield app
 
     # Can add cleanup here
@@ -35,6 +30,19 @@ def app():
 @pytest.fixture()
 def db(app):
     from app import db
+
+    cust = Role(name='customer')
+    merch = Role(name='merchant')
+    db.session.add(cust)
+    db.session.add(merch)
+
+    categories = ["Clothing", "Video Games", "Electronics"]
+
+    for category in categories:
+        new_cat = Category(name=category)
+        db.session.add(new_cat)
+
+    db.session.commit()
     yield db
 
 

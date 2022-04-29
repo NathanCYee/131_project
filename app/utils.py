@@ -2,7 +2,7 @@ from functools import wraps
 from flask import flash, redirect
 from flask_login import current_user
 
-from app.models import User, Product, Order, OrderRow, Role, Category
+from app.models import Role, Category
 
 
 def get_merchant():
@@ -22,10 +22,6 @@ def merchant_required(func):
             return func(*args, **kwargs)
 
     return inner
-
-
-def create_order(user: User, products) -> Order:
-    id = user.id
 
 
 def get_categories():

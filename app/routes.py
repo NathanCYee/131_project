@@ -131,6 +131,15 @@ def account_test():
     return "You are logged in"
 
 
+@webapp.route('/merchant/account_test')
+@login_required
+@merchant_required
+def merchant_account_test():
+    """Used for testing, should only be reachable if logged in as a merchant, else it would redirect the user to the
+    login page"""
+    return "You are logged in as a merchant"
+
+
 @webapp.route('/merchant')
 @login_required
 @merchant_required
@@ -209,6 +218,6 @@ def merchant_new_product():
                           category_id=category_id)
         db.session.add(product)
         db.session.commit()
-        return redirect(f'/product/{product.id}')
+        return redirect(f'/product/{product.id}', code=302)
     else:
         return render_template('merchant_product.html', form=form, id=current_user.id)
