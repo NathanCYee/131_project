@@ -1,6 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField, HiddenField, \
+    SelectField
 from wtforms.validators import DataRequired, Email
+
+from app.models import Product
+from app.utils import get_categories
 
 
 class LoginForm(FlaskForm):
@@ -32,3 +36,13 @@ class CartForm(FlaskForm):
 class BillingForm(FlaskForm):
     confirm = BooleanField("Purchase", validators=[DataRequired()])
     address = StringField("Address", validators=[DataRequired()])
+
+
+
+class NewProductForm(FlaskForm):
+    merchant_id = HiddenField("Merchant ID", validators=[DataRequired()])
+    name = StringField("Name", validators=[DataRequired()])
+    price = FloatField("Price", validators=[DataRequired()])
+    description = TextAreaField("Description")
+    category = SelectField("Category", default=1)
+    submit = SubmitField("Submit")

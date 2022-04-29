@@ -1,6 +1,6 @@
 import pytest
 from sqlalchemy import create_engine, inspect
-from app.models import User, Category, Product
+from app.models import User, Category, Product, UserRole
 
 
 def test_db(db):
@@ -44,7 +44,7 @@ def test_user(db):
 
 
 def test_category(db):
-    name = "Video Games"
+    name = "Office Supplies"
     category = Category(name=name)
     db.session.add(category)
     query_result = Category.query.filter_by(name=name)
@@ -54,24 +54,33 @@ def test_category(db):
     assert query_result.first() == category
 
     # reset the state of the db
+    Category.query.filter_by(id=category.id).delete()
     db.session.flush()
 
 
 def test_product(db):
     """Create a user object and input into the database. Assert to see if object is created."""
+    # test params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
 
-    category_name = "Devices"
-    category = Category(name=category_name)
-    db.session.add(category)
-    db.session.commit()
+    # create the user
+    user = User(username=username, email=email)
+    user.set_password(password)
+    db.session.add(user)
+
+    category_name = "Electronics"
+    category = Category.query.filter_by(name=category_name).first()
 
     # test params
     name = "iPhone 1000"
     product_price = 999.99
     description = "The brand new iPhone. Lorem ipsum sit amet."
 
-    # create the user
-    product = Product(name=name, product_price=product_price, description=description, category_id=category.id)
+    # create the product
+    product = Product(merchant_id=user.id, name=name, price=product_price, description=description,
+                      category_id=category.id)
     db.session.add(product)
     db.session.commit()
 
@@ -86,4 +95,8 @@ def test_product(db):
     assert category.products.first() == product
 
     # reset the state of the db
+    User.query.delete()
+    Product.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
     db.session.flush()
