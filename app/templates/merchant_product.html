@@ -1,0 +1,37 @@
+{% extends "merchant_base.html" %}
+
+
+{% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    </br>
+    <h1>Create a new product</h1>
+    <form action="/merchant/new_product" method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.merchant_id(value=id) }}
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(size=32) }}
+        </p>
+        <p>
+            {{ form.price.label }}<br>
+            {{ form.price(size=32) }}
+        </p>
+        <p>
+            {{ form.description.label }}<br>
+            {{ form.description() }}
+        </p>
+        <p>
+            {{ form.category.label }}<br>
+            {{ form.category() }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

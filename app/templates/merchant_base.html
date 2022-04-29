@@ -16,14 +16,12 @@
           href="https://cdn.jsdelivr.net/npm/@forevolve/bootstrap-dark@1.0.0/dist/css/toggle-bootstrap-dark.min.css"/>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/@forevolve/bootstrap-dark@1.0.0/dist/css/toggle-bootstrap-print.min.css"/>
-
     <title>Hello, world!</title>
 </head>
-<body class="bootstrap">
-
+<body>
 <nav class="navbar navbar-expand-lg navbar-themed">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">E-Buy</a>
+        <a class="navbar-brand" href="/">E-Buy for Merchants</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -31,26 +29,20 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Home</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Categories
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        {% for k,v in categories.items() %}
-                            <li><a class="dropdown-item" href="{{ '/category/%s' %v }}">{{ k }}</a></li>
-                        {% endfor %}
-                    </ul>
+                    <a class="nav-link active" aria-current="page" href="/merchant">Home</a>
                 </li>
                 <li class="nav-item">
-                    <form class="d-flex">
-                        <input class="form-control me-4" type="search" placeholder="Search" aria-label="Search">
-                    </form>
+                    <a class="nav-link active" aria-current="page" href="/merchant/orders">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/merchant/new_product">Add a new product</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/merchant/promo">Create a new promotion</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav flex-row justify-content-md-center justify-content-start flex-nowrap">
+
                 <li class="nav-item">
                     <a class="nav-link" href="javascript:toggleColor();"><i id="colorToggle"
                                                                             class="bi bi-moon-fill"></i></a>
@@ -64,7 +56,6 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="right: 0; left: auto;">
                                 <!-- TODO - Implement these links -->
-                                <li><a class="dropdown-item" href="/cart">Shopping Cart</a></li>
                                 <li><a class="dropdown-item" href="/account_info">Account Info</a></li>
                                 <li>
                                     <hr class="dropdown-divider">

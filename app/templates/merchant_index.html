@@ -1,0 +1,23 @@
+{% extends "merchant_base.html" %}
+
+
+{% block main %}
+    </br>
+    {% if current_user.is_authenticated %}
+        <div class="row">
+            <div class="col-lg">
+                <div class="jumbotron">
+                    <h1 class="display-4">Hello, {{ current_user.username }}</h1>
+                    <p class="lead">Welcome back! Fill your current orders, create a new product, or create a
+                        promotion.</p>
+                    <hr class="my-4">
+                    <p class="lead">
+                        <a class="btn btn-primary btn-lg" href="/merchant/orders" role="button">Orders</a>
+                        <a class="btn btn-primary btn-lg" href="/merchant/new_product" role="button">New Product</a>
+                        <a class="btn btn-primary btn-lg" href="/merchant/promo" role="button">New Promotion</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
