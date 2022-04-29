@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField
-from wtforms.validators import DataRequired, Email
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, TextAreaField
+from wtforms.validators import DataRequired, Email, NumberRange
 
 
 class LoginForm(FlaskForm):
@@ -24,3 +24,10 @@ class PasswordForm(FlaskForm):
 class DeleteAccountForm(FlaskForm):
     confirm = BooleanField("I want to delete my account.", validators=[DataRequired()])
     submit = SubmitField("Delete my account.")
+
+
+class ReviewForm(FlaskForm):
+    rating = IntegerField("Give a rating for this product from 1 to 5", validators=[NumberRange(1, 5, "1-5"),
+                                                                                    DataRequired()])
+    body = TextAreaField("Add a written review")
+    submit = SubmitField("Submit")
