@@ -3,9 +3,9 @@ from sqlalchemy import insert
 from app import webapp, db
 from flask import render_template as r, flash, request, redirect, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm
 from app.models import User, UserRole, Product, Category
-from app.utils import get_merchant, merchant_required, get_category_dict
+from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm
+from app.utils import get_merchant, merchant_required, get_category_dict, get_categories
 
 
 def add_categories(func):
@@ -205,7 +205,7 @@ def merchant_login():
 @merchant_required
 def merchant_new_product():
     form = NewProductForm(request.form, merchant_id=current_user.id)
-    print(form.data)
+    form.category.choices = get_categories()
     if request.method == 'POST' and form.validate():
         # TODO: Add categories
         merchant_id = form.merchant_id.data

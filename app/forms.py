@@ -37,5 +37,5 @@ class NewProductForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     price = FloatField("Price", validators=[DataRequired()])
     description = TextAreaField("Description")
-    category = SelectField("Category", choices=get_categories(), default=1)
+    category = SelectField("Category", default=1)
     submit = SubmitField("Submit")
