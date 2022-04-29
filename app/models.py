@@ -4,15 +4,27 @@ from app import db, login
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
+UserRole = db.Table(
+    'user_role', db.Model.metadata,
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
+)
+
+
+class Role(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False, unique=True)
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(64), unique=True)
-    type = db.Column(db.Integer)  # 0 if customer, 1 if merchant
+    roles = db.relationship('Role', secondary='user_role', lazy='dynamic')
     password_hash = db.Column(db.String(128))
     cart_items = db.relationship('CartItem', backref='user', lazy='dynamic')
     orders = db.relationship('Order', backref='user', lazy='dynamic')
+    products = db.relationship('Product', backref='user', lazy='dynamic')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -33,8 +45,9 @@ class Category(db.Model):
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    merchant_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     name = db.Column(db.String(128))
-    product_price = db.Column(db.Float)
+    price = db.Column(db.Float)
     description = db.Column(db.Text)
     reviews = db.relationship('Review', backref='product', lazy='dynamic')
 
@@ -54,10 +67,11 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     ship_address = db.Column(db.String(128))
-    orders = db.relationship('OrderRows', backref='order', lazy='dynamic')
+    order_row = db.relationship('OrderRow', backref='order', lazy='dynamic')
 
 
-class OrderRows(db.Model):
+class OrderRow(db.Model):
+    row_id = db.Column(db.Integer, primary_key=True)
     id = db.Column(db.Integer, db.ForeignKey('order.id'))
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     quantity = db.Column(db.Integer)
