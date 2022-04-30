@@ -2,14 +2,10 @@ from itertools import product
 from sqlalchemy import insert
 
 from app import webapp, db
-from flask import render_template, flash, request, redirect, abort
+from flask import render_template as r, flash, request, redirect, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from app.forms import BillingForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm
-from app.models import User
-from app.forms import CartForm, LoginForm, RegisterForm
-from app.models import CartItem, Product, User
-from app.models import User, UserRole, Product, Category
-from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm
+from app.forms import BillingForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm
+from app.models import CartItem, Product, User, UserRole, Category
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories
 
 
@@ -129,26 +125,93 @@ def delete_account():
         return render_template('delete_account.html', form=form)
 
 
-@webapp.route('/account_test')
+@webapp.route('/cart', methods=['GET', 'POST'])
 @login_required
-def account_test():
-    """Used for testing, should only be reachable if logged in, else it would redirect the user to the login page"""
-    return "You are logged in"
-
-@webapp.route('/cart/<int:prod_id>', methods=['POST'])
-@login_required
-def add_cart(prod_id):
+def add_cart():
     form = CartForm(request.form)
     if request.method == 'POST' and form.validate():
         quantity = form.quantity.data
-        product = Product.query.filter(Product.id == prod_id)
-        user = current_user
-        cart_item = CartItem(id = product, quantity = quantity, user_id = user)
-        db.session.add(cart_item)
-        flash("Item added to cart!")
-        db.session.commit()
+        prod_id = form.product_id.data
+        product_query = Product.query.filter_by(id=prod_id)
+        if product_query.count() < 1:
+            flash("Product not found!")
+            return redirect('/', code=404)
+        else:
+            product = product_query.first()
+            current_rows = current_user.cart_items.filter_by(product_id=product.id)
+            if current_rows.count() >= 1:
+                row = current_rows.first()
+                row.quantity += int(quantity)
+                db.session.commit()
+            else:
+                cart_item = CartItem(product_id=product.id, quantity=quantity, user_id=current_user.id)
+                db.session.add(cart_item)
+                db.session.commit()
+            flash("Item added to cart!")
+            return redirect('/cart')
     else:
-        return render_template('cart.html', form=form)
+        cart_items = current_user.cart_items.all()
+        rows = {}
+        for i, row in enumerate(cart_items):
+            product = Product.query.filter_by(id=row.product_id).first()
+            rows[i + 1] = {'id': row.id, 'product_name': product.name, 'product_id': product.id,
+                           'quantity': row.quantity, 'price': product.price}
+        return render_template('cart.html', cart_items=rows, form=form)
+
+
+@webapp.route('/cart/remove/<int:row_id>', methods=['GET'])
+@login_required
+def cart_remove(row_id):
+    rows = CartItem.query.filter_by(id=row_id)
+    if rows.count() != 1:  # row doesn't exist
+        return abort(400)
+    else:
+        row = rows.first()
+        if (row.user_id != current_user.id):  # forbidden, cannot access another user's rows
+            return abort(403)
+        else:
+            product = Product.query.filter_by(id=row.product_id).first()
+            name = product.name
+            qty = row.quantity
+            rows.delete()
+            db.session.commit()
+            flash(f'Removed {qty} of {name}')
+            return redirect('/cart')
+
+
+@webapp.route('/category/<int:category_id>')
+def category(category_id):
+    categories = Category.query.filter_by(id=category_id)
+    if categories.count() == 1:
+        category = categories.first()
+        return render_template('category.html', category=category, products=category.products.all())
+    else:
+        return abort(404)
+
+
+@webapp.route('/merchant/<int:merchant_id>')
+def merchant_profile(merchant_id):
+    merchants = User.query.filter(User.roles.any(id=2)).filter_by(id=merchant_id)
+    if merchants.count() == 1:
+        merchant = merchants.first()
+        products = Product.query.filter_by(merchant_id=merchant.id).all()
+        return render_template('merchant_profile.html', merchant=merchant, products=products)
+    else:
+        return abort(404)
+
+
+@webapp.route('/product/<int:prod_id>')
+def product(prod_id):
+    form = CartForm(request.form, product_id=prod_id)
+    product_match = Product.query.filter_by(id=prod_id)
+    if product_match.count() < 1:
+        flash('Product not found!')
+        return redirect('/', code=302)
+    else:
+        product = product_match.first()
+        merchant = User.query.filter_by(id=product.merchant_id).first()
+        return render_template('product.html', product=product, merchant=merchant, form=form)
+
 
 @webapp.route("/purchase_cart", methods=['GET', 'POST'])
 def purchase_cart():
@@ -158,9 +221,16 @@ def purchase_cart():
         if confirm:
             address = form.address.data
             user = User.query.filter(User.id)
-            #need to track various quantities due to varying prices?
-            #add all user cart_items
+            # need to track various quantities due to varying prices?
+            # add all user cart_items
             total = User.cart_items()
+
+
+@webapp.route('/account_test')
+@login_required
+def account_test():
+    """Used for testing, should only be reachable if logged in, else it would redirect the user to the login page"""
+    return "You are logged in"
 
 
 @webapp.route('/merchant/account_test')

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField, HiddenField, \
-    SelectField
-from wtforms.validators import DataRequired, Email
+    SelectField, IntegerField
+from wtforms.validators import DataRequired, Email, NumberRange
 
 from app.models import Product
 from app.utils import get_categories
@@ -19,24 +19,28 @@ class RegisterForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
+
 class PasswordForm(FlaskForm):
     original_password = PasswordField("Current password", validators=[DataRequired()])
     new_password = PasswordField("Password", validators=[DataRequired()])
     new_password_repeat = PasswordField("Confirm password", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
+
 class DeleteAccountForm(FlaskForm):
     confirm = BooleanField("I want to delete my account.", validators=[DataRequired()])
     submit = SubmitField("Delete my account.")
 
+
 class CartForm(FlaskForm):
-    quantity = StringField("Quantity", validators=[DataRequired()])
-    submit = SubmitField("Submit")
+    product_id = HiddenField("product", validators=[DataRequired()])
+    quantity = SelectField("Quantity", choices=[i for i in range(1, 11)], default=1, validators=[DataRequired()])
+    submit = SubmitField("Add to Cart")
+
 
 class BillingForm(FlaskForm):
     confirm = BooleanField("Purchase", validators=[DataRequired()])
     address = StringField("Address", validators=[DataRequired()])
-
 
 
 class NewProductForm(FlaskForm):

@@ -1,18 +1,40 @@
-{% extends "base.htm" %}
+{% extends "base.html" %}
 
-{% block main %} 
-    {% with messages = get_flashed_messages() %} 
-        {% if messages %} 
+{% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-danger" role ="alert">
-                    {{message}}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
-            
-</br>
-<form action="/cart" method="POST">
-    <!--stuff-->
-</form>
+
+    </br>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Product</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total price</th>
+            <th scope="col">Remove</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for k, v in cart_items.items() %}
+            <tr>
+                <th scope="row">{{ k }}</th>
+                <td><a href="{{ '/product/%s' %v.product_id }}">{{ v.product_name }}</a></td>
+                <td>{{ v.quantity }}</td>
+                <td>${{ v.quantity*v.price }}</td>
+                <td><a href="{{ '/cart/remove/%s' %v.id }}">Remove</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <form action="/cart" method="POST">
+        <!--stuff-->
+    </form>
 {% endblock %} 
