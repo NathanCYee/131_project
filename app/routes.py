@@ -110,26 +110,29 @@ def delete_account():
 
 
 @webapp.route("/product/<int:product_id>/reviews", methods=['GET', 'POST'])
+@login_required
 def product_reviews(product_id=1):
     form = ReviewForm()
     if request.method == "POST" and form.validate():
         rating = form.rating.data
         body = form.body.data
+
         # check if user has already reviewed this product
         if Review.query.filter_by(user_id=current_user.id, product_id=product_id).count() != 0:
             flash("You've already reviewed this product")
-            return render_template("reviews.html", form=form)
+            return render_template("reviews.html", form=form, product_id=product_id)
         # check if user has bought this product
         elif Order.query.filter_by(user_id=current_user.id).count == 0:
             flash("You need to have bought an item to review it.")
-            return render_template("reviews.html", form=form)
+            return render_template("reviews.html", form=form, product_id=product_id)
         else:
             new_review = Review(rating=rating, body=body, user_id=current_user.id, product_id=product_id)
             db.session.add(new_review)
             db.session.commit()
             flash("Review successfully posted!")
+            return redirect("/")
     else:
-        return render_template("reviews.html", form=form)
+        return render_template("reviews.html", form=form, product_id=product_id)
 
 
 @webapp.route('/account_test')
