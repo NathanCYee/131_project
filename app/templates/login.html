@@ -12,17 +12,22 @@
         {% endif %}
     {% endwith %}
     </br>
-    <form action="/login" method="POST">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    <a href="/register">Register a new account</a>
+    <div class="row">
+        <div class="col-xs-4 jumbotron">
+            <h1>Sign in</h1>
+            <form action="/login" method="POST" class="form-group">
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.username.label }}<br>
+                    {{ form.username(size=32, class_="form-control", placeholder="Username" ) }}
+                </p>
+                <p>
+                    {{ form.password.label }}<br>
+                    {{ form.password(size=32, class_="form-control", placeholder="Password") }}
+                </p>
+                <p>{{ form.submit(class_="btn btn-primary") }}</p>
+            </form>
+            <a href="/register">Register a new account</a>
+        </div>
+    </div>
 {% endblock %}

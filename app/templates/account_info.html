@@ -13,24 +13,31 @@
     {% endwith %}
     </br>
     <h1>Account Info</h1>
-    <p>Username: {{ current_user.username }}</p>
-    <p>Email: {{ current_user.email }}</p>
+    <p>
+        <label>Username</label>
+        <input class="form-control" type="text" placeholder={{ '%s'%current_user.username }} readonly>
+    </p>
+    <p>
+        <label>Email</label>
+        <input class="form-control" type="text" placeholder={{ '%s'%current_user.email }} readonly>
+    </p>
+    </br>
     <h3>Change Password</h3>
     <form action="/account_info" method="POST">
         {{ form.hidden_tag() }}
         <p>
             {{ form.original_password.label }}<br>
-            {{ form.original_password(size=32) }}
+            {{ form.original_password(size=32, class_="form-control", placeholder="Password" ) }}
         </p>
         <p>
             {{ form.new_password.label }}<br>
-            {{ form.new_password(size=32) }}
+            {{ form.new_password(size=32, class_="form-control", placeholder="New Password" ) }}
         </p>
         <p>
             {{ form.new_password_repeat.label }}<br>
-            {{ form.new_password_repeat(size=32) }}
+            {{ form.new_password_repeat(size=32, class_="form-control", placeholder="Repeat New Password" ) }}
         </p>
-        <p>{{ form.submit() }}</p>
+        <p>{{ form.submit(class_="btn btn-primary") }}</p>
     </form>
     <a href="/delete_account">Delete your account</a>
 {% endblock %}

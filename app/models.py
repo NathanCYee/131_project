@@ -50,11 +50,18 @@ class Product(db.Model):
     price = db.Column(db.Float)
     description = db.Column(db.Text)
     reviews = db.relationship('Review', backref='product', lazy='dynamic')
+    images = db.relationship('Image', backref='product')
+
+
+class Image(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    path = db.Column(db.String(128))
 
 
 class CartItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.category_id'))
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     quantity = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)

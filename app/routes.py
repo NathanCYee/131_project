@@ -1,11 +1,14 @@
+import os
+
 from sqlalchemy import insert
+from werkzeug.utils import secure_filename
 
 from app import webapp, db
-from flask import render_template as r, flash, request, redirect, abort
+from flask import render_template as r, flash, request, redirect, abort, url_for, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, UserRole, Product, Category
+from app.models import User, UserRole, Product, Category, Image
 from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm
-from app.utils import get_merchant, merchant_required, get_category_dict, get_categories
+from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant
 
 
 def add_categories(func):
@@ -21,6 +24,7 @@ render_template = add_categories(r)  # decorate function so that you don't have 
 
 
 @webapp.route('/')
+@prevent_merchant
 def home():
     return render_template('index.html')
 
@@ -207,17 +211,37 @@ def merchant_new_product():
     form = NewProductForm(request.form, merchant_id=current_user.id)
     form.category.choices = get_categories()
     if request.method == 'POST' and form.validate():
-        # TODO: Add categories
+        # retrieve the information about the product
         merchant_id = form.merchant_id.data
         name = form.name.data
         price = form.price.data
         description = form.description.data
         category = form.category.data
+
+        # fetch the category that the product belongs to
         category_id = Category.query.filter_by(name=category).first().id
+
+        # save the new product to the database
         product = Product(merchant_id=merchant_id, name=name, price=price, description=description,
                           category_id=category_id)
         db.session.add(product)
         db.session.commit()
+
+        # Retrieve files sent in the request
+        files = request.files.getlist(form.pictures.name)
+        if files:  # true if not empty
+            for file in files:
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(webapp.config['UPLOAD_FOLDER'], filename))
+                route = Image(product_id=product.id, path=url_for('images', name=filename))
+                db.session.add(route)
+
+        db.session.commit()
         return redirect(f'/product/{product.id}', code=302)
     else:
         return render_template('merchant_product.html', form=form, id=current_user.id)
+
+
+@webapp.route('/images/<string:filename>')
+def images(filename):
+    return send_from_directory(webapp.config["UPLOAD_FOLDER"], filename)

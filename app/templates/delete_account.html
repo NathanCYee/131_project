@@ -15,10 +15,11 @@
     <h1>Delete Account.</h1>
     <form action="/delete_account" method="POST">
         {{ form.hidden_tag() }}
-        <p>
+        <div class="form-check">
+            {{ form.confirm(class_="form-check-input") }}
             {{ form.confirm.label }}<br>
-            {{ form.confirm() }}
-        </p>
-        <p>{{ form.submit() }}</p>
+        </div>
+        </br>
+        <p>{{ form.submit(class_="btn btn-danger") }}</p>
     </form>
 {% endblock %}

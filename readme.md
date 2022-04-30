@@ -52,7 +52,8 @@ Project was built with:
     - [Pytest](https://github.com/pytest-dev/pytest) - Unit testing library for python
 - [Bootstrap](https://github.com/twbs/bootstrap) - Web component library
     - [Bootstrap Icons](https://github.com/twbs/icons) - Icons provided by bootstrap
-    - [ForEvolve/bootstrap-dark](https://github.com/ForEvolve/bootstrap-dark) - Themed versions of bootstrap
+    - [vinorodrigues/bootstrap-dark-5](https://github.com/vinorodrigues/bootstrap-dark-5) - Toggleable dark mode for
+      bootstrap
 - [CircleCI](https://circleci.com/) - Continuous integration/deployment
 - [Codecov](https://about.codecov.io/) - Code coverage metrics
 
