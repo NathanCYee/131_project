@@ -12,9 +12,13 @@
         {% endif %}
     {% endwith %}
     </br>
-    <form action="/login" method="POST" class="container d-flex justify-content-center py-4 mb-4 ">
+    <form action="/register" method="POST" class="container d-flex justify-content-center py-4 mb-4 ">
         <div class="d-flex flex-column ">
             {{ form.hidden_tag() }}
+            <p>
+                {{ form.email.label }}<br>
+                {{ form.email(size=32) }}
+            </p>
             <p>
                 {{ form.username.label }}<br>
                 {{ form.username(size=32) }}
@@ -24,7 +28,7 @@
                 {{ form.password(size=32) }}
             </p>
             <p>{{ form.submit() }}</p>
-            <a href="/register">Register a new account</a>
+            <a href="/login">Login to existing account</a>
         </div>
     </form>
     

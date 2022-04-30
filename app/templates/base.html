@@ -78,11 +78,31 @@
             </ul>
             <ul class="navbar-nav ms-auto ">
               <li class="nav-item">
-                <a class="nav-link mx-2 text-uppercase" href="/checkout"><i class="fa-solid fa-cart-shopping me-1"></i> Cart</a>
+                <a class="nav-link mx-2 text-uppercase" href="/cart"><i class="fa-solid fa-cart-shopping me-1"></i> Cart</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link mx-2 text-uppercase" href="#"><i class="fa-solid fa-circle-user me-1"></i> Account</a>
+              <!--Account / Login -->
+              {% if current_user.is_authenticated %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle mx-2 text-uppercase" href="#" id="navbarDropdown" role="button"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                   <i class="fa-solid fa-circle-user me-1"></i> Account
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="right: 0; left: auto;">
+                  <!-- TODO - Implement these links -->
+                  <li><a class="dropdown-item" href="/cart">Shopping Cart</a></li>
+                  <li><a class="dropdown-item" href="/account_info">Account Info</a></li>
+                  <li>
+                      <hr class="dropdown-divider">
+                  </li>
+                  <li><a class="dropdown-item" href="/logout">Log Out</a></li>
+              </ul>
               </li>
+              {% else %}
+              <li>
+                <a class="nav-link" href="/login">Login/Register</a>
+              </li>
+              {% endif %}
+              <!-- End Account / Login-->
             </ul>
           </div>
         </div>
@@ -91,12 +111,14 @@
     </header>
     <!--Main Navigation-->
 
-    {% block home %}
+    {% block main %}
     {% endblock %}
     {% block search %}
     {% endblock %}
+    <!--^^Figure out how to combine with child deals.html-->
     {% block cart %}
     {% endblock %}
+
 
     <!--Footer-->
     <!-- Remove the container if you want to extend the Footer to full width. -->
