@@ -1,11 +1,12 @@
 import os
+from os.path import exists
 from app import db
 
-os.remove('./app/webapp.db')
+if exists('./app/webapp.db'):
+    os.remove('./app/webapp.db')
 db.create_all()
 
 from app.models import Role, Category
-
 
 cust = Role(name='customer')
 merch = Role(name='merchant')
