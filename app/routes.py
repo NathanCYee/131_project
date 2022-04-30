@@ -128,6 +128,60 @@ def delete_account():
         return render_template('delete_account.html', form=form)
 
 
+@webapp.route('/product/<int:prod_id>')
+def product(prod_id):
+    product_match = Product.query.filter_by(id=prod_id)
+    if product_match.count() < 1:
+        flash('Product not found!')
+        return redirect('/', code=302)
+    else:
+        product = product_match.first()
+        merchant = User.query.filter_by(id=product.merchant_id).first()
+        return render_template('product.html', product=product, merchant=merchant)
+
+
+@webapp.route('/search', methods=['GET'])
+@webapp.route('/search/', methods=['GET'])
+def search():
+    form_query = request.args.get('q')
+    print(form_query)
+    if form_query is not None and len(form_query) != 0:
+        results = Product.query.where(Product.name.regexp_match(form_query)).all()
+        return render_template("search.html", products=results, query=form_query)
+    else:
+        return redirect('/')
+
+
+@webapp.route('/orders')
+@login_required
+def orders():
+    rows = Order.query.filter_by(user_id=current_user.id).all()
+    items = {}
+    for order in rows:
+        order_rows = order.order_row.filter_by(filled=False).all()
+        for o in order_rows:
+            if order.id not in items:
+                items[order.id] = {'order': order, 'rows': [(o, o.product)]}
+            else:
+                items[order.id]['rows'].append((o, o.product))
+    return render_template('orders.html', orders=items)
+
+
+@webapp.route('/orders/filled')
+@login_required
+def orders_filled():
+    rows = Order.query.filter_by(user_id=current_user.id).all()
+    items = {}
+    for order in rows:
+        order_rows = order.order_row.filter_by(filled=True).all()
+        for o in order_rows:
+            if order.id not in items:
+                items[order.id] = {'order': order, 'rows': [(o, o.product)]}
+            else:
+                items[order.id]['rows'].append((o, o.product))
+    return render_template('orders_filled.html', orders=items)
+
+
 @webapp.route('/account_test')
 @login_required
 def account_test():
@@ -149,18 +203,6 @@ def merchant_account_test():
 @merchant_required
 def merchant():
     return render_template("merchant_index.html")
-
-
-@webapp.route('/product/<int:prod_id>')
-def product(prod_id):
-    product_match = Product.query.filter_by(id=prod_id)
-    if product_match.count() < 1:
-        flash('Product not found!')
-        return redirect('/', code=302)
-    else:
-        product = product_match.first()
-        merchant = User.query.filter_by(id=product.merchant_id).first()
-        return render_template('product.html', product=product, merchant=merchant)
 
 
 @webapp.route('/merchant/register', methods=['GET', 'POST'])

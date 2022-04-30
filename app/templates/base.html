@@ -51,8 +51,14 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <form class="d-flex">
-                        <input class="form-control me-4" type="search" placeholder="Search" aria-label="Search">
+                    <form class="d-flex" action="/search" method="GET">
+                        {% if query %}
+                            <input class="form-control mr-sm-2" type="search" id="q" name="q" placeholder="Search"
+                                   aria-label="Search" value="{{ query }}">
+                        {% else %}
+                            <input class="form-control mr-sm-2" type="search" id="q" name="q" placeholder="Search"
+                                   aria-label="Search">
+                        {% endif %}
                     </form>
                 </li>
             </ul>
@@ -72,6 +78,7 @@
                                 <!-- TODO - Implement these links -->
                                 <li><a class="dropdown-item" href="/cart">Shopping Cart</a></li>
                                 <li><a class="dropdown-item" href="/account_info">Account Info</a></li>
+                                <li><a class="dropdown-item" href="/orders">Orders</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
