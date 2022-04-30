@@ -1,0 +1,45 @@
+
+
+{% extends "base.html" %}
+
+
+{% block main %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+    <div class="row">
+        <div class="col-5">
+            <div id="productImages" class="carousel slide w-100 h-50" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in product.images %}
+                        {% if loop.index == 1 %}
+                            <div class="carousel-item active" data-bs-interval="2000">
+                                <img class="d-block h-50 img-fluid" src={{ '%s' %image.path }}/>
+                            </div>
+                        {% else %}
+                            <div class="carousel-item" data-bs-interval="2000">
+                                <img class="d-block h-50 img-fluid" src={{ '%s' %image.path }}/>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#productImages"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productImages"
+                        data-bs-slide="next">
+                    <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-7">
+            <h5><a href="{{ '/merchant/%s' %merchant.id }}">{{ merchant.username }}</a></h5>
+            <h1 class="display-5 fw-bold">{{ product.name }}</h1>
+            <h3>{{ "$%.2f"|format(product.price) }}</h3>
+            <p>{{ product.description }}</p>
+        </div>
+    </div>
+{% endblock %}

@@ -151,6 +151,18 @@ def merchant():
     return render_template("merchant_index.html")
 
 
+@webapp.route('/product/<int:prod_id>')
+def product(prod_id):
+    product_match = Product.query.filter_by(id=prod_id)
+    if product_match.count() < 1:
+        flash('Product not found!')
+        return redirect('/', code=302)
+    else:
+        product = product_match.first()
+        merchant = User.query.filter_by(id=product.merchant_id).first()
+        return render_template('product.html', product=product, merchant=merchant)
+
+
 @webapp.route('/merchant/register', methods=['GET', 'POST'])
 def merchant_register():
     form = RegisterForm(request.form)
@@ -205,8 +217,8 @@ def merchant_login():
 
 
 @webapp.route('/merchant/new_product', methods=['GET', 'POST'])
-@login_required
 @merchant_required
+@login_required
 def merchant_new_product():
     form = NewProductForm(request.form, merchant_id=current_user.id)
     form.category.choices = get_categories()
@@ -229,7 +241,7 @@ def merchant_new_product():
 
         # Retrieve files sent in the request
         files = request.files.getlist(form.pictures.name)
-        if files:  # true if not empty
+        if len(files) != 0 and files[0].filename != '':  # check if there are files and the file name is not blank
             for file in files:
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(webapp.config['UPLOAD_FOLDER'], filename))
@@ -243,5 +255,6 @@ def merchant_new_product():
 
 
 @webapp.route('/images/<string:filename>')
+@webapp.route('/images/<string:filename>/')
 def images(filename):
     return send_from_directory(webapp.config["UPLOAD_FOLDER"], filename)

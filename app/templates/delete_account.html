@@ -16,8 +16,8 @@
     <form action="/delete_account" method="POST">
         {{ form.hidden_tag() }}
         <div class="form-check">
+            {{ form.confirm.label }}
             {{ form.confirm(class_="form-check-input") }}
-            {{ form.confirm.label }}<br>
         </div>
         </br>
         <p>{{ form.submit(class_="btn btn-danger") }}</p>

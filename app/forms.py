@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField, HiddenField, \
-    SelectField, MultipleFileField
-from wtforms.validators import DataRequired, Email
+    SelectField, MultipleFileField, DecimalField
+from wtforms.validators import DataRequired, Email, Optional
 
 
 class LoginForm(FlaskForm):
@@ -60,9 +60,10 @@ class NewProductForm(FlaskForm):
     """
     merchant_id = HiddenField("Merchant ID", validators=[DataRequired()])
     name = StringField("Name", validators=[DataRequired()])
-    price = FloatField("Price", validators=[DataRequired()])
+    price = DecimalField("Price", places=2, validators=[DataRequired()])
     description = TextAreaField("Description")
     category = SelectField("Category", default=1)
     pictures = MultipleFileField("Pictures",
-                                 validators=[FileAllowed(['png', 'jpg', 'jpeg'], 'Only images are allowed!')])
+                                 validators=[Optional(),
+                                             FileAllowed(['png', 'jpg', 'jpeg'], 'Only images are allowed!')])
     submit = SubmitField("Submit")

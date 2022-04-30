@@ -10,5 +10,3 @@ function toggleColor() {
     darkmode.toggleDarkMode();
     chooseIcon();
 }
-
-chooseIcon();
