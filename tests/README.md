@@ -2,9 +2,9 @@
 
 ## Table of contents
 
-- Running tests
-- Creating tests
-- Continuous integration
+- [Running tests](https://github.com/NathanCYee/131_project/tests#running-tests)
+- [Creating tests](https://github.com/NathanCYee/131_project/tests#creating-tests)
+- [Continuous integration](https://github.com/NathanCYee/131_project/tests#continuous-integration)
 
 ## Running tests
 
