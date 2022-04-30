@@ -5,7 +5,7 @@ from app import webapp, db
 from flask import render_template as r, flash, request, redirect, abort
 from flask_login import current_user, login_user, logout_user, login_required
 from app.forms import BillingForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm
-from app.models import CartItem, Product, User, UserRole, Category
+from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories
 
 
@@ -214,16 +214,23 @@ def product(prod_id):
 
 
 @webapp.route("/purchase_cart", methods=['GET', 'POST'])
+@login_required
 def purchase_cart():
     form = BillingForm(request.form)
     if request.method == 'POST' and form.validate():
         confirm = form.confirm.data
         if confirm:
             address = form.address.data
-            user = User.query.filter(User.id)
+            billing = form.billing.data
+            row = OrderRow(product_id = current_user.CartForm().id, quantity = current_user.CartForm().quantity, product_price = current_user.Product().price) 
+            items = current_user.cart_items.all()
+            order = Order(user_id = current_user.id, ship_address = address, order_row = row)
             # need to track various quantities due to varying prices?
             # add all user cart_items
-            total = User.cart_items()
+        else:
+            flash("You need to confirm to purchase cart")
+            #return(billing.html)
+            
 
 
 @webapp.route('/account_test')

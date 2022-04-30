@@ -41,6 +41,7 @@ class CartForm(FlaskForm):
 class BillingForm(FlaskForm):
     confirm = BooleanField("Purchase", validators=[DataRequired()])
     address = StringField("Address", validators=[DataRequired()])
+    billing = StringField("Billing info", validators=[DataRequired()])
 
 
 class NewProductForm(FlaskForm):
