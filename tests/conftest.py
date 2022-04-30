@@ -1,6 +1,5 @@
 import pytest
 from flask_login import FlaskLoginClient
-from app.models import *
 
 from app import webapp
 
@@ -30,6 +29,19 @@ def app():
 @pytest.fixture()
 def db(app):
     from app import db
+    from app.models import Role, Category
+    cust = Role(name='customer')
+    merch = Role(name='merchant')
+    db.session.add(cust)
+    db.session.add(merch)
+
+    categories = ["Clothing", "Video Games", "Electronics"]
+
+    for category in categories:
+        new_cat = Category(name=category)
+        db.session.add(new_cat)
+
+    db.session.commit()
     yield db
 
 

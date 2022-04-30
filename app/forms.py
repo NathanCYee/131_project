@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, TextAreaField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, TextAreaField, FloatField, HiddenField, SelectField
 from wtforms.validators import DataRequired, Email, NumberRange
+from app.models import Product
+from app.utils import get_categories
 
 
 class LoginForm(FlaskForm):
@@ -15,11 +17,13 @@ class RegisterForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
+
 class PasswordForm(FlaskForm):
     original_password = PasswordField("Current password", validators=[DataRequired()])
     new_password = PasswordField("Password", validators=[DataRequired()])
     new_password_repeat = PasswordField("Confirm password", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
 
 class DeleteAccountForm(FlaskForm):
     confirm = BooleanField("I want to delete my account.", validators=[DataRequired()])
@@ -30,4 +34,13 @@ class ReviewForm(FlaskForm):
     rating = IntegerField("Give a rating for this product from 1 to 5", validators=[NumberRange(1, 5, "1-5"),
                                                                                     DataRequired()])
     body = TextAreaField("Add a written review")
+    submit = SubmitField("Submit")
+
+
+class NewProductForm(FlaskForm):
+    merchant_id = HiddenField("Merchant ID", validators=[DataRequired()])
+    name = StringField("Name", validators=[DataRequired()])
+    price = FloatField("Price", validators=[DataRequired()])
+    description = TextAreaField("Description")
+    category = SelectField("Category", default=1)
     submit = SubmitField("Submit")
