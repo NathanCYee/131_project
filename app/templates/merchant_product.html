@@ -35,8 +35,10 @@
                     {{ form.category(class_="form-control") }}
                 </p>
                 <p>
-                    {{ form.pictures.label }}<br>
-                    {{ form.pictures() }}
+                <div class="mb-3">
+                    {{ form.pictures.label(class_="form-label") }}<br>
+                    {{ form.pictures(class_="form-control form-control-lg") }}
+                </div>
                 </p>
                 <p>{{ form.submit(class_="btn btn-primary") }}</p>
             </form>

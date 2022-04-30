@@ -6,8 +6,8 @@ from werkzeug.utils import secure_filename
 from app import webapp, db
 from flask import render_template as r, flash, request, redirect, abort, url_for, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, UserRole, Product, Category, Image, OrderRow
-from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm
+from app.models import User, UserRole, Product, Category, Image, OrderRow, Order
+from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm, FillOrderForm
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant
 
 
@@ -254,19 +254,48 @@ def merchant_new_product():
         return render_template('merchant_product.html', form=form, id=current_user.id)
 
 
-@webapp.route('/merchant/orders')
-@webapp.route('/merchant/orders/unfilled')
+@webapp.route('/merchant/orders', methods=['GET', 'POST'])
 @merchant_required
 def merchant_orders():
-    query = select(OrderRow, Product).join(Product.orders).where(Product.merchant_id == current_user.id)
+    form = FillOrderForm(request.form)
+    if request.method == 'POST' and form.validate():
+        order_id = form.order_id.data
+        merchant_id = form.merchant_id.data
+        query = select(OrderRow, Product).join(Product.orders).where(OrderRow.filled == False) \
+            .where(OrderRow.id == order_id).where(Product.merchant_id == merchant_id)
+        rows = db.session.execute(query).all()
+        for k, v in rows:
+            k.filled = True
+        db.session.commit()
+        return redirect('/merchant/orders')
+    else:
+        query = select(OrderRow, Product).join(Product.orders).where(OrderRow.filled == False). \
+            where(Product.merchant_id == current_user.id)
+        results = db.session.execute(query.order_by(OrderRow.timestamp)).all()
+        items = {}
+        for order, product in results:
+            total_order = Order.query.filter_by(id=order.id).first()
+            if order.id not in items:
+                items[order.id] = {'order': total_order, 'rows': [(order, product)]}
+            else:
+                items[order.id]['rows'].append((order, product))
+        return render_template('merchant_orders.html', orders=items, form=form, id=current_user.id)
+
+
+@webapp.route('/merchant/orders/filled')
+@merchant_required
+def merchant_orders_filled():
+    query = select(OrderRow, Product).join(Product.orders).where(OrderRow.filled == True). \
+        where(Product.merchant_id == current_user.id)
     results = db.session.execute(query.order_by(OrderRow.timestamp)).all()
     items = {}
     for order, product in results:
+        total_order = Order.query.filter_by(id=order.id).first()
         if order.id not in items:
-            items[order.id] = [(order, product)]
+            items[order.id] = {'order': total_order, 'rows': [(order, product)]}
         else:
-            items[order.id].append((order, product))
-    return render_template('merchant_orders.html', orders=items)
+            items[order.id]['rows'].append((order, product))
+    return render_template('merchant_orders_filled.html', orders=items)
 
 
 @webapp.route('/images/<string:filename>')

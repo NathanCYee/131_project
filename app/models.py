@@ -85,6 +85,7 @@ class OrderRow(db.Model):
     quantity = db.Column(db.Integer)
     product_price = db.Column(db.Float)
     product = db.relationship("Product", back_populates="orders")
+    filled = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 

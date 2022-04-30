@@ -67,3 +67,12 @@ class NewProductForm(FlaskForm):
                                  validators=[Optional(),
                                              FileAllowed(['png', 'jpg', 'jpeg'], 'Only images are allowed!')])
     submit = SubmitField("Submit")
+
+
+class FillOrderForm(FlaskForm):
+    """
+    Form object used by a merchant to fill orders
+    """
+    merchant_id = HiddenField("Merchant ID", validators=[DataRequired()])
+    order_id = HiddenField("Order ID", validators=[DataRequired()])
+    submit = SubmitField("Complete")
