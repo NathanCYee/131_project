@@ -1,12 +1,12 @@
 import os
 
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 from werkzeug.utils import secure_filename
 
 from app import webapp, db
 from flask import render_template as r, flash, request, redirect, abort, url_for, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, UserRole, Product, Category, Image
+from app.models import User, UserRole, Product, Category, Image, OrderRow
 from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant
 
@@ -252,6 +252,21 @@ def merchant_new_product():
         return redirect(f'/product/{product.id}', code=302)
     else:
         return render_template('merchant_product.html', form=form, id=current_user.id)
+
+
+@webapp.route('/merchant/orders')
+@webapp.route('/merchant/orders/unfilled')
+@merchant_required
+def merchant_orders():
+    query = select(OrderRow, Product).join(Product.orders).where(Product.merchant_id == current_user.id)
+    results = db.session.execute(query.order_by(OrderRow.timestamp)).all()
+    items = {}
+    for order, product in results:
+        if order.id not in items:
+            items[order.id] = [(order, product)]
+        else:
+            items[order.id].append((order, product))
+    return render_template('merchant_orders.html', orders=items)
 
 
 @webapp.route('/images/<string:filename>')

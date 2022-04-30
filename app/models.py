@@ -51,6 +51,7 @@ class Product(db.Model):
     description = db.Column(db.Text)
     reviews = db.relationship('Review', backref='product', lazy='dynamic')
     images = db.relationship('Image', backref='product')
+    orders = db.relationship("OrderRow", back_populates="product")
 
 
 class Image(db.Model):
@@ -83,6 +84,8 @@ class OrderRow(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     quantity = db.Column(db.Integer)
     product_price = db.Column(db.Float)
+    product = db.relationship("Product", back_populates="orders")
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 class Review(db.Model):
