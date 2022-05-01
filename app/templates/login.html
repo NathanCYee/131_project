@@ -12,8 +12,9 @@
         {% endif %}
     {% endwith %}
     </br>
-    <form action="/login" method="POST" class="container d-flex justify-content-center py-4 mb-4 ">
-        <div class="d-flex flex-column ">
+    <h2 class="fw-bolder" align="center">Sign In</h2>
+    <form action="/login" method="POST" class="container d-flex justify-content-center py-4 mb-4">
+        <div class="d-flex flex-column bg-white p-5 border border-2 border-dark rounded-3">
             {{ form.hidden_tag() }}
             <p>
                 {{ form.username.label }}<br>
