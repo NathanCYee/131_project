@@ -233,10 +233,13 @@ def purchase_cart():
                 product = Product.query.filter_by(id=row.product_id).first()
                 rows = OrderRow(id=row.id, product_id=product.product_id, quantity=row.quantity)
             order = Order(user_id=current_user.id, ship_address=address, order_row=rows)
+            db.session.add(order)
+            db.session.commit()
+            current_user.cart_items.delete()
             return render_template('checkout.html', form=form)
         else:
             flash("You need to confirm to purchase cart")
-            return render_template('/checkout')
+            return redirect('/checkout')
             
 
 
