@@ -227,15 +227,12 @@ def purchase_cart():
         if confirm:
             address = form.address.data
             billing = form.billing.data
-            order = Order(user_id=current_user.id, ship_address=address)
             items = current_user.cart_items().all()
-            rows = {}
+            rows = OrderRow()
             for i, row in enumerate(items):
                 product = Product.query.filter_by(id=row.product_id).first()
-                row[i+1] = {'id':row.id, 'product_id':product.product_id, 'quantity':row.quantity, 'price':product.price}
-
-            # need to track various quantities due to varying prices?
-            # add all user cart_items
+                rows = OrderRow(id=row.id, product_id=product.product_id, quantity=row.quantity)
+            order = Order(user_id=current_user.id, ship_address=address, order_row=rows)
         else:
             flash("You need to confirm to purchase cart")
             #return(billing.html)
