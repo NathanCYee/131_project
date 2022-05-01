@@ -38,7 +38,7 @@ class CartForm(FlaskForm):
     submit = SubmitField("Add to Cart")
 
 
-class BillingForm(FlaskForm):
+class CheckoutForm(FlaskForm):
     confirm = BooleanField("Purchase", validators=[DataRequired()])
     address = StringField("Address", validators=[DataRequired()])
     billing = StringField("Billing info", validators=[DataRequired()])

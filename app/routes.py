@@ -4,7 +4,7 @@ from sqlalchemy import insert
 from app import webapp, db
 from flask import render_template as r, flash, request, redirect, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from app.forms import BillingForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm
+from app.forms import BillingForm, CheckoutForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm
 from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories
 
@@ -213,10 +213,10 @@ def product(prod_id):
         return render_template('product.html', product=product, merchant=merchant, form=form)
 
 
-@webapp.route("/purchase_cart", methods=['GET', 'POST'])
+@webapp.route("/checkout", methods=['GET', 'POST'])
 @login_required
 def purchase_cart():
-    form = BillingForm(request.form)
+    form = CheckoutForm(request.form)
     cart = current_user.cart_items.all()
     for i in range(cart):
         product = Product.query.filter_by(id=i.product_id).first()
@@ -233,9 +233,10 @@ def purchase_cart():
                 product = Product.query.filter_by(id=row.product_id).first()
                 rows = OrderRow(id=row.id, product_id=product.product_id, quantity=row.quantity)
             order = Order(user_id=current_user.id, ship_address=address, order_row=rows)
+            return render_template('checkout.html', form=form)
         else:
             flash("You need to confirm to purchase cart")
-            #return(billing.html)
+            return render_template('/checkout')
             
 
 
