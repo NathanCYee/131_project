@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    </br>
+    <div class="container">
+        <h1>Delete Account.</h1>
+        <form action="/delete_account" method="POST">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.confirm.label }}<br>
+                {{ form.confirm() }}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+    </div>
+{% endblock %}

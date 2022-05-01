@@ -4,7 +4,19 @@
 
 {% block main %}
   
-
+    {% if current_user.is_authenticated %}
+    <div class="bg-dark pb-0 text-white">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-around">
+                <h1 class="display-4">Hello, {{ current_user.username }}</h1>
+                <p class=" lead m-0 pb-2 ">Welcome back! Explore popular items below or view your cart.</p>
+                <p class="lead">
+                  <a class="btn btn-warning btn-md" href="/cart" role="button">Cart</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
   
     <div id="CarouselSlider" class="carousel carousel-dark slide" data-bs-ride="carousel">
       <div class="carousel-indicators">
@@ -13,6 +25,7 @@
           <button type="button" data-bs-target="#CarouselSlider" data-bs-slide-to="2" aria-label="Slide 3"></button>
       </div>
       <div class="carousel-inner">
+        
           <div class="carousel-item active" data-bs-interval="10000">
               <img src="{{ url_for('static', filename='pexels-artem-beliaikin-1051747.jpg')}}" class="d-block w-100" alt="Carousel One">
               <div class="carousel-caption text-white d-none d-md-block col-6">

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    </br>
+    <div class="container py-4 mb-4">
+        <h1>Account Info</h1>
+        <p>Username: {{ current_user.username }}</p>
+        <p>Email: {{ current_user.email }}</p>
+        <h3>Change Password</h3>
+        <form action="/account_info" method="POST" >
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.original_password.label }}<br>
+                {{ form.original_password(size=32) }}
+            </p>
+            <p>
+                {{ form.new_password.label }}<br>
+                {{ form.new_password(size=32) }}
+            </p>
+            <p>
+                {{ form.new_password_repeat.label }}<br>
+                {{ form.new_password_repeat(size=32) }}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+        <a href="/delete_account">Delete your account</a>
+    </div>
+{% endblock %}

@@ -14,12 +14,12 @@
     <script src="https://kit.fontawesome.com/77c7f4f1f7.js" crossorigin="anonymous"></script>
     <!-- <link rel="stylesheet" href="../static/font-awesome-4.7.0/css/font-awesome.min.css"> -->
 
-    <title>Hello, world!</title>
+    <title>E-buy</title>
   </head>
   <body style="background-color: #dbdbdb">
     
     <!--Main Navigation-->
-    <header>
+    <header >
       <!--Super Nav -->
       <div class="superNav py-2 bg-warning">
         <div class="container">
@@ -40,7 +40,7 @@
       </div>
       <!--End Super Nav-->
       <!-- Primary Nav -->
-      <nav class="navbar navbar-expand-lg bg-dark sticky-top navbar-dark shadow-sm">
+      <nav class="navbar navbar-expand-lg bg-dark sticky-top navbar-dark shadow-sm border-bottom-1 border-white">
         <div class="container">
           <a class="navbar-brand" href="/"><i class="fa-solid fa-shop me-2"></i> <strong>E-BUY</strong></a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,8 +88,9 @@
                    <i class="fa-solid fa-circle-user me-1"></i> Account
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="right: 0; left: auto;">
-                  <!-- TODO - Implement these links -->
+                  
                   <li><a class="dropdown-item" href="/cart">Shopping Cart</a></li>
+                  <!-- TODO - Implement /account_info link -->
                   <li><a class="dropdown-item" href="/account_info">Account Info</a></li>
                   <li>
                       <hr class="dropdown-divider">
@@ -99,7 +100,7 @@
               </li>
               {% else %}
               <li>
-                <a class="nav-link" href="/login">Login/Register</a>
+                <a class="nav-link mx-2 text-uppercase" href="/login">Login/Register</a>
               </li>
               {% endif %}
               <!-- End Account / Login-->
@@ -108,6 +109,7 @@
         </div>
       </nav>
       <!--end primary nav-->
+      
     </header>
     <!--Main Navigation-->
 
