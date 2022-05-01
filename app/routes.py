@@ -217,14 +217,23 @@ def product(prod_id):
 @login_required
 def purchase_cart():
     form = BillingForm(request.form)
+    cart = current_user.cart_items.all()
+    for i in range(cart):
+        product = Product.query.filter_by(id=i.product_id).first()
+        total = total + (product.price * i.quantity)
+    flash("Total: ", total)
     if request.method == 'POST' and form.validate():
         confirm = form.confirm.data
         if confirm:
             address = form.address.data
             billing = form.billing.data
-            row = OrderRow(product_id = current_user.CartForm().id, quantity = current_user.CartForm().quantity, product_price = current_user.Product().price) 
-            items = current_user.cart_items.all()
-            order = Order(user_id = current_user.id, ship_address = address, order_row = row)
+            order = Order(user_id=current_user.id, ship_address=address)
+            items = current_user.cart_items().all()
+            rows = {}
+            for i, row in enumerate(items):
+                product = Product.query.filter_by(id=row.product_id).first()
+                row[i+1] = {'id':row.id, 'product_id':product.product_id, 'quantity':row.quantity, 'price':product.price}
+
             # need to track various quantities due to varying prices?
             # add all user cart_items
         else:
