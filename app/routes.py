@@ -124,28 +124,33 @@ def delete_account():
         return render_template('delete_account.html', form=form)
 
 
+@webapp.route("/product/<product_id>/")
+@login_required
+def product_page(product_id):
+    return render_template("product.html", product_id=product_id)
+
+
 @webapp.route("/product/<int:product_id>/reviews", methods=['GET', 'POST'])
 @login_required
-def product_reviews(product_id=1):
-    form = ReviewForm()
+def product_reviews(product_id):
+    # check if user has already reviewed this product
+    if Review.query.filter_by(user_id=current_user.id, product_id=product_id).count() != 0:
+        flash("You've already reviewed this product")
+        return redirect(f'/product/{product_id}', code=302)
+    # check if user has bought this product
+    if Order.query.filter_by(user_id=current_user.id).count == 0:
+        flash("You need to have bought an item to review it.")
+        return redirect(f'/product/{product_id}', code=302)
+
+    form = ReviewForm(request.form)
     if request.method == "POST" and form.validate():
         rating = form.rating.data
         body = form.body.data
-
-        # check if user has already reviewed this product
-        if Review.query.filter_by(user_id=current_user.id, product_id=product_id).count() != 0:
-            flash("You've already reviewed this product")
-            return render_template("reviews.html", form=form, product_id=product_id)
-        # check if user has bought this product
-        elif Order.query.filter_by(user_id=current_user.id).count == 0:
-            flash("You need to have bought an item to review it.")
-            return render_template("reviews.html", form=form, product_id=product_id)
-        else:
-            new_review = Review(rating=rating, body=body, user_id=current_user.id, product_id=product_id)
-            db.session.add(new_review)
-            db.session.commit()
-            flash("Review successfully posted!")
-            return redirect("/")
+        new_review = Review(rating=rating, body=body, user_id=current_user.id, product_id=product_id)
+        db.session.add(new_review)
+        db.session.commit()
+        flash("Review successfully posted!")
+        return redirect(f'/product/{product_id}', code=302)
     else:
         return render_template("reviews.html", form=form, product_id=product_id)
 
