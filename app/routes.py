@@ -229,7 +229,7 @@ def purchase_cart():
             billing = form.billing.data
             items = current_user.cart_items().all()
             rows = OrderRow()
-            for i, row in enumerate(rows): #change this back to items 
+            for i, row in enumerate(items): 
                 product = Product.query.filter_by(id=row.product_id).first()
                 rows = OrderRow(id=row.id, product_id=product.product_id, quantity=row.quantity)
             order = Order(user_id=current_user.id, ship_address=address, order_row=rows)
