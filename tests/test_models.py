@@ -1,6 +1,7 @@
 import pytest
 from sqlalchemy import create_engine, inspect
-from app.models import User, Category, Product, UserRole
+from app.forms import CartForm
+from app.models import CartItem, User, Category, Product, UserRole
 
 
 def test_db(db):
@@ -100,3 +101,39 @@ def test_product(db):
     db.session.query(UserRole).delete()
     db.session.commit()
     db.session.flush()
+
+
+    def test_cartitem(db):
+        """Create a user object and input into the database. Assert to see if object is created."""
+        # test params
+        username = "Test1"
+        email = "test@email.com"
+        password = "Pass-1"
+
+        # create the user
+        user = User(username=username, email=email)
+        user.set_password(password)
+        db.session.add(user)
+
+        product = Product.query.filter_by(id=321).first()
+
+        # test params
+        quantity = 1
+        
+        # create the item
+        cart_item = CartItem(product_id=product.id, user_id=user.id, quantity=quantity)
+        db.session.add(cart_item)
+        db.session.commit()
+
+        query_result = CartItem.query.filter_by(product_id=product.id)
+
+        # testing to see if item has been added
+        assert query_result.count() == 1
+        assert query_result.first() == cart_item
+
+        # reset state of database
+        User.query.delete()
+        CartItem.query.delete()
+        db.session.query(UserRole).delete()
+        db.session.commit()
+        db.session.flush()
