@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    </br>
+    <form action="/checkout" method="POST">
+        {{form.hidden_tag()}}
+        <p>
+            {{form.address.label}}</br>
+            {{form.address(size=32)}}
+        </p>
+        <p>
+            {{form.billing.label}}</br>
+            {{form.billing(size=32)}}
+        </p>
+        <p>Total: {{total}}</p></br>
+        <p>
+            {{form.submit(class_="btn btn-primary")}}</br>
+        </p>
+{% endblock %} 

@@ -175,4 +175,4 @@ def test_add_product(db, client):
     Product.query.delete()
     db.session.query(UserRole).delete()
     db.session.commit()
-    db.session.flush()
+    db.session.flush()    

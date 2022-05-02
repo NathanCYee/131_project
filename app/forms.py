@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField, HiddenField, \
-    SelectField
-from wtforms.validators import DataRequired, Email
+    SelectField, IntegerField
+from wtforms.validators import DataRequired, Email, NumberRange
 
 from app.models import Product
 from app.utils import get_categories
@@ -30,6 +30,18 @@ class PasswordForm(FlaskForm):
 class DeleteAccountForm(FlaskForm):
     confirm = BooleanField("I want to delete my account.", validators=[DataRequired()])
     submit = SubmitField("Delete my account.")
+
+
+class CartForm(FlaskForm):
+    product_id = HiddenField("product", validators=[DataRequired()])
+    quantity = SelectField("Quantity", choices=[i for i in range(1, 11)], default=1, validators=[DataRequired()])
+    submit = SubmitField("Add to Cart")
+
+
+class CheckoutForm(FlaskForm):
+    address = StringField("Address", validators=[DataRequired()])
+    billing = StringField("Billing info", validators=[DataRequired()])
+    submit = SubmitField("Place Order")
 
 
 class NewProductForm(FlaskForm):
