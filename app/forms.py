@@ -3,9 +3,6 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField, Float
     SelectField, IntegerField
 from wtforms.validators import DataRequired, Email, NumberRange
 
-from app.models import Product
-from app.utils import get_categories
-
 
 class LoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
@@ -30,6 +27,13 @@ class PasswordForm(FlaskForm):
 class DeleteAccountForm(FlaskForm):
     confirm = BooleanField("I want to delete my account.", validators=[DataRequired()])
     submit = SubmitField("Delete my account.")
+
+
+class ReviewForm(FlaskForm):
+    rating = IntegerField("Give a rating from 1 to 5", validators=[NumberRange(1, 5, "1-5"),
+                                                                   DataRequired()])
+    body = TextAreaField("Add a written review")
+    submit = SubmitField("Submit")
 
 
 class CartForm(FlaskForm):

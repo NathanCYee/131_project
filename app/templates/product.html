@@ -2,6 +2,15 @@
 
 
 {% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     </br>
     <p>Sold by: <a href="{{ '/merchant/%s' %merchant.id }}">{{ merchant.username }}</a></p>
     <h1>{{ product.name }}</h1>
@@ -16,4 +25,25 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
+    </br>
+    <p><a href="/product/{{ product_id }}/review">Review</a></p>
+    {% if reviews %}
+        <p>Average Rating: {{ avg }}</p>
+        <br>
+        {% for review in reviews %}
+            {% if review.Review.body %}
+                <p>
+                    <b>{{ review.User.username }}</b> gave a rating of {{ review.Review.rating }}:
+                    <br>
+                    {{ review.Review.body }}
+                </p>
+                <br>
+            {% else %}
+                <p>
+                    <b>{{ review.User.username }}</b> gave a rating of {{ review.Review.rating }}
+                </p>
+                <br>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 {% endblock %}
