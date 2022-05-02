@@ -307,8 +307,8 @@ def test_add_cart(db, client):
     password = "Pass-1"
 
     #test cart params
-    quantity = "1"
-    product_id = Product.query.filter_by(id="id-321")
+    quantity = 1
+    product_id = Product.query.filter_by(id=321)
 
     with client:
         response = client.post('/login',
