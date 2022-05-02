@@ -130,10 +130,12 @@ def product_page(product_id):
     reviews = db.session.query(User, Review).filter(Review.product_id == product_id).filter(User.id
                                                                                             == Review.user_id).all()
     rating_sum = 0
-    for review in reviews:
-        rating_sum += review.Review.rating
-    rating_avg = rating_sum / len(reviews)
-    rating_avg = round(rating_avg, 1)
+    rating_avg = 0
+    if len(reviews) != 0:
+        for review in reviews:
+            rating_sum += review.Review.rating
+        rating_avg = rating_sum / len(reviews)
+        rating_avg = round(rating_avg, 1)
     return render_template("product.html", product_id=product_id, reviews=reviews, avg=rating_avg)
 
 
