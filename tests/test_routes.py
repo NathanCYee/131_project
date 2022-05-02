@@ -347,24 +347,35 @@ def test_add_cart(db, client):
         db.session.flush()
 
 def test_checkout(db, client):
-    #test account params
-    username = "Test1"
-    email = "test@mail.com"
-    password = "Pass-1"
+    #add user
+    user=User(username="Test1", email="test@mail.com", password="Pass-1")
+    db.session.add(user)
 
-    #test cart params
-    address = "test blvd"
-    billing = "test-1010"
+    #make product
+    product=Product(id=321, category_id=321, merchant_id=123, 
+                    name="iPhone", price=999.99, description="Lorem ipsum")
+    db.session.add(product)
+
+    #make order
+    order=Order(user_id=user.id, ship_address="test_blvd")
+    db.session.add(order)
+
+    #make order_row
+    order_row=OrderRow(id=order.id, product_id=product.id, quantity=1, 
+                        product_price=product.price)
+
+    #commit to database
+    db.commit()
 
     with client:
         response = client.post('/login',
-                                data={'username': username, 'password': password, 'submit': True})
+                                data={'username': user.username, 'password': user.password, 'submit': True})
         assert response.status_code == 302 # successful login, redirected to homepage
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=user.username).first()
         
         response = client.post('/checkout', 
-                                data={'confirm': True, 'address': address, 'billing': billing, 'submit': True})
+                                data={'confirm': True, 'address': order.ship_address, 'submit': True})
         assert response.status_code == 302 # successful redirect to cart page
 
         order = Order.query.filter_by(user_id=user.id)
@@ -372,7 +383,10 @@ def test_checkout(db, client):
 
         #clean up changes
         User.query.delete()
+        Product.query.delete()
         Order.query.delete()
+        OrderRow.query.delete()
+        CartItem.query.delete()
         db.session.query(UserRole).delete()
         db.session.commit()
         db.session.flush()
