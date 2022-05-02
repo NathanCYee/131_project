@@ -1,6 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, TextAreaField, FloatField, HiddenField, SelectField
 from wtforms.validators import DataRequired, Email, NumberRange
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField, HiddenField, \
+    SelectField, IntegerField
+from wtforms.validators import DataRequired, Email, NumberRange
+
 from app.models import Product
 from app.utils import get_categories
 
@@ -35,6 +39,18 @@ class ReviewForm(FlaskForm):
                                                                                     DataRequired()])
     body = TextAreaField("Add a written review")
     submit = SubmitField("Submit")
+
+
+class CartForm(FlaskForm):
+    product_id = HiddenField("product", validators=[DataRequired()])
+    quantity = SelectField("Quantity", choices=[i for i in range(1, 11)], default=1, validators=[DataRequired()])
+    submit = SubmitField("Add to Cart")
+
+
+class CheckoutForm(FlaskForm):
+    address = StringField("Address", validators=[DataRequired()])
+    billing = StringField("Billing info", validators=[DataRequired()])
+    submit = SubmitField("Place Order")
 
 
 class NewProductForm(FlaskForm):

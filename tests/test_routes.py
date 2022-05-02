@@ -1,4 +1,9 @@
 from app.models import User, UserRole, Product, Order, OrderRow, Review
+from flask import session
+from sqlalchemy.orm import sessionmaker
+
+from app.models import CartItem, Category, Order, OrderRow, Product, User, UserRole
+from app.routes import category
 
 
 def test_home(client):
@@ -402,5 +407,108 @@ def test_review(db, client):
     Order.query.delete()
     OrderRow.query.delete()
     Review.query.delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_add_cart(db, client):
+    # test params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+
+    # add a test user to the database
+    user = User(username=username, email=email)
+    user.set_password(password)
+    db.session.add(user)
+
+    # make product
+    product = Product(id=321, category_id=321, merchant_id=123,
+                      name="iPhone", price=999.99, description="Lorem ipsum")
+    db.session.add(product)
+
+    # commit to database
+    db.session.commit()
+
+    with client:
+        request = client.post('/login',
+                              data={'username': username, 'password': password, 'submit': True})
+        assert request.status_code == 302  # successful login, redirected to homepage
+
+        request = client.post('/cart',
+                              data={'product_id': product.id, 'quantity': 1, 'submit': True})
+        assert request.status_code == 302  # successful redirect to cart page
+
+        # get the user after the item was added to cart
+        user = User.query.filter_by(username=username).first()
+
+        cart_items = user.cart_items
+        assert cart_items.count() == 1
+        assert cart_items.first().product_id == product.id
+
+        # clean up changes
+        User.query.delete()
+        Product.query.delete()
+        CartItem.query.delete()
+        db.session.query(UserRole).delete()
+        db.session.commit()
+        db.session.flush()
+
+
+def test_checkout(db, client):
+    # test params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+    test_addr = "test_blvd"
+
+    with client:
+        # add a test user to the database
+        user = User(username=username, email=email)
+        user.set_password(password)
+        db.session.add(user)
+
+        # make product
+        product = Product(id=321, category_id=321, merchant_id=123,
+                          name="iPhone", price=999.99, description="Lorem ipsum")
+        db.session.add(product)
+
+        # commit to database
+        db.session.commit()
+
+        request = client.post('/login',
+                              data={'username': username, 'password': password, 'submit': True})
+        assert request.status_code == 302  # successful login, redirected to homepage
+
+        request = client.post('/cart',
+                              data={'product_id': product.id, 'quantity': 1, 'submit': True})
+        assert request.status_code == 302  # successful redirect to cart page
+
+        request = client.post('/checkout',
+                              data={'billing': '123456789', 'address': test_addr, 'submit': True})
+
+        user = User.query.filter_by(username=user.username).first()
+
+        # user should have no cartitems left
+        assert user.cart_items.count() == 0
+
+        # order created matching user id
+        orders = Order.query.filter_by(user_id=user.id)
+        assert orders.count() == 1
+
+        order = orders.first()
+        assert order.ship_address == test_addr
+
+        # order row created with matching product id
+        order_rows = order.order_row
+        assert OrderRow.query.all()
+        assert order_rows.all()
+        assert order_rows.first().product_id == product.id
+
+    # clean up changes
+    User.query.delete()
+    Product.query.delete()
+    CartItem.query.delete()
+    db.session.query(UserRole).delete()
     db.session.commit()
     db.session.flush()
