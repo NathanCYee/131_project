@@ -12,21 +12,32 @@
         {% endif %}
     {% endwith %}
     </br>
-    <form action="/merchant/register" method="POST">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}
-        </p>
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    <a href="/merchant/login">Login to existing account</a>
+    <header class="pb-3 mb-4 border-bottom">
+        <h1>Register as a Merchant</h1>
+    </header>
+    <div class="row">
+        <div class="col-xs-4">
+            <div class="p-5 mb-4 bg-light text-dark border rounded-3">
+                <div class="container-fluid">
+                    <form action="/merchant/register" method="POST" class="form-group">
+                        {{ form.hidden_tag() }}
+                        <p>
+                            {{ form.email.label }}<br>
+                            {{ form.email(size=32, class_="form-control", placeholder="Email" ) }}
+                        </p>
+                        <p>
+                            {{ form.username.label }}<br>
+                            {{ form.username(size=32, class_="form-control", placeholder="Username" ) }}
+                        </p>
+                        <p>
+                            {{ form.password.label }}<br>
+                            {{ form.password(size=32, class_="form-control", placeholder="Password" ) }}
+                        </p>
+                        <p>{{ form.submit(class_="btn btn-primary") }}</p>
+                    </form>
+                    <a href="/merchant/login">Login to existing account</a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

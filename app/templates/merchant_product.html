@@ -12,26 +12,36 @@
         {% endif %}
     {% endwith %}
     </br>
-    <h1>Create a new product</h1>
-    <form action="/merchant/new_product" method="POST">
-        {{ form.hidden_tag() }}
-        {{ form.merchant_id(value=id) }}
-        <p>
-            {{ form.name.label }}<br>
-            {{ form.name(size=32) }}
-        </p>
-        <p>
-            {{ form.price.label }}<br>
-            {{ form.price(size=32) }}
-        </p>
-        <p>
-            {{ form.description.label }}<br>
-            {{ form.description() }}
-        </p>
-        <p>
-            {{ form.category.label }}<br>
-            {{ form.category() }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <div class="row">
+        <div class="col-xs-4">
+            <h1>Create a new product</h1>
+            <form action="/merchant/new_product" method="POST" class="form-group" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                {{ form.merchant_id(value=id) }}
+                <p>
+                    {{ form.name.label }}<br>
+                    {{ form.name(size=32, class_="form-control", placeholder="Product Name" ) }}
+                </p>
+                <p>
+                    {{ form.price.label }}<br>
+                    {{ form.price(size=32, class_="form-control", placeholder="Product Price" ) }}
+                </p>
+                <p>
+                    {{ form.description.label }}<br>
+                    {{ form.description(class_="form-control") }}
+                </p>
+                <p>
+                    {{ form.category.label }}<br>
+                    {{ form.category(class_="form-control") }}
+                </p>
+                <p>
+                <div class="mb-3">
+                    {{ form.pictures.label(class_="form-label") }}<br>
+                    {{ form.pictures(class_="form-control form-control-lg") }}
+                </div>
+                </p>
+                <p>{{ form.submit(class_="btn btn-primary") }}</p>
+            </form>
+        </div>
+    </div>
 {% endblock %}

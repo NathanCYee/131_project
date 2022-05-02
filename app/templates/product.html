@@ -1,3 +1,5 @@
+
+
 {% extends "base.html" %}
 
 
@@ -11,24 +13,65 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    </br>
-    <p>Sold by: <a href="{{ '/merchant/%s' %merchant.id }}">{{ merchant.username }}</a></p>
-    <h1>{{ product.name }}</h1>
-    <h3>${{ product.price }}</h3>
-    <p>{{ product.description }}</p>
-    <form action="/cart" method="POST">
-        {{ form.hidden_tag() }}
-        {{ form.product_id(value=product.id) }}
-        <p>
-            {{ form.quantity.label }}<br>
-            {{ form.quantity() }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <div class="row">
+        <div class="col-5">
+            <div id="productImages" class="carousel slide w-100 h-50" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in product.images %}
+                        {% if loop.index == 1 %}
+                            <div class="carousel-item active" data-bs-interval="2000">
+                                <a href={{ '%s' %image.path }} class="img-fluid">
+                                    <img class="d-block h-50 img-fluid" src={{ '%s' %image.path }}/>
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="carousel-item" data-bs-interval="2000">
+                                <a href={{ '%s' %image.path }} class="img-fluid">
+                                    <img class="d-block h-50 img-fluid" src={{ '%s' %image.path }}/>
+                                </a>
+                            </div>
+                        {% endif %}
+                        </a>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#productImages"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productImages"
+                        data-bs-slide="next">
+                    <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-7">
+            <h5><a href="{{ '/merchant/%s' %merchant.id }}">{{ merchant.username }}</a></h5>
+            <h1 class="display-5 fw-bold">{{ product.name }}</h1>
+            <h5>Average Rating: {{ avg }}</h5>
+            <h3>{{ "$%.2f"|format(product.price) }}</h3>
+            <p>{{ product.description }}</p>
+            <div class="container">
+                <form action="/cart" method="POST">
+                    {{ form.hidden_tag() }}
+                    {{ form.product_id(value=product.id) }}
+                    <div class="row">
+                        <div class="col-5">
+                            {{ form.quantity(class_="form-control mb-2 mr-sm-2") }}
+                        </div>
+                        <div class="col-7">
+                            {{ form.submit(class_="btn btn-primary mb-2") }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--TODO: Add a horizontal scrolling component displaying items in the same category (limit it to 10)-->
     </br>
     <p><a href="/product/{{ product_id }}/review">Review</a></p>
     {% if reviews %}
-        <p>Average Rating: {{ avg }}</p>
         <br>
         {% for review in reviews %}
             {% if review.Review.body %}

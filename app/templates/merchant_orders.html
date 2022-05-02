@@ -1,0 +1,65 @@
+{% extends "merchant_base.html" %}
+
+
+{% block main %}
+    <br>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/merchant/orders">Unfilled Orders</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/merchant/orders/filled">Filled Orders</a>
+        </li>
+    </ul>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Complete</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for k, v in orders.items() %}
+            <td>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Product</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price Paid</th>
+                        <th scope="col">Total Price</th>
+                    </tr>
+                    </thead>
+                    {% for order, product in v.rows %}
+                        <tr>
+                            <td><a href="{{ '/product/%s' %product.id }}">{{ product.name }}</a></td>
+                            <td>{{ order.quantity }}</td>
+                            <td>{{ "$%.2f"|format(order.product_price) }}</td>
+                            <td>{{ "$%.2f"|format(order.quantity*order.product_price) }}</td>
+                        </tr>
+
+                    {% endfor %}
+                </table>
+            </td>
+            <td>
+                <div class="p-2 bg-light text-dark border rounded-3">
+                    <div class="container-fluid">
+                        <h6>Delivery Address: {{ v.order.ship_address }}</h6>
+                        <h6>Recipient: {{ v.customer.username }}</h6>
+                        <form action="/merchant/orders" method="POST" class="form-group">
+                            {% if 'csrf_token' in form %}
+                                {{ form.csrf_token }}
+                            {% endif %}
+                            {{ form.merchant_id(value=id) }}
+                            {{ form.order_id(value=k) }}
+                            <p>{{ form.submit(class_="btn btn-success") }}</p>
+                        </form>
+                    </div>
+                </div>
+            </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}

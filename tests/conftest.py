@@ -26,7 +26,7 @@ def app():
     # Can add cleanup here
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def db(app):
     from app import db
     from app.models import Role, Category
@@ -42,7 +42,7 @@ def db(app):
         db.session.add(new_cat)
 
     db.session.commit()
-    yield db
+    return db
 
 
 @pytest.fixture()

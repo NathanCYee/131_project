@@ -30,14 +30,16 @@ E-Buy is a revolutionary E-Commerce website that connects merchants with custome
 
 ## Setup and Install
 
-Please make sure python 3 is installed.
+Please make sure python 3 is installed (working on python 3.8).
 
 - Download the library as a zip or by cloning it using `git clone https://github.com/NathanCYee/131_project.git`
 - Navigate to the folder in which the project is stored (e.g. `cd 131_project`)
 - Install the prerequisites using `pip install .`
 - Setup and create the database by running the create_db.py file using ``python3 create_db.py``
 - Run the webapp by running `python3 run.py`
-- If run on a local machine, site will be accessible at `localhost` or `http://127.0.0.1:5000/` from a browser
+- If run on a local machine, site will be accessible at `localhost:5000` or `http://127.0.0.1:5000/` from a browser
+
+If errors occur with jinja, try to manually upgrade flask by using `pip install --upgrade Flask`.
 
 ## Technologies
 
@@ -52,7 +54,8 @@ Project was built with:
     - [Pytest](https://github.com/pytest-dev/pytest) - Unit testing library for python
 - [Bootstrap](https://github.com/twbs/bootstrap) - Web component library
     - [Bootstrap Icons](https://github.com/twbs/icons) - Icons provided by bootstrap
-    - [ForEvolve/bootstrap-dark](https://github.com/ForEvolve/bootstrap-dark) - Themed versions of bootstrap
+    - [vinorodrigues/bootstrap-dark-5](https://github.com/vinorodrigues/bootstrap-dark-5) - Toggleable dark mode for
+      bootstrap
 - [CircleCI](https://circleci.com/) - Continuous integration/deployment
 - [Codecov](https://about.codecov.io/) - Code coverage metrics
 

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+    <br>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/orders">Unfilled Orders</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="/orders/filled">Filled Orders</a>
+        </li>
+    </ul>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for k, v in orders.items() %}
+            <td>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Product</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price Paid</th>
+                        <th scope="col">Total Price</th>
+                    </tr>
+                    </thead>
+                    {% for order, product in v.rows %}
+                        <tr>
+                            <td><a href="{{ '/product/%s' %product.id }}">{{ product.name }}</a></td>
+                            <td>{{ order.quantity }}</td>
+                            <td>{{ "$%.2f"|format(order.product_price) }}</td>
+                            <td>{{ "$%.2f"|format(order.quantity*order.product_price) }}</td>
+                        </tr>
+
+                    {% endfor %}
+                </table>
+            </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}
