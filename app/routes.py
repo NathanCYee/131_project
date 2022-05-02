@@ -233,14 +233,12 @@ def checkout():
             #takes in user info
             address = form.address.data
             billing = form.billing.data
-            items = current_user.cart_items()
-
+        
             #create order
             order = Order(user_id=current_user.id, ship_address=address)
             db.session.add(order)
 
-            rows = OrderRow()
-            for row in items: 
+            for row in cart: 
                 product = Product.query.filter_by(id=row.product_id).first()
                 order_row = OrderRow(id=order.id, product_id=row.product_id, quantity=row.quantity,
                                     product_price=product.price)
