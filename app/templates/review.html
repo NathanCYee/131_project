@@ -16,12 +16,12 @@
         {{ form.hidden_tag() }}
         <p>
             {{ form.rating.label }}
-            {{ form.rating(size=1) }}
+            {{ form.rating(size=1,class_="form-control") }}
         </p>
         <p>
             {{ form.body.label }}<br>
-            {{ form.body() }}
+            {{ form.body(class_="form-control") }}
         </p>
-        <p>{{ form.submit() }}</p>
+        <p>{{ form.submit(class_="btn btn-primary") }}</p>
     </form>
 {% endblock %}

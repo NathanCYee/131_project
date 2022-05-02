@@ -29,7 +29,11 @@ render_template = add_categories(r)  # decorate function so that you don't have 
 @prevent_merchant
 def home():
     """Returns the home page of the website to the user. Allows non-logged in users and customer users to access."""
-    return render_template('index.html')
+    categories = Category.query.all()
+    output = {}
+    for category in categories:
+        output[category.name] = category.products.all()
+    return render_template('index.html', categories=output)
 
 
 @webapp.route('/login', methods=['GET', 'POST'])
@@ -178,15 +182,16 @@ def product(prod_id):
     # query the database for the id
     form = CartForm(request.form, product_id=prod_id)
 
-    product_match = Product.query.filter_by(id=prod_id)
-    if product_match.count() < 1:
+    product = Product.query.get(prod_id)
+    if product is None:
         # product id was not found
         return abort(404)
     else:
         # retrieve the first object from the query
-        product = product_match.first()
         reviews = db.session.query(User, Review).filter(Review.product_id == product.id).filter(User.id
                                                                                                 == Review.user_id).all()
+
+        # calculate the average rating
         rating_sum = 0
         rating_avg = 0
         if len(reviews) != 0:
@@ -195,7 +200,7 @@ def product(prod_id):
             rating_avg = rating_sum / len(reviews)
             rating_avg = round(rating_avg, 1)
         # get the merchant of the product
-        merchant = User.query.filter_by(id=product.merchant_id).first()
+        merchant = User.query.get(product.merchant_id)
         return render_template('product.html', product=product, merchant=merchant, form=form, product_id=product.id,
                                reviews=reviews, avg=rating_avg)
 
@@ -278,6 +283,12 @@ def orders_filled():
 @webapp.route("/product/<int:product_id>/review", methods=['GET', 'POST'])
 @login_required
 def product_review(product_id):
+    """
+    Web route for logged in users to review a specific product
+    :param product_id: The ID of the product to review
+    :return: A webpage allowing the user to review if they haven't already and have ordered the product, redirect back
+    to the product page with a warning otherwise
+    """
     # check if user has bought this product
     if db.session.query(Order, OrderRow) \
             .filter(Order.user_id == current_user.id).filter(OrderRow.product_id == product_id).count() == 0:
@@ -290,9 +301,14 @@ def product_review(product_id):
         return redirect(f'/product/{product_id}', code=302)
 
     form = ReviewForm(request.form)
+
+    # process the review
     if request.method == "POST" and form.validate():
+        # grab form data
         rating = form.rating.data
         body = form.body.data
+
+        # create and add a new review
         new_review = Review(rating=rating, body=body, user_id=current_user.id, product_id=product_id)
         db.session.add(new_review)
         db.session.commit()
@@ -304,23 +320,31 @@ def product_review(product_id):
 
 @webapp.route('/cart', methods=['GET', 'POST'])
 @login_required
-def add_cart():
+def cart():
+    """
+    Cart website for logged-in users to be able to see and edit their cart
+    """
     form = CartForm(request.form)
+    # process the form for a new item to add
     if request.method == 'POST' and form.validate():
+
+        # grab the data
         quantity = form.quantity.data
         prod_id = form.product_id.data
-        product_query = Product.query.filter_by(id=prod_id)
-        if product_query.count() < 1:
+        product = Product.query.get(prod_id)
+        if product is None:
             flash("Product not found!")
             return abort(404)
         else:
-            product = product_query.first()
             current_rows = current_user.cart_items.filter_by(product_id=product.id)
+
+            # update a current row
             if current_rows.count() >= 1:
                 row = current_rows.first()
                 row.quantity += int(quantity)
                 db.session.commit()
             else:
+                # insert a new row
                 cart_item = CartItem(product_id=product.id, quantity=quantity, user_id=current_user.id)
                 db.session.add(cart_item)
                 db.session.commit()
@@ -330,12 +354,12 @@ def add_cart():
         cart_items = current_user.cart_items.all()
         rows = {}
         for i, row in enumerate(cart_items):
-            product = Product.query.filter_by(id=row.product_id).first()
-            rows[i + 1] = {'id': row.id, 'product_name': product.name, 'product_id': product.id,
-                           'quantity': row.quantity, 'price': product.price}
-        cart = current_user.cart_items.all()
+            product = Product.query.get(row.product_id)
+            rows[i + 1] = {'id': row.id, 'product': product, 'quantity': row.quantity}
+
+        # calculate the total
         total = 0
-        for i in cart:
+        for i in cart_items:
             product = Product.query.filter_by(id=i.product_id).first()
             total += (product.price * i.quantity)
         return render_template('cart.html', cart_items=rows, total=total, form=form)
@@ -344,11 +368,18 @@ def add_cart():
 @webapp.route('/cart/remove/<int:row_id>', methods=['GET'])
 @login_required
 def cart_remove(row_id):
+    """
+    Allows a logged-in user to remove a row from their cart
+    :param row_id: The ID of the row to remove
+    """
     rows = CartItem.query.filter_by(id=row_id)
     if rows.count() != 1:  # row doesn't exist
         return abort(400)
     else:
+        # grab the first row that equals the query
         row = rows.first()
+
+        # delete only if it belongs to the current user
         if (row.user_id != current_user.id):  # forbidden, cannot access another user's rows
             return abort(403)
         else:
@@ -363,9 +394,16 @@ def cart_remove(row_id):
 
 @webapp.route('/category/<int:category_id>')
 def category(category_id):
-    categories = Category.query.filter_by(id=category_id)
-    if categories.count() == 1:
-        category = categories.first()
+    """
+    Generates a product catalog containing all the products of a given category
+    :param category_id: The category to fetch items for
+    """
+
+    # grab the category
+    category = Category.query.get(category_id)
+
+    # display page if valid
+    if category is not None:
         return render_template('category.html', category=category, products=category.products.all())
     else:
         return abort(404)
@@ -373,6 +411,12 @@ def category(category_id):
 
 @webapp.route('/merchant/<int:merchant_id>')
 def merchant_profile(merchant_id):
+    """
+    Generates a product catalog containing all the products of a given merchant
+    :param merchant_id: The merchant to fetch items for
+    """
+
+    # grab the merchant
     merchants = User.query.filter(User.roles.any(id=2)).filter_by(id=merchant_id)
     if merchants.count() == 1:
         merchant = merchants.first()
@@ -385,12 +429,19 @@ def merchant_profile(merchant_id):
 @webapp.route("/checkout", methods=['GET', 'POST'])
 @login_required
 def checkout():
+    """
+    Site to recieve input/handle checkout requests for a logged in user
+    """
     form = CheckoutForm(request.form)
+
+    # generate an order total
     cart = current_user.cart_items.all()
     total = 0
     for i in cart:
         product = Product.query.get(i.product_id)
         total += (product.price * i.quantity)
+
+    # process a submission
     if request.method == 'POST' and form.validate():
         submit = form.submit.data
         if submit:

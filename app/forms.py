@@ -58,19 +58,37 @@ class DeleteAccountForm(FlaskForm):
 
 
 class ReviewForm(FlaskForm):
-    rating = IntegerField("Give a rating from 1 to 5", validators=[NumberRange(1, 5, "1-5"),
-                                                                   DataRequired()])
+    """
+    Form object used to add a review to a product
+    :attr rating: A dropdown rating for the user to give a review from 1 to 5
+    :attr body: The text body of the review
+    :attr submit: Submit input (should be True)
+    """
+    rating = SelectField("Give a rating from 1 to 5", choices=[i for i in range(1, 6)], default=5,
+                         validators=[NumberRange(1, 5, "1-5"), DataRequired()])
     body = TextAreaField("Add a written review")
     submit = SubmitField("Submit")
 
 
 class CartForm(FlaskForm):
+    """
+    Form object used to add a product to the user's cart
+    :attr product_id: A hidden field containing the id of the product
+    :attr quantity: The number of the item that the user wants to add to the cart
+    :attr submit: Submit input (should be True)
+    """
     product_id = HiddenField("product", validators=[DataRequired()])
     quantity = SelectField("Quantity", choices=[i for i in range(1, 11)], default=1, validators=[DataRequired()])
     submit = SubmitField("Add to Cart")
 
 
 class CheckoutForm(FlaskForm):
+    """
+    Form object used to receive order info in order to process the order
+    :attr address: The address to ship the order to.
+    :attr billing: Credit card information
+    :attr submit: Submit input (should be True)
+    """
     address = StringField("Address", validators=[DataRequired()])
     billing = StringField("Billing info", validators=[DataRequired()])
     submit = SubmitField("Place Order")
