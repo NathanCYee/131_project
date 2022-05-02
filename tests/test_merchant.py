@@ -323,3 +323,5 @@ def test_merchant_fill_orders(db, client):
         db.session.query(UserRole).delete()
         db.session.commit()
         db.session.flush()
+
+    db.session.flush()

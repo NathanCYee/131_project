@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    </br>
+    <form action="/product/{{ product_id }}/review" method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.rating.label }}
+            {{ form.rating(size=1) }}
+        </p>
+        <p>
+            {{ form.body.label }}<br>
+            {{ form.body() }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

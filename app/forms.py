@@ -3,6 +3,9 @@ from flask_wtf.file import FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, HiddenField, SelectField, \
     MultipleFileField, DecimalField
 from wtforms.validators import DataRequired, Email, Optional
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField, HiddenField, \
+    SelectField, IntegerField
+from wtforms.validators import DataRequired, Email, NumberRange
 
 
 class LoginForm(FlaskForm):
@@ -54,6 +57,25 @@ class DeleteAccountForm(FlaskForm):
     submit = SubmitField("Delete my account.")
 
 
+class ReviewForm(FlaskForm):
+    rating = IntegerField("Give a rating from 1 to 5", validators=[NumberRange(1, 5, "1-5"),
+                                                                   DataRequired()])
+    body = TextAreaField("Add a written review")
+    submit = SubmitField("Submit")
+
+
+class CartForm(FlaskForm):
+    product_id = HiddenField("product", validators=[DataRequired()])
+    quantity = SelectField("Quantity", choices=[i for i in range(1, 11)], default=1, validators=[DataRequired()])
+    submit = SubmitField("Add to Cart")
+
+
+class CheckoutForm(FlaskForm):
+    address = StringField("Address", validators=[DataRequired()])
+    billing = StringField("Billing info", validators=[DataRequired()])
+    submit = SubmitField("Place Order")
+
+
 class NewProductForm(FlaskForm):
     """
     Form object used to receive input for a new product
@@ -67,7 +89,7 @@ class NewProductForm(FlaskForm):
     """
     merchant_id = HiddenField("Merchant ID", validators=[DataRequired()])
     name = StringField("Name", validators=[DataRequired()])
-    price = DecimalField("Price", places=2, validators=[DataRequired()])
+    price = FloatField("Price", validators=[DataRequired()])
     description = TextAreaField("Description")
     category = SelectField("Category", default=1)
     pictures = MultipleFileField("Pictures",

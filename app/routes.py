@@ -10,6 +10,10 @@ from app import webapp, db
 from app.models import User, UserRole, Product, Category, Image, OrderRow, Order
 from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm, FillOrderForm
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant
+from app.forms import CheckoutForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm, \
+    ReviewForm
+from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category, Review
+from app.utils import get_merchant, merchant_required, get_category_dict, get_categories
 
 
 def add_categories(func):
@@ -260,6 +264,175 @@ def orders_filled():
                 # modify an existing entry in the dictionary
                 items[order.id]['rows'].append((o, o.product))
     return render_template('orders_filled.html', orders=items)
+
+
+@webapp.route("/product/<int:product_id>/review", methods=['GET', 'POST'])
+@login_required
+def product_review(product_id):
+    # check if user has bought this product
+    if db.session.query(Order, OrderRow) \
+            .filter(Order.user_id == current_user.id).filter(OrderRow.product_id == product_id).count() == 0:
+        flash("You need to have bought an item to review it.")
+        return redirect(f'/product/{product_id}', code=302)
+
+    # check if user has already reviewed this product
+    if Review.query.filter_by(user_id=current_user.id, product_id=product_id).count() != 0:
+        flash("You've already reviewed this product")
+        return redirect(f'/product/{product_id}', code=302)
+
+    form = ReviewForm(request.form)
+    if request.method == "POST" and form.validate():
+        rating = form.rating.data
+        body = form.body.data
+        new_review = Review(rating=rating, body=body, user_id=current_user.id, product_id=product_id)
+        db.session.add(new_review)
+        db.session.commit()
+        flash("Review successfully posted!")
+        return redirect(f'/product/{product_id}', code=302)
+    else:
+        return render_template("review.html", form=form, product_id=product_id)
+
+
+@webapp.route('/cart', methods=['GET', 'POST'])
+@login_required
+def add_cart():
+    form = CartForm(request.form)
+    if request.method == 'POST' and form.validate():
+        quantity = form.quantity.data
+        prod_id = form.product_id.data
+        product_query = Product.query.filter_by(id=prod_id)
+        if product_query.count() < 1:
+            flash("Product not found!")
+            return abort(404)
+        else:
+            product = product_query.first()
+            current_rows = current_user.cart_items.filter_by(product_id=product.id)
+            if current_rows.count() >= 1:
+                row = current_rows.first()
+                row.quantity += int(quantity)
+                db.session.commit()
+            else:
+                cart_item = CartItem(product_id=product.id, quantity=quantity, user_id=current_user.id)
+                db.session.add(cart_item)
+                db.session.commit()
+            flash("Item added to cart!")
+            return redirect('/cart')
+    else:
+        cart_items = current_user.cart_items.all()
+        rows = {}
+        for i, row in enumerate(cart_items):
+            product = Product.query.filter_by(id=row.product_id).first()
+            rows[i + 1] = {'id': row.id, 'product_name': product.name, 'product_id': product.id,
+                           'quantity': row.quantity, 'price': product.price}
+        cart = current_user.cart_items.all()
+        total = 0
+        for i in cart:
+            product = Product.query.filter_by(id=i.product_id).first()
+            total += (product.price * i.quantity)
+        return render_template('cart.html', cart_items=rows, total=total, form=form)
+
+
+@webapp.route('/cart/remove/<int:row_id>', methods=['GET'])
+@login_required
+def cart_remove(row_id):
+    rows = CartItem.query.filter_by(id=row_id)
+    if rows.count() != 1:  # row doesn't exist
+        return abort(400)
+    else:
+        row = rows.first()
+        if (row.user_id != current_user.id):  # forbidden, cannot access another user's rows
+            return abort(403)
+        else:
+            product = Product.query.filter_by(id=row.product_id).first()
+            name = product.name
+            qty = row.quantity
+            rows.delete()
+            db.session.commit()
+            flash(f'Removed {qty} of {name}')
+            return redirect('/cart')
+
+
+@webapp.route('/category/<int:category_id>')
+def category(category_id):
+    categories = Category.query.filter_by(id=category_id)
+    if categories.count() == 1:
+        category = categories.first()
+        return render_template('category.html', category=category, products=category.products.all())
+    else:
+        return abort(404)
+
+
+@webapp.route('/merchant/<int:merchant_id>')
+def merchant_profile(merchant_id):
+    merchants = User.query.filter(User.roles.any(id=2)).filter_by(id=merchant_id)
+    if merchants.count() == 1:
+        merchant = merchants.first()
+        products = Product.query.filter_by(merchant_id=merchant.id).all()
+        return render_template('merchant_profile.html', merchant=merchant, products=products)
+    else:
+        return abort(404)
+
+@webapp.route('/product/<int:prod_id>')
+def product(prod_id):
+    form = CartForm(request.form, product_id=prod_id)
+    product_match = Product.query.filter_by(id=prod_id)
+    if product_match.count() < 1:
+        flash('Product not found!')
+        return redirect('/', code=302)
+    else:
+        product = product_match.first()
+        reviews = db.session.query(User, Review).filter(Review.product_id == product.id).filter(User.id
+                                                                                                == Review.user_id).all()
+        rating_sum = 0
+        rating_avg = 0
+        if len(reviews) != 0:
+            for review in reviews:
+                rating_sum += review.Review.rating
+            rating_avg = rating_sum / len(reviews)
+            rating_avg = round(rating_avg, 1)
+        merchant = User.query.filter_by(id=product.merchant_id).first()
+        return render_template('product.html', product=product, merchant=merchant, form=form, product_id=product.id,
+                               reviews=reviews, avg=rating_avg)
+
+
+@webapp.route("/checkout", methods=['GET', 'POST'])
+@login_required
+def checkout():
+    form = CheckoutForm(request.form)
+    cart = current_user.cart_items.all()
+    total = 0
+    for i in cart:
+        product = Product.query.get(i.product_id)
+        total += (product.price * i.quantity)
+    if request.method == 'POST' and form.validate():
+        submit = form.submit.data
+        if submit:
+            # takes in user info
+            address = form.address.data
+            billing = form.billing.data
+
+            # create order
+            order = Order(user_id=current_user.id, ship_address=address)
+            db.session.add(order)
+            db.session.commit()
+
+            for row in cart:
+                product = Product.query.get(row.product_id)
+                order_row = OrderRow(id=order.id, product_id=row.product_id, quantity=row.quantity,
+                                     product_price=product.price)
+                db.session.add(order_row)
+            db.session.commit()
+
+            for row in cart:
+                db.session.delete(row)
+
+            db.session.commit()
+            return render_template('checkout.html', total=total, form=form)
+        else:
+            flash("You need to confirm to purchase cart")
+            return redirect('/checkout')
+    else:
+        return render_template('checkout.html', total=total, form=form)
 
 
 @webapp.route('/account_test')

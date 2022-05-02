@@ -11,6 +11,7 @@ webapp.static_folder = 'static'
 webapp.add_url_rule(
     "/images/<name>", endpoint="images", build_only=True
 )
+webapp.url_map.strict_slashes = False
 
 webapp.config.from_mapping(
     SECRET_KEY='you-will-never-guess',
