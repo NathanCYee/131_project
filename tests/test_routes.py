@@ -1,12 +1,9 @@
 from sqlalchemy.orm import sessionmaker
 
-from app.models import User, UserRole, Product, Order, OrderRow
 from app.models import User, UserRole, Product, Order, OrderRow, Review
-from flask import session
 from sqlalchemy.orm import sessionmaker
 
 from app.models import CartItem, Category, Order, OrderRow, Product, User, UserRole
-from app.routes import category
 
 
 def test_home(client):
@@ -462,7 +459,13 @@ def test_review(db, client):
     db.session.commit()
 
     # add a test product, order, and orderrow
-    product = Product()
+    name = "Cool shirt"
+    product_price = 999.99
+    description = """Lorem ipsum dolor sit amet, consectetur adipiscing elit."""
+
+    # create the product
+    product = Product(merchant_id=0, name=name, price=product_price, description=description,
+                      category_id=1)
     db.session.add(product)
     order = Order(user_id=user.id)
     db.session.add(order)

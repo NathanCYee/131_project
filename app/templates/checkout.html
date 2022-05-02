@@ -11,18 +11,19 @@
         {% endif %}
     {% endwith %}
     </br>
-    <form action="/checkout" method="POST">
-        {{form.hidden_tag()}}
+    <h1><strong>Total</strong>: {{ "$%.2f"|format(total) }}</h1></br>
+    <form action="/checkout" method="POST" class="form-group">
+        {{ form.hidden_tag() }}
         <p>
-            {{form.address.label}}</br>
-            {{form.address(size=32)}}
+            {{ form.address.label }}
+            {{ form.address(size=32, class_="form-control") }}
         </p>
         <p>
-            {{form.billing.label}}</br>
-            {{form.billing(size=32)}}
+            {{ form.billing.label }}
+            {{ form.billing(size=32, class_="form-control") }}
         </p>
-        <p>Total: {{total}}</p></br>
         <p>
-            {{form.submit(class_="btn btn-primary")}}</br>
+            {{ form.submit(class_="btn btn-primary") }}
         </p>
+    </form>
 {% endblock %} 

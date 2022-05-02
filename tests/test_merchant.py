@@ -315,13 +315,11 @@ def test_merchant_fill_orders(db, client):
             response = client.get('/merchant/orders/filled')
             assert bytes(product.name, 'utf-8') in response.data
 
-        # clean up any changes
-        User.query.delete()
-        Product.query.delete()
-        Order.query.delete()
-        OrderRow.query.delete()
-        db.session.query(UserRole).delete()
-        db.session.commit()
-        db.session.flush()
-
+    # clean up any changes
+    User.query.delete()
+    Product.query.delete()
+    Order.query.delete()
+    OrderRow.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
     db.session.flush()

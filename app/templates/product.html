@@ -4,6 +4,15 @@
 
 
 {% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <div class="row">
         <div class="col-5">
             <div id="productImages" class="carousel slide w-100 h-50" data-bs-ride="carousel">
@@ -40,37 +49,29 @@
         <div class="col-7">
             <h5><a href="{{ '/merchant/%s' %merchant.id }}">{{ merchant.username }}</a></h5>
             <h1 class="display-5 fw-bold">{{ product.name }}</h1>
+            <h5>Average Rating: {{ avg }}</h5>
             <h3>{{ "$%.2f"|format(product.price) }}</h3>
             <p>{{ product.description }}</p>
+            <div class="container">
+                <form action="/cart" method="POST">
+                    {{ form.hidden_tag() }}
+                    {{ form.product_id(value=product.id) }}
+                    <div class="row">
+                        <div class="col-5">
+                            {{ form.quantity(class_="form-control mb-2 mr-sm-2") }}
+                        </div>
+                        <div class="col-7">
+                            {{ form.submit(class_="btn btn-primary mb-2") }}
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-warning" role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    </br>
-    <p>Sold by: <a href="{{ '/merchant/%s' %merchant.id }}">{{ merchant.username }}</a></p>
-    <h1>{{ product.name }}</h1>
-    <h3>${{ product.price }}</h3>
-    <p>{{ product.description }}</p>
-    <form action="/cart" method="POST">
-        {{ form.hidden_tag() }}
-        {{ form.product_id(value=product.id) }}
-        <p>
-            {{ form.quantity.label }}<br>
-            {{ form.quantity() }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <!--TODO: Add a horizontal scrolling component displaying items in the same category (limit it to 10)-->
     </br>
     <p><a href="/product/{{ product_id }}/review">Review</a></p>
     {% if reviews %}
-        <p>Average Rating: {{ avg }}</p>
         <br>
         {% for review in reviews %}
             {% if review.Review.body %}

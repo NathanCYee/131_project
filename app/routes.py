@@ -7,13 +7,10 @@ from werkzeug.utils import secure_filename
 from flask import render_template as r, flash, request, redirect, abort, url_for, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
 from app import webapp, db
-from app.models import User, UserRole, Product, Category, Image, OrderRow, Order
-from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm, FillOrderForm
-from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant
 from app.forms import CheckoutForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm, \
-    ReviewForm
-from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category, Review
-from app.utils import get_merchant, merchant_required, get_category_dict, get_categories
+    ReviewForm, FillOrderForm
+from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category, Review, Image
+from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant
 
 
 def add_categories(func):
@@ -179,6 +176,8 @@ def product(prod_id):
     """
 
     # query the database for the id
+    form = CartForm(request.form, product_id=prod_id)
+
     product_match = Product.query.filter_by(id=prod_id)
     if product_match.count() < 1:
         # product id was not found
@@ -186,9 +185,19 @@ def product(prod_id):
     else:
         # retrieve the first object from the query
         product = product_match.first()
+        reviews = db.session.query(User, Review).filter(Review.product_id == product.id).filter(User.id
+                                                                                                == Review.user_id).all()
+        rating_sum = 0
+        rating_avg = 0
+        if len(reviews) != 0:
+            for review in reviews:
+                rating_sum += review.Review.rating
+            rating_avg = rating_sum / len(reviews)
+            rating_avg = round(rating_avg, 1)
         # get the merchant of the product
         merchant = User.query.filter_by(id=product.merchant_id).first()
-        return render_template('product.html', product=product, merchant=merchant)
+        return render_template('product.html', product=product, merchant=merchant, form=form, product_id=product.id,
+                               reviews=reviews, avg=rating_avg)
 
 
 @webapp.route('/search', methods=['GET'])
@@ -371,28 +380,6 @@ def merchant_profile(merchant_id):
         return render_template('merchant_profile.html', merchant=merchant, products=products)
     else:
         return abort(404)
-
-@webapp.route('/product/<int:prod_id>')
-def product(prod_id):
-    form = CartForm(request.form, product_id=prod_id)
-    product_match = Product.query.filter_by(id=prod_id)
-    if product_match.count() < 1:
-        flash('Product not found!')
-        return redirect('/', code=302)
-    else:
-        product = product_match.first()
-        reviews = db.session.query(User, Review).filter(Review.product_id == product.id).filter(User.id
-                                                                                                == Review.user_id).all()
-        rating_sum = 0
-        rating_avg = 0
-        if len(reviews) != 0:
-            for review in reviews:
-                rating_sum += review.Review.rating
-            rating_avg = rating_sum / len(reviews)
-            rating_avg = round(rating_avg, 1)
-        merchant = User.query.filter_by(id=product.merchant_id).first()
-        return render_template('product.html', product=product, merchant=merchant, form=form, product_id=product.id,
-                               reviews=reviews, avg=rating_avg)
 
 
 @webapp.route("/checkout", methods=['GET', 'POST'])

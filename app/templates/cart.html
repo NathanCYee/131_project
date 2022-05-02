@@ -12,6 +12,8 @@
     {% endwith %}
 
     </br>
+    <h1><strong>Total</strong>: {{ "$%.2f"|format(total) }}</h1></br>
+
     <table class="table">
         <thead>
         <tr>
@@ -34,10 +36,5 @@
         {% endfor %}
         </tbody>
     </table>
-    <form action="/cart" method="POST">
-        <p>
-            Total: {{total}}
-        </p>
-        <a href="/checkout">Continue to Checkout</a>
-    </form>
-{% endblock %} 
+    <a href="/checkout">Continue to Checkout</a>
+{% endblock %}
