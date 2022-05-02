@@ -62,7 +62,7 @@ class NewProductForm(FlaskForm):
     :attr price: The price of the product (float)
     :attr description: A text description of the product
     :attr category: a select field to select the category that the product belongs to
-    :att pictures: a file upload form that accepts multiple image uploads (png, jpg, jpeg)
+    :att pictures: a file upload form that accepts multiple image uploads (png, jpg, jpeg, webp)
     :attr submit: Submit input (should be True)
     """
     merchant_id = HiddenField("Merchant ID", validators=[DataRequired()])
@@ -72,7 +72,7 @@ class NewProductForm(FlaskForm):
     category = SelectField("Category", default=1)
     pictures = MultipleFileField("Pictures",
                                  validators=[Optional(),
-                                             FileAllowed(['png', 'jpg', 'jpeg'], 'Only images are allowed!')])
+                                             FileAllowed(['png', 'jpg', 'jpeg', 'webp'], 'Only images are allowed!')])
     submit = SubmitField("Submit")
 
 

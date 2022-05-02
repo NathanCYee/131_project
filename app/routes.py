@@ -205,7 +205,7 @@ def search():
         return render_template("search.html", products=results, query=form_query)
     else:
         # invalid search
-        return redirect('/')
+        return render_template("search.html", products=[], query='')
 
 
 @webapp.route('/orders')
@@ -447,8 +447,9 @@ def merchant_orders():
         items = {}
         for order, product in results:
             total_order = Order.query.filter_by(id=order.id).first()
+            customer = User.query.filter_by(id=total_order.user_id).first()
             if order.id not in items:
-                items[order.id] = {'order': total_order, 'rows': [(order, product)]}
+                items[order.id] = {'customer': customer, 'order': total_order, 'rows': [(order, product)]}
             else:
                 items[order.id]['rows'].append((order, product))
         return render_template('merchant_orders.html', orders=items, form=form, id=current_user.id)

@@ -1,4 +1,6 @@
-from app.models import User, UserRole
+from sqlalchemy.orm import sessionmaker
+
+from app.models import User, UserRole, Product, Order, OrderRow
 
 
 def test_home(client):
@@ -299,3 +301,129 @@ def test_delete_account(db, client):
     db.session.query(UserRole).delete()
     db.session.commit()
     db.session.flush()
+
+
+def test_search(db, client):
+    # test params
+    search_query = "cool"
+    search_query2 = "(c|C)ool"
+
+    name = "Cool shirt"
+    product_price = 999.99
+    description = """Lorem ipsum dolor sit amet, consectetur adipiscing elit."""
+
+    # create the product
+    product = Product(merchant_id=0, name=name, price=product_price, description=description,
+                      category_id=1)
+    db.session.add(product)
+    db.session.commit()
+
+    query_result = Product.query.filter_by(name=name)
+
+    # test to make sure it has been inserted
+    assert query_result.count() == 1
+    assert query_result.first() == product
+
+    name2 = "cooler shirt"
+    product_price2 = 10000
+    description2 = """Maecenas dapibus ac mauris ac commodo."""
+
+    # create the product
+    product2 = Product(merchant_id=0, name=name2, price=product_price2, description=description2,
+                       category_id=1)
+    db.session.add(product2)
+    db.session.commit()
+
+    query_result = Product.query.all()
+
+    # test to make sure it has been inserted
+    assert len(query_result) == 2
+
+    with client:
+        response = client.get('/search/', query_string={'q': search_query})
+        assert response.status_code == 200
+
+        # should only have `cool` and not `Cool`
+        assert bytes(name2, 'utf-8') in response.data
+        assert bytes(name, 'utf-8') not in response.data
+
+        response = client.get('/search/', query_string={'q': search_query2})
+        assert response.status_code == 200
+
+        # should have both `cool` and `Cool`
+        assert bytes(name2, 'utf-8') in response.data
+        assert bytes(name, 'utf-8') in response.data
+
+
+def test_client_order(db, client):
+    # test customer params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+    cust_address = "123 Sesame Street."
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        # create the customer
+        user = User(username=username, email=email)
+        user.set_password(password)
+        session.add(user)
+
+        name = "Cool shirt"
+        product_price = 999.99
+        description = """Lorem ipsum dolor sit amet, consectetur adipiscing elit."""
+
+        # create the product
+        product = Product(merchant_id=0, name=name, price=product_price, description=description,
+                          category_id=1)
+        session.add(product)
+        session.commit()
+
+        query_result = Product.query.filter_by(name=name)
+        with client:
+            response = client.post('/login',
+                                   data={'username': username, 'password': password, 'submit': True})
+            assert response.status_code == 302  # 302 successful redirect to home page
+
+            order = Order(user_id=user.id, ship_address=cust_address)
+            session.add(order)
+            session.commit()
+            test_row = OrderRow(id=order.id, product_id=product.id, quantity=1, product_price=product.price)
+            session.add(test_row)
+            session.commit()
+
+            # unfilled order
+            assert not test_row.filled
+
+            # check if the user can see their unfilled orders
+            response = client.get('/orders')
+            assert response.status_code == 200
+            # check to see if info from the order is in the page
+            assert bytes(product.name, 'utf-8') in response.data
+            assert bytes(str(test_row.quantity), 'utf-8') in response.data
+            assert bytes(f'{test_row.product_price:.2f}', 'utf-8') in response.data
+
+            # merchant fills their order
+            test_row.filled = True
+            session.commit()
+
+            # check to see if info from the order removed from the page
+            response = client.get('/orders')
+            assert bytes(product.name, 'utf-8') not in response.data
+
+            # make sure order becomes filled
+            find_row = OrderRow.query.filter_by(id=test_row.id).first()
+            assert find_row.filled
+
+            # check to see if the order is seen as filled by the customer
+            response = client.get('/orders/filled')
+            assert bytes(product.name, 'utf-8') in response.data
+
+        # clean up any changes
+        User.query.delete()
+        Product.query.delete()
+        Order.query.delete()
+        OrderRow.query.delete()
+        db.session.query(UserRole).delete()
+        db.session.commit()
+        db.session.flush()

@@ -45,9 +45,9 @@
                 <div class="p-2 bg-light text-dark border rounded-3">
                     <div class="container-fluid">
                         <h6>Delivery Address: {{ v.order.ship_address }}</h6>
-                        <h6>Recipient: {{ v.order.user.username }}</h6>
+                        <h6>Recipient: {{ v.customer.username }}</h6>
                         <form action="/merchant/orders" method="POST" class="form-group">
-                            {{ form.csrf_token() }}
+                            {{ form.hidden_tag() }}
                             {{ form.merchant_id(value=id) }}
                             {{ form.order_id(value=k) }}
                             <p>{{ form.submit(class_="btn btn-success") }}</p>
