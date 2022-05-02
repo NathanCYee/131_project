@@ -325,13 +325,13 @@ def test_add_cart(db, client):
     with client:
         request = client.post('/login',
                                 data={'username': user.username, 'password': user.password, 'submit': True})
-        assert response.status_code == 302 # successful login, redirected to homepage
+        assert request.status_code == 302 # successful login, redirected to homepage
 
         user = User.query.filter_by(username=user.username).first()
         
-        response = client.post('/cart', 
+        request = client.post('/cart', 
                                 data={'product_id': product.id, 'quantity': order_row.quantity, 'submit': True})
-        assert response.status_code == 302 # successful redirect to cart page
+        assert request.status_code == 302 # successful redirect to cart page
 
         cart_item = CartItem.query.filter_by(product_id=product.id)
         assert cart_item.count == 1
@@ -368,15 +368,15 @@ def test_checkout(db, client):
     db.commit()
 
     with client:
-        response = client.post('/login',
+        request = client.post('/login',
                                 data={'username': user.username, 'password': user.password, 'submit': True})
-        assert response.status_code == 302 # successful login, redirected to homepage
+        assert request.status_code == 302 # successful login, redirected to homepage
 
         user = User.query.filter_by(username=user.username).first()
         
-        response = client.post('/checkout', 
+        request = client.post('/checkout', 
                                 data={'confirm': True, 'address': order.ship_address, 'submit': True})
-        assert response.status_code == 302 # successful redirect to cart page
+        assert request.status_code == 302 # successful redirect to cart page
 
         order = Order.query.filter_by(user_id=user.id)
         assert order.count == 1
