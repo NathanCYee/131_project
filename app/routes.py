@@ -4,7 +4,7 @@ from sqlalchemy import insert
 from app import webapp, db
 from flask import render_template as r, flash, request, redirect, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from app.forms import BillingForm, CheckoutForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm
+from app.forms import CheckoutForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm
 from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories
 
@@ -156,7 +156,12 @@ def add_cart():
             product = Product.query.filter_by(id=row.product_id).first()
             rows[i + 1] = {'id': row.id, 'product_name': product.name, 'product_id': product.id,
                            'quantity': row.quantity, 'price': product.price}
-        return render_template('cart.html', cart_items=rows, form=form)
+        cart = current_user.cart_items.all()
+        total = 0
+        for i in cart:
+            product = Product.query.filter_by(id=i.product_id).first()
+            total += (product.price * i.quantity)
+        return render_template('cart.html', cart_items=rows, total=total, form=form)
 
 
 @webapp.route('/cart/remove/<int:row_id>', methods=['GET'])
@@ -218,25 +223,33 @@ def product(prod_id):
 def purchase_cart():
     form = CheckoutForm(request.form)
     cart = current_user.cart_items.all()
-    for i in range(cart):
+    total = 0
+    for i in cart:
         product = Product.query.filter_by(id=i.product_id).first()
-        total = total + (product.price * i.quantity)
+        total += (product.price * i.quantity)
     flash("Total: ", total)
     if request.method == 'POST' and form.validate():
-        confirm = form.confirm.data
-        if confirm:
+        submit = form.submit.data
+        if submit:
+            #takes in user info
             address = form.address.data
             billing = form.billing.data
-            items = current_user.cart_items().all()
-            rows = OrderRow()
-            for i, row in enumerate(items): 
-                product = Product.query.filter_by(id=row.product_id).first()
-                rows = OrderRow(id=row.id, product_id=product.product_id, quantity=row.quantity)
-            order = Order(user_id=current_user.id, ship_address=address, order_row=rows)
+            items = current_user.cart_items()
+
+            #create order
+            order = Order(user_id=current_user.id, ship_address=address)
             db.session.add(order)
+
+            rows = OrderRow()
+            for row in items: 
+                product = Product.query.filter_by(id=row.product_id).first()
+                order_row = OrderRow(id=order.id, product_id=row.product_id, quantity=row.quantity,
+                                    product_price=product.price)
+                db.session.add(order_row)
+                db.session.delete(row)
+
             db.session.commit()
-            current_user.cart_items.delete()
-            return render_template('checkout.html', form=form)
+            return render_template('checkout.html', total=total, form=form)
         else:
             flash("You need to confirm to purchase cart")
             return redirect('/checkout')
