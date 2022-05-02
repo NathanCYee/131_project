@@ -125,6 +125,7 @@ def delete_account():
 
 
 @webapp.route("/product/<product_id>/")
+@webapp.route("/product/<product_id>")
 @login_required
 def product_page(product_id):
     reviews = db.session.query(User, Review).filter(Review.product_id == product_id).filter(User.id
@@ -139,15 +140,14 @@ def product_page(product_id):
     return render_template("product.html", product_id=product_id, reviews=reviews, avg=rating_avg)
 
 
-@webapp.route("/product/<int:product_id>/reviews", methods=['GET', 'POST'])
+@webapp.route("/product/<int:product_id>/review", methods=['GET', 'POST'])
 @login_required
-def product_reviews(product_id):
+def product_review(product_id):
     # check if user has bought this product
-    # commenting this out for now because there is no buying functionality
-    # if db.session.query(Order, OrderRow)\
-    #         .filter(Order.user_id == current_user.id).filter(OrderRow.product_id == product_id).count() == 0:
-    #     flash("You need to have bought an item to review it.")
-    #     return redirect(f'/product/{product_id}', code=302)
+    if db.session.query(Order, OrderRow)\
+            .filter(Order.user_id == current_user.id).filter(OrderRow.product_id == product_id).count() == 0:
+        flash("You need to have bought an item to review it.")
+        return redirect(f'/product/{product_id}', code=302)
 
     # check if user has already reviewed this product
     if Review.query.filter_by(user_id=current_user.id, product_id=product_id).count() != 0:
@@ -164,7 +164,7 @@ def product_reviews(product_id):
         flash("Review successfully posted!")
         return redirect(f'/product/{product_id}', code=302)
     else:
-        return render_template("reviews.html", form=form, product_id=product_id)
+        return render_template("review.html", form=form, product_id=product_id)
 
 
 @webapp.route('/account_test')

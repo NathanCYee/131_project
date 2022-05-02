@@ -1,4 +1,4 @@
-from app.models import User, UserRole
+from app.models import User, UserRole, Product, Order, OrderRow, Review
 
 
 def test_home(client):
@@ -297,5 +297,110 @@ def test_delete_account(db, client):
     # clean up any changes
     User.query.delete()
     db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_review(db, client):
+    # test params
+    username = "Test1"
+    password = "Pass-1"
+    username2 = "Test2"
+    password2 = "Pass-2"
+    username3 = "Test3"
+    password3 = "Pass-3"
+    username4 = "Test4"
+    password4 = "Pass-4"
+
+    # add test users to the database
+    user = User(username=username)
+    user.set_password(password)
+    db.session.add(user)
+    user2 = User(username=username2)
+    user2.set_password(password2)
+    db.session.add(user2)
+    user3 = User(username=username3)
+    user3.set_password(password3)
+    db.session.add(user3)
+    user4 = User(username=username4)
+    user4.set_password(password4)
+    db.session.add(user4)
+    db.session.commit()
+
+    # add a test product, order, and orderrow
+    product = Product()
+    db.session.add(product)
+    order = Order(user_id=user.id)
+    db.session.add(order)
+    order_row = OrderRow(id=order.id, product_id=product.id)
+    db.session.add(order_row)
+    order2 = Order(user_id=user2.id)
+    db.session.add(order2)
+    order_row2 = OrderRow(id=order2.id, product_id=product.id)
+    db.session.add(order_row2)
+    order3 = Order(user_id=user3.id)
+    db.session.add(order3)
+    order_row3 = OrderRow(id=order3.id, product_id=product.id)
+    db.session.add(order_row3)
+    db.session.commit()
+
+    with client:
+        response = client.post('/login',
+                               data={'username': username, 'password': password, 'submit': True})
+        assert response.status_code == 302  # 302 successful redirect to home page
+
+        client.post(f'/product/{product.id}/review', data={'rating': 5, 'body': 'Awesome!', 'submit': True})
+        response = client.get(f'/product/{product.id}')
+        assert b'5.0' in response.data
+        assert b'Test1' in response.data
+        assert b'5' in response.data
+        assert b'Awesome!' in response.data
+
+        client.get('/logout')  # call the logout
+
+        response = client.post('/login',
+                               data={'username': username2, 'password': password2, 'submit': True})
+        assert response.status_code == 302  # 302 successful redirect to home page
+
+        client.post(f'/product/{product.id}/review', data={'rating': 1, 'body': 'Terrible!', 'submit': True})
+        response = client.get(f'/product/{product.id}')
+        assert b'3.0' in response.data
+        assert b'Test2' in response.data
+        assert b'1' in response.data
+        assert b'Terrible!' in response.data
+
+        client.get('/logout')  # call the logout
+
+        response = client.post('/login',
+                               data={'username': username3, 'password': password3, 'submit': True})
+        assert response.status_code == 302  # 302 successful redirect to home page
+
+        client.post(f'/product/{product.id}/review', data={'rating': 1, 'body': 'Awful!', 'submit': True})
+        response = client.get(f'/product/{product.id}')
+        assert b'2.3' in response.data
+        assert b'Test3' in response.data
+        assert b'1' in response.data
+        assert b'Awful!' in response.data
+
+        client.post(f'/product/{product.id}/review', data={'rating': 2, 'body': 'Not THAT awful.', 'submit': True})
+        response = client.get(f'/product/{product.id}')
+        assert b'You&#39;ve already reviewed this product' in response.data
+
+        client.get('/logout')  # call the logout
+
+        response = client.post('/login',
+                               data={'username': username4, 'password': password4, 'submit': True})
+        assert response.status_code == 302  # 302 successful redirect to home page
+
+        client.post(f'/product/{product.id}/review', data={'rating': 4, 'body': 'I like this.', 'submit': True})
+        response = client.get(f'/product/{product.id}')
+        assert b'You need to have bought an item to review it.' in response.data
+
+    # clean up any changes
+    User.query.delete()
+    Product.query.delete()
+    Order.query.delete()
+    OrderRow.query.delete()
+    Review.query.delete()
     db.session.commit()
     db.session.flush()

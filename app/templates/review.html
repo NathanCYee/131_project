@@ -12,7 +12,7 @@
         {% endif %}
     {% endwith %}
     </br>
-    <form action="/product/{{ product_id }}/reviews" method="POST">
+    <form action="/product/{{ product_id }}/review" method="POST">
         {{ form.hidden_tag() }}
         <p>
             {{ form.rating.label }}
