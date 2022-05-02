@@ -65,7 +65,7 @@ class ReviewForm(FlaskForm):
     :attr submit: Submit input (should be True)
     """
     rating = SelectField("Give a rating from 1 to 5", choices=[i for i in range(1, 6)], default=5,
-                         validators=[NumberRange(1, 5, "1-5"), DataRequired()])
+                         validators=[DataRequired()])
     body = TextAreaField("Add a written review")
     submit = SubmitField("Submit")
 

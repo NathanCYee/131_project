@@ -33,7 +33,7 @@ def home():
     output = {}
     for category in categories:
         output[category.name] = category.products.all()
-    return render_template('index.html', categories=output)
+    return render_template('index.html', rows=output)
 
 
 @webapp.route('/login', methods=['GET', 'POST'])
