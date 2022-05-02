@@ -355,7 +355,7 @@ def test_review(db, client):
         assert response.status_code == 302  # 302 successful redirect to home page
 
         client.post(f'/product/{product.id}/review', data={'rating': 5, 'body': 'Awesome!', 'submit': True})
-        response = client.get(f'/product/{product.id}')
+        response = client.get(f'/product/{product.id}/')
         assert b'5.0' in response.data
         assert b'Test1' in response.data
         assert b'5' in response.data
@@ -368,7 +368,7 @@ def test_review(db, client):
         assert response.status_code == 302  # 302 successful redirect to home page
 
         client.post(f'/product/{product.id}/review', data={'rating': 1, 'body': 'Terrible!', 'submit': True})
-        response = client.get(f'/product/{product.id}')
+        response = client.get(f'/product/{product.id}/')
         assert b'3.0' in response.data
         assert b'Test2' in response.data
         assert b'1' in response.data

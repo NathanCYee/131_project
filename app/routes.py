@@ -1,13 +1,11 @@
-from itertools import product
 from sqlalchemy import insert
 
 from app import webapp, db
 from flask import render_template as r, flash, request, redirect, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, UserRole, Product, Category, Order, OrderRow, Review
-from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm, ReviewForm
-from app.forms import CheckoutForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm
-from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category
+from app.forms import CheckoutForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm, \
+    ReviewForm
+from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category, Review
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories
 
 
@@ -127,27 +125,11 @@ def delete_account():
         return render_template('delete_account.html', form=form)
 
 
-@webapp.route("/product/<product_id>/")
-@webapp.route("/product/<product_id>")
-@login_required
-def product_page(product_id):
-    reviews = db.session.query(User, Review).filter(Review.product_id == product_id).filter(User.id
-                                                                                            == Review.user_id).all()
-    rating_sum = 0
-    rating_avg = 0
-    if len(reviews) != 0:
-        for review in reviews:
-            rating_sum += review.Review.rating
-        rating_avg = rating_sum / len(reviews)
-        rating_avg = round(rating_avg, 1)
-    return render_template("product.html", product_id=product_id, reviews=reviews, avg=rating_avg)
-
-
 @webapp.route("/product/<int:product_id>/review", methods=['GET', 'POST'])
 @login_required
 def product_review(product_id):
     # check if user has bought this product
-    if db.session.query(Order, OrderRow)\
+    if db.session.query(Order, OrderRow) \
             .filter(Order.user_id == current_user.id).filter(OrderRow.product_id == product_id).count() == 0:
         flash("You need to have bought an item to review it.")
         return redirect(f'/product/{product_id}', code=302)
@@ -249,7 +231,6 @@ def merchant_profile(merchant_id):
     else:
         return abort(404)
 
-
 @webapp.route('/product/<int:prod_id>')
 def product(prod_id):
     form = CartForm(request.form, product_id=prod_id)
@@ -259,8 +240,18 @@ def product(prod_id):
         return redirect('/', code=302)
     else:
         product = product_match.first()
+        reviews = db.session.query(User, Review).filter(Review.product_id == product.id).filter(User.id
+                                                                                                == Review.user_id).all()
+        rating_sum = 0
+        rating_avg = 0
+        if len(reviews) != 0:
+            for review in reviews:
+                rating_sum += review.Review.rating
+            rating_avg = rating_sum / len(reviews)
+            rating_avg = round(rating_avg, 1)
         merchant = User.query.filter_by(id=product.merchant_id).first()
-        return render_template('product.html', product=product, merchant=merchant, form=form)
+        return render_template('product.html', product=product, merchant=merchant, form=form, product_id=product.id,
+                               reviews=reviews, avg=rating_avg)
 
 
 @webapp.route("/checkout", methods=['GET', 'POST'])
@@ -283,7 +274,6 @@ def checkout():
             order = Order(user_id=current_user.id, ship_address=address)
             db.session.add(order)
             db.session.commit()
-
 
             for row in cart:
                 product = Product.query.get(row.product_id)

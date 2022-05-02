@@ -1,12 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, TextAreaField, FloatField, HiddenField, SelectField
-from wtforms.validators import DataRequired, Email, NumberRange
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField, HiddenField, \
     SelectField, IntegerField
 from wtforms.validators import DataRequired, Email, NumberRange
-
-from app.models import Product
-from app.utils import get_categories
 
 
 class LoginForm(FlaskForm):
@@ -36,7 +31,7 @@ class DeleteAccountForm(FlaskForm):
 
 class ReviewForm(FlaskForm):
     rating = IntegerField("Give a rating from 1 to 5", validators=[NumberRange(1, 5, "1-5"),
-                                                                                    DataRequired()])
+                                                                   DataRequired()])
     body = TextAreaField("Add a written review")
     submit = SubmitField("Submit")
 

@@ -2,6 +2,15 @@
 
 
 {% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     </br>
     <p>Sold by: <a href="{{ '/merchant/%s' %merchant.id }}">{{ merchant.username }}</a></p>
     <h1>{{ product.name }}</h1>
@@ -16,17 +25,7 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-warning" role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
     </br>
-    <h1>Product ID: {{ product_id }}</h1>
     <p><a href="/product/{{ product_id }}/review">Review</a></p>
     {% if reviews %}
         <p>Average Rating: {{ avg }}</p>

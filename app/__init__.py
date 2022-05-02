@@ -7,6 +7,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 webapp = Flask(__name__)
 webapp.static_folder = 'static'
+webapp.url_map.strict_slashes = False
 
 webapp.config.from_mapping(
     SECRET_KEY='you-will-never-guess',
