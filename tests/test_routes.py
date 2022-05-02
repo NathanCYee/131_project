@@ -1,4 +1,5 @@
-from app.models import CartItem, Order, Product, User, UserRole
+from app.models import CartItem, Category, Order, Product, User, UserRole
+from app.routes import category
 
 
 def test_home(client):
@@ -301,31 +302,36 @@ def test_delete_account(db, client):
     db.session.flush()
 
 def test_add_cart(db, client):
-    #test account params
-    username = "Test1"
-    email = "test@mail.com"
-    password = "Pass-1"
+    #add user
+    user=User(username="Test1", email="test@mail.com", password="Pass-1")
+    db.session.add(user)
+
+    #make product
+    product=Product(id=321, category_id=321, merchant_id=123, 
+                    name="iPhone", price=999.99, description="Lorem ipsum")
+    db.session.add(product)
+
 
     #test cart params
     quantity = 1
-    product_id = Product.query.filter_by(id=321)
 
     with client:
         response = client.post('/login',
-                                data={'username': username, 'password': password, 'submit': True})
+                                data={'username': user.username, 'password': user.password, 'submit': True})
         assert response.status_code == 302 # successful login, redirected to homepage
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=user.username).first()
         
         response = client.post('/cart', 
-                                data={'product_id': product_id, 'quantity': quantity, 'submit': True})
+                                data={'product_id': product.id, 'quantity': quantity, 'submit': True})
         assert response.status_code == 302 # successful redirect to cart page
 
-        cart_item = CartItem.query.filter_by(product_id=product_id)
+        cart_item = CartItem.query.filter_by(product_id=product.id)
         assert cart_item.count == 1
 
         #clean up changes
         User.query.delete()
+        Product.query.delete()
         CartItem.query.delete()
         db.session.query(UserRole).delete()
         db.session.commit()
