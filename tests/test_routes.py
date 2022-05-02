@@ -486,7 +486,7 @@ def test_review(db, client):
                                data={'username': username, 'password': password, 'submit': True})
         assert response.status_code == 302  # 302 successful redirect to home page
 
-        client.post(f'/product/{product.id}/review', data={'rating': 5, 'body': 'Awesome!', 'submit': True})
+        client.post(f'/product/{product.id}/review', data={'rating': '5', 'body': 'Awesome!', 'submit': True})
         response = client.get(f'/product/{product.id}/')
         assert b'5.0' in response.data
         assert b'Test1' in response.data
@@ -499,7 +499,7 @@ def test_review(db, client):
                                data={'username': username2, 'password': password2, 'submit': True})
         assert response.status_code == 302  # 302 successful redirect to home page
 
-        client.post(f'/product/{product.id}/review', data={'rating': 1, 'body': 'Terrible!', 'submit': True})
+        client.post(f'/product/{product.id}/review', data={'rating': '1', 'body': 'Terrible!', 'submit': True})
         response = client.get(f'/product/{product.id}/')
         assert b'3.0' in response.data
         assert b'Test2' in response.data
@@ -512,14 +512,14 @@ def test_review(db, client):
                                data={'username': username3, 'password': password3, 'submit': True})
         assert response.status_code == 302  # 302 successful redirect to home page
 
-        client.post(f'/product/{product.id}/review', data={'rating': 1, 'body': 'Awful!', 'submit': True})
+        client.post(f'/product/{product.id}/review', data={'rating': '1', 'body': 'Awful!', 'submit': True})
         response = client.get(f'/product/{product.id}')
         assert b'2.3' in response.data
         assert b'Test3' in response.data
         assert b'1' in response.data
         assert b'Awful!' in response.data
 
-        client.post(f'/product/{product.id}/review', data={'rating': 2, 'body': 'Not THAT awful.', 'submit': True})
+        client.post(f'/product/{product.id}/review', data={'rating': '2', 'body': 'Not THAT awful.', 'submit': True})
         response = client.get(f'/product/{product.id}')
         assert b'You&#39;ve already reviewed this product' in response.data
 
@@ -529,7 +529,7 @@ def test_review(db, client):
                                data={'username': username4, 'password': password4, 'submit': True})
         assert response.status_code == 302  # 302 successful redirect to home page
 
-        client.post(f'/product/{product.id}/review', data={'rating': 4, 'body': 'I like this.', 'submit': True})
+        client.post(f'/product/{product.id}/review', data={'rating': '4', 'body': 'I like this.', 'submit': True})
         response = client.get(f'/product/{product.id}')
         assert b'You need to have bought an item to review it.' in response.data
 

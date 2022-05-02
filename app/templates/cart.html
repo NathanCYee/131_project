@@ -28,9 +28,9 @@
         {% for k, v in cart_items.items() %}
             <tr>
                 <th scope="row">{{ k }}</th>
-                <td><a href="{{ '/product/%s' %v.product_id }}">{{ v.product_name }}</a></td>
+                <td><a href="{{ '/product/%s' %v.product.id }}">{{ v.product.name }}</a></td>
                 <td>{{ v.quantity }}</td>
-                <td>${{ v.quantity*v.price }}</td>
+                <td>${{ v.quantity*v.product.price }}</td>
                 <td><a href="{{ '/cart/remove/%s' %v.id }}">Remove</a></td>
             </tr>
         {% endfor %}
