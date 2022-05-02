@@ -1,4 +1,4 @@
-from app.models import CartItem, Product, User, UserRole
+from app.models import CartItem, Order, Product, User, UserRole
 
 
 def test_home(client):
@@ -327,6 +327,37 @@ def test_add_cart(db, client):
         #clean up changes
         User.query.delete()
         CartItem.query.delete()
+        db.session.query(UserRole).delete()
+        db.session.commit()
+        db.session.flush()
+
+def test_checkout(db, client):
+    #test account params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+
+    #test cart params
+    address = "test blvd"
+    billing = "test-1010"
+
+    with client:
+        response = client.post('/login',
+                                data={'username': username, 'password': password, 'submit': True})
+        assert response.status_code == 302 # successful login, redirected to homepage
+
+        user = User.query.filter_by(username=username).first()
+        
+        response = client.post('/checkout', 
+                                data={'confirm': True, 'address': address, 'billing': billing, 'submit': True})
+        assert response.status_code == 302 # successful redirect to cart page
+
+        order = Order.query.filter_by(user_id=user.id)
+        assert order.count == 1
+
+        #clean up changes
+        User.query.delete()
+        Order.query.delete()
         db.session.query(UserRole).delete()
         db.session.commit()
         db.session.flush()
