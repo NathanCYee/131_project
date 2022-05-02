@@ -1,4 +1,4 @@
-from app.models import CartItem, Category, Order, Product, User, UserRole
+from app.models import CartItem, Category, Order, OrderRow, Product, User, UserRole
 from app.routes import category
 
 
@@ -311,19 +311,26 @@ def test_add_cart(db, client):
                     name="iPhone", price=999.99, description="Lorem ipsum")
     db.session.add(product)
 
+    #make order
+    order=Order(user_id=user.id, ship_address="test_blvd")
+    db.session.add(order)
 
-    #test cart params
-    quantity = 1
+    #make order_row
+    order_row=OrderRow(id=order.id, product_id=product.id, quantity=1, 
+                        product_price=product.price)
+
+    #commit to database
+    db.commit()
 
     with client:
-        response = client.post('/login',
+        request = client.post('/login',
                                 data={'username': user.username, 'password': user.password, 'submit': True})
         assert response.status_code == 302 # successful login, redirected to homepage
 
         user = User.query.filter_by(username=user.username).first()
         
         response = client.post('/cart', 
-                                data={'product_id': product.id, 'quantity': quantity, 'submit': True})
+                                data={'product_id': product.id, 'quantity': order_row.quantity, 'submit': True})
         assert response.status_code == 302 # successful redirect to cart page
 
         cart_item = CartItem.query.filter_by(product_id=product.id)
@@ -332,6 +339,8 @@ def test_add_cart(db, client):
         #clean up changes
         User.query.delete()
         Product.query.delete()
+        Order.query.delete()
+        OrderRow.query.delete()
         CartItem.query.delete()
         db.session.query(UserRole).delete()
         db.session.commit()
