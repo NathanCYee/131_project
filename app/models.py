@@ -69,6 +69,12 @@ class Order(db.Model):
     ship_address = db.Column(db.String(128))
     order_row = db.relationship('OrderRow', backref='order', lazy='dynamic')
 
+    def __repr__(self):
+        return f'id: {self.id}\n' \
+               f'user_id: {self.user_id}\n' \
+               f'ship_address: {self.ship_address}\n' \
+               f'order_row: {self.order_row}\n'
+
 
 class OrderRow(db.Model):
     row_id = db.Column(db.Integer, primary_key=True)
@@ -76,6 +82,13 @@ class OrderRow(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     quantity = db.Column(db.Integer)
     product_price = db.Column(db.Float)
+
+    def __repr__(self):
+        return f'row_id: {self.row_id}\n' \
+               f'order id: {self.id}\n' \
+               f'product_id: {self.product_id}\n' \
+               f'quantity: {self.quantity}\n' \
+               f'product_price: {self.product_price}\n'
 
 
 class Review(db.Model):
@@ -87,7 +100,10 @@ class Review(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f'<User ID: {self.user_id} {self.body}>'
+        username = User.query.filter_by(id=self.user_id).first().username
+        return f'{username}\n' \
+               f'{self.rating}\n' \
+               f'{self.body}\n'
 
 
 @login.user_loader

@@ -31,7 +31,7 @@ class DeleteAccountForm(FlaskForm):
 
 
 class ReviewForm(FlaskForm):
-    rating = IntegerField("Give a rating for this product from 1 to 5", validators=[NumberRange(1, 5, "1-5"),
+    rating = IntegerField("Give a rating from 1 to 5", validators=[NumberRange(1, 5, "1-5"),
                                                                                     DataRequired()])
     body = TextAreaField("Add a written review")
     submit = SubmitField("Submit")

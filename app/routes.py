@@ -3,7 +3,7 @@ from sqlalchemy import insert
 from app import webapp, db
 from flask import render_template as r, flash, request, redirect, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, UserRole, Product, Category, Order, Review
+from app.models import User, UserRole, Product, Category, Order, OrderRow, Review
 from app.forms import LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, NewProductForm, ReviewForm
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories
 
@@ -127,19 +127,29 @@ def delete_account():
 @webapp.route("/product/<product_id>/")
 @login_required
 def product_page(product_id):
-    return render_template("product.html", product_id=product_id)
+    reviews = db.session.query(User, Review).filter(Review.product_id == product_id).filter(User.id
+                                                                                            == Review.user_id).all()
+    rating_sum = 0
+    for review in reviews:
+        rating_sum += review.Review.rating
+    rating_avg = rating_sum / len(reviews)
+    rating_avg = round(rating_avg, 1)
+    return render_template("product.html", product_id=product_id, reviews=reviews, avg=rating_avg)
 
 
 @webapp.route("/product/<int:product_id>/reviews", methods=['GET', 'POST'])
 @login_required
 def product_reviews(product_id):
+    # check if user has bought this product
+    # commenting this out for now because there is no buying functionality
+    # if db.session.query(Order, OrderRow)\
+    #         .filter(Order.user_id == current_user.id).filter(OrderRow.product_id == product_id).count() == 0:
+    #     flash("You need to have bought an item to review it.")
+    #     return redirect(f'/product/{product_id}', code=302)
+
     # check if user has already reviewed this product
     if Review.query.filter_by(user_id=current_user.id, product_id=product_id).count() != 0:
         flash("You've already reviewed this product")
-        return redirect(f'/product/{product_id}', code=302)
-    # check if user has bought this product
-    if Order.query.filter_by(user_id=current_user.id).count == 0:
-        flash("You need to have bought an item to review it.")
         return redirect(f'/product/{product_id}', code=302)
 
     form = ReviewForm(request.form)

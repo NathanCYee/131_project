@@ -13,5 +13,12 @@
     {% endwith %}
     </br>
     <h1>Product ID: {{ product_id }}</h1>
-    <a href="/product/{{ product_id }}/reviews">Review</a>
+    <p><a href="/product/{{ product_id }}/reviews">Review</a></p>
+    <p>Average Rating: {{ avg }}</p>
+    <br>
+    {% for review in reviews %}
+        <p>{{ review.User.username }} gave a rating of {{ review.Review.rating }}:</p>
+        <p>{{ review.Review.body }}</p>
+        <br>
+    {% endfor %}
 {% endblock %}
