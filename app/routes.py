@@ -227,7 +227,6 @@ def purchase_cart():
     for i in cart:
         product = Product.query.filter_by(id=i.product_id).first()
         total += (product.price * i.quantity)
-    flash("Total: ", total)
     if request.method == 'POST' and form.validate():
         submit = form.submit.data
         if submit:

@@ -13,6 +13,7 @@
     </br>
     <form action="/checkout" method="POST">
         {{form.hidden_tag()}}
+        <h1>Total: {{total}}</h1>
         <p>
             {{form.address.label}}</br>
             {{form.address(size=32)}}
