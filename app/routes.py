@@ -220,7 +220,7 @@ def product(prod_id):
 
 @webapp.route("/checkout", methods=['GET', 'POST'])
 @login_required
-def purchase_cart():
+def checkout():
     form = CheckoutForm(request.form)
     cart = current_user.cart_items.all()
     total = 0
@@ -252,6 +252,8 @@ def purchase_cart():
         else:
             flash("You need to confirm to purchase cart")
             return redirect('/checkout')
+    else:
+        return render_template('checkout.html', total=total, form=form)
             
 
 

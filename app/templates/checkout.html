@@ -13,7 +13,6 @@
     </br>
     <form action="/checkout" method="POST">
         {{form.hidden_tag()}}
-        <h1>Total: {{total}}</h1>
         <p>
             {{form.address.label}}</br>
             {{form.address(size=32)}}
@@ -22,9 +21,7 @@
             {{form.billing.label}}</br>
             {{form.billing(size=32)}}
         </p>
-        <p>
-            {{total}}</br>
-        </p>
+        <p>Total: {{total}}</p></br>
         <p>
             {{form.submit()}}</br>
         </p>
