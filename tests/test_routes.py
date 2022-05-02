@@ -311,14 +311,6 @@ def test_add_cart(db, client):
                     name="iPhone", price=999.99, description="Lorem ipsum")
     db.session.add(product)
 
-    #make order
-    order=Order(user_id=user.id, ship_address="test_blvd")
-    db.session.add(order)
-
-    #make order_row
-    order_row=OrderRow(id=order.id, product_id=product.id, quantity=1, 
-                        product_price=product.price)
-
     #commit to database
     db.commit()
 
@@ -330,17 +322,15 @@ def test_add_cart(db, client):
         user = User.query.filter_by(username=user.username).first()
         
         request = client.post('/cart', 
-                                data={'product_id': product.id, 'quantity': order_row.quantity, 'submit': True})
+                                data={'product_id': product.id, 'quantity': 1, 'submit': True})
         assert request.status_code == 302 # successful redirect to cart page
 
         cart_item = CartItem.query.filter_by(product_id=product.id)
-        assert cart_item.count == 1
+        assert cart_item.product_id == product.id
 
         #clean up changes
         User.query.delete()
         Product.query.delete()
-        Order.query.delete()
-        OrderRow.query.delete()
         CartItem.query.delete()
         db.session.query(UserRole).delete()
         db.session.commit()
@@ -356,13 +346,9 @@ def test_checkout(db, client):
                     name="iPhone", price=999.99, description="Lorem ipsum")
     db.session.add(product)
 
-    #make order
-    order=Order(user_id=user.id, ship_address="test_blvd")
-    db.session.add(order)
-
-    #make order_row
-    order_row=OrderRow(id=order.id, product_id=product.id, quantity=1, 
-                        product_price=product.price)
+    #make cart_item
+    cart_item=CartItem(product_id=product.id, user_id=user.id, quantity=1)
+    db.session.add(cart_item)
 
     #commit to database
     db.commit()
@@ -375,17 +361,23 @@ def test_checkout(db, client):
         user = User.query.filter_by(username=user.username).first()
         
         request = client.post('/checkout', 
-                                data={'confirm': True, 'address': order.ship_address, 'submit': True})
+                                data={'confirm': True, 'address': "test_blvd", 'submit': True})
         assert request.status_code == 302 # successful redirect to cart page
 
+        #order created matching user id
         order = Order.query.filter_by(user_id=user.id)
-        assert order.count == 1
+        assert order.count() == 1
+
+        #order row created with matching product id
+        order_rows = OrderRow.query.filter_by(product_id=product.id)
+        assert order_rows.count() == 1
+
+        #user should have no cartitems left
+        assert user.cart_items.count() == 0
 
         #clean up changes
         User.query.delete()
         Product.query.delete()
-        Order.query.delete()
-        OrderRow.query.delete()
         CartItem.query.delete()
         db.session.query(UserRole).delete()
         db.session.commit()
