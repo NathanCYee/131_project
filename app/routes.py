@@ -135,7 +135,7 @@ def add_cart():
         product_query = Product.query.filter_by(id=prod_id)
         if product_query.count() < 1:
             flash("Product not found!")
-            return redirect('/', code=404)
+            return abort(404)
         else:
             product = product_query.first()
             current_rows = current_user.cart_items.filter_by(product_id=product.id)
@@ -225,24 +225,29 @@ def checkout():
     cart = current_user.cart_items.all()
     total = 0
     for i in cart:
-        product = Product.query.filter_by(id=i.product_id).first()
+        product = Product.query.get(i.product_id)
         total += (product.price * i.quantity)
     if request.method == 'POST' and form.validate():
         submit = form.submit.data
         if submit:
-            #takes in user info
+            # takes in user info
             address = form.address.data
             billing = form.billing.data
-        
-            #create order
+
+            # create order
             order = Order(user_id=current_user.id, ship_address=address)
             db.session.add(order)
+            db.session.commit()
 
-            for row in cart: 
-                product = Product.query.filter_by(id=row.product_id).first()
+
+            for row in cart:
+                product = Product.query.get(row.product_id)
                 order_row = OrderRow(id=order.id, product_id=row.product_id, quantity=row.quantity,
-                                    product_price=product.price)
+                                     product_price=product.price)
                 db.session.add(order_row)
+            db.session.commit()
+
+            for row in cart:
                 db.session.delete(row)
 
             db.session.commit()
@@ -252,7 +257,6 @@ def checkout():
             return redirect('/checkout')
     else:
         return render_template('checkout.html', total=total, form=form)
-            
 
 
 @webapp.route('/account_test')
