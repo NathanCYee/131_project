@@ -113,7 +113,7 @@
                                 <div class="card-body my-0 py-0">
                                     <div class="d-flex justify-content-between align-items-center py-1">
                                         <h5 class="card-title fs-4">{{ product.name }}</h5>
-                                        <p class="card-text fs-5 fw-bolder">${{ product.price }}</p>
+                                        <p class="card-text fs-5 fw-bolder">{{ "$%.2f"|format(product.price) }}</p>
                                     </div>
                                     <a href="{{ '/product/%d' % product.id }}" class="btn btn-warning">View</a>
                                 </div>
