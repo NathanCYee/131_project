@@ -119,7 +119,7 @@ def test_product(db):
 
         # test params
         quantity = 1
-        
+
         # create the item
         cart_item = CartItem(product_id=product.id, user_id=user.id, quantity=quantity)
         db.session.add(cart_item)

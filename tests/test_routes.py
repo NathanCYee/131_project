@@ -1,5 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 
+from app.forms import DeleteAccountForm
 from app.models import User, UserRole, Product, Order, OrderRow, Review
 from sqlalchemy.orm import sessionmaker
 
@@ -26,6 +27,9 @@ def test_good_login(db, client):
     db.session.commit()
 
     with client:
+        response = client.get('/login')
+        assert b'Login' in response.data
+
         response = client.post('/login',
                                data={'username': username, 'password': password, 'submit': True})
         assert response.status_code == 302  # 302 successful redirect to home page
@@ -184,6 +188,39 @@ def test_bad_register(db, client):
     db.session.flush()
 
 
+def test_account_info(db, client):
+    # test params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+
+    new_password = "Pass-2"
+
+    success_message = b"Password successfully changed"
+
+    # add a test user to the database
+    user = User(username=username, email=email)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+
+    with client:
+        response = client.post('/login',
+                               data={'username': username, 'password': password, 'submit': True})
+        assert response.status_code == 302  # successful login, redirected to homepage
+
+        response = client.get('/account_info')
+        assert response.status_code == 200  # Successful update
+        assert bytes(user.username, 'utf-8') in response.data
+        assert bytes(user.email, 'utf-8') in response.data
+
+    # clean up any changes
+    User.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
 def test_good_password_update(db, client):
     # test params
     username = "Test1"
@@ -287,8 +324,10 @@ def test_delete_account(db, client):
         assert response.status_code == 302  # successful login, redirected to homepage
 
         response = client.get('/account_test')
-        print(response.data)
         assert response.status_code == 200  # successfully reached the test
+
+        response = client.get('/delete_account')
+        assert b"I want to delete my account." in response.data
 
         response = client.post('/delete_account', data={'confirm': True, 'submit': True})
         assert response.status_code == 302  # Redirected to login page
@@ -304,6 +343,31 @@ def test_delete_account(db, client):
     db.session.query(UserRole).delete()
     db.session.commit()
     db.session.flush()
+
+
+def test_product_page(db, client):
+    # test params
+    search_query = "cool"
+    search_query2 = "(c|C)ool"
+
+    name = "Cool shirt"
+    product_price = 999.99
+    description = """Lorem ipsum dolor sit amet, consectetur adipiscing elit."""
+
+    # create the product
+    product = Product(merchant_id=0, name=name, price=product_price, description=description,
+                      category_id=1)
+    db.session.add(product)
+    db.session.commit()
+    with client:
+        response = client.get(f'/product/{product.id}')
+        assert response.status_code == 200
+        assert bytes(product.name, 'utf-8') in response.data
+        assert bytes(f"{product.price:.2f}", 'utf-8') in response.data
+        assert bytes(product.description, 'utf-8') in response.data
+
+        response = client.get('/product/10000')
+        assert response.status_code == 404
 
 
 def test_search(db, client):
@@ -356,6 +420,9 @@ def test_search(db, client):
         # should have both `cool` and `Cool`
         assert bytes(name2, 'utf-8') in response.data
         assert bytes(name, 'utf-8') in response.data
+
+        response = client.get('/search', query_string={'q': ''})
+        assert response.status_code == 200
 
 
 def test_client_order(db, client):
@@ -587,6 +654,64 @@ def test_add_cart(db, client):
         db.session.flush()
 
 
+def test_cart_remove(db, client):
+    # test params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+
+    # add a test user to the database
+    user = User(username=username, email=email)
+    user.set_password(password)
+    db.session.add(user)
+
+    # make product
+    product = Product(id=321, category_id=321, merchant_id=123,
+                      name="iPhone", price=999.99, description="Lorem ipsum")
+    db.session.add(product)
+
+    # commit to database
+    db.session.commit()
+
+    with client:
+        request = client.post('/login',
+                              data={'username': username, 'password': password, 'submit': True})
+        assert request.status_code == 302  # successful login, redirected to homepage
+
+        request = client.post('/cart',
+                              data={'product_id': product.id, 'quantity': 1, 'submit': True})
+        assert request.status_code == 302  # successful redirect to cart page
+
+        # get the user after the item was added to cart
+        user = User.query.filter_by(username=username).first()
+
+        cart_items = user.cart_items
+        cart_row = cart_items.first()
+        assert cart_items.count() == 1
+        assert cart_row.product_id == product.id
+
+        request = client.get(f'/cart/remove/{cart_row.id}')
+        assert request.status_code == 302
+        user = User.query.filter_by(username=username).first()
+
+        cart_items = user.cart_items
+        assert cart_items.count() == 0
+
+        new_row = CartItem(id=5, product_id=product.id, user_id=5, quantity=10)
+        db.session.add(new_row)
+        db.session.commit()
+        request = client.get(f'/cart/remove/{new_row.id}')
+        assert request.status_code == 403
+
+        # clean up changes
+        User.query.delete()
+        Product.query.delete()
+        CartItem.query.delete()
+        db.session.query(UserRole).delete()
+        db.session.commit()
+        db.session.flush()
+
+
 def test_checkout(db, client):
     # test params
     username = "Test1"
@@ -641,6 +766,76 @@ def test_checkout(db, client):
     User.query.delete()
     Product.query.delete()
     CartItem.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_category(db, client):
+    category_name = "Electronics"
+    category = Category.query.filter_by(name=category_name).first()
+
+    # test params
+    name = "iPhone 1000"
+    product_price = 999.99
+    description = "The brand new iPhone. Lorem ipsum sit amet."
+
+    # create the product
+    product = Product(merchant_id=0, name=name, price=product_price, description=description,
+                      category_id=category.id)
+    db.session.add(product)
+    db.session.commit()
+
+    query_result = Product.query.filter_by(name=name)
+
+    with client:
+        response = client.get(f'/category/{category.id}')
+        assert bytes(category.name, 'utf-8') in response.data
+        assert bytes(product.name, 'utf-8') in response.data
+
+    # reset the state of the db
+    Product.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_merchant_profile(db, client):
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        category_name = "Electronics"
+        category = Category.query.filter_by(name=category_name).first()
+
+        # test params
+        name = "iPhone 1000"
+        product_price = 999.99
+        description = "The brand new iPhone. Lorem ipsum sit amet."
+
+        with client:
+            response = client.post('/merchant/register',
+                                   data={'username': username, 'email': email, 'password': password, 'submit': True})
+            assert response.status_code == 302  # 302 successful redirect to home page
+            # check to see if the user is in the database
+
+            user = User.query.filter_by(username=username).first()
+
+            # create the product
+            product = Product(merchant_id=user.id, name=name, price=product_price, description=description,
+                              category_id=category.id)
+            session.add(product)
+            session.commit()
+
+            response = client.get(f'/merchant/{user.id}')
+            assert bytes(user.username, 'utf-8') in response.data
+            assert bytes(product.name, 'utf-8') in response.data
+
+    # reset the state of the db
+    User.query.delete()
+    Product.query.delete()
     db.session.query(UserRole).delete()
     db.session.commit()
     db.session.flush()
