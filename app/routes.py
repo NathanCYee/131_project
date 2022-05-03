@@ -481,7 +481,6 @@ def account_test():
 
 
 @webapp.route('/merchant/account_test')
-@login_required
 @merchant_required
 def merchant_account_test():
     """Used for testing, should only be reachable if logged in as a merchant, else it would redirect the user to the
