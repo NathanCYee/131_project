@@ -16,3 +16,11 @@ def test_get_category_dict(db):
         cat = Category.query.filter_by(name=category).first()
         assert category in res.keys()
         assert res[category] == cat.id
+
+
+def test_prevent_merchant(client):
+    with client:
+        response = client.get('/merchant/account_test')
+        assert response.status_code == 302
+        response = client.get('/merchant/account_test', follow_redirects=True)
+        assert response.request.path == '/merchant/login'
