@@ -201,7 +201,7 @@ def product(prod_id):
             rating_avg = round(rating_avg, 1)
         # get the merchant of the product
         merchant = User.query.get(product.merchant_id)
-        suggested = Category.query.get(product.category_id).products[:10].all()
+        suggested = Category.query.get(product.category_id).products[:10]
         return render_template('product.html', product=product, merchant=merchant, form=form, product_id=product.id,
                                reviews=reviews, avg=rating_avg, suggested=suggested)
 
