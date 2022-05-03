@@ -12,14 +12,16 @@
         {% endif %}
     {% endwith %}
     </br>
-    <h1>Delete Account.</h1>
-    <form action="/delete_account" method="POST">
-        {{ form.hidden_tag() }}
-        <div class="form-check">
-            {{ form.confirm.label }}
-            {{ form.confirm(class_="form-check-input") }}
-        </div>
-        </br>
-        <p>{{ form.submit(class_="btn btn-danger") }}</p>
-    </form>
+    <div class="container">
+        <h1>Delete Account.</h1>
+        <form action="/delete_account" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-check">
+                {{ form.confirm.label }}
+                {{ form.confirm(class_="form-check-input") }}
+            </div>
+            </br>
+            <p>{{ form.submit(class_="btn btn-danger") }}</p>
+        </form>
+    </div>
 {% endblock %}

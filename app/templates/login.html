@@ -11,26 +11,28 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <header class="pb-3 mb-4 border-bottom">
-        <h1>Sign in</h1>
-    </header>
-    <div class="row">
-        <div class="col-xs-4">
-            <div class="p-5 mb-4 bg-light text-dark border rounded-3">
-                <div class="container-fluid">
-                    <form action="/login" method="POST" class="form-group">
-                        {{ form.hidden_tag() }}
-                        <p>
-                            {{ form.username.label }}<br>
-                            {{ form.username(size=32, class_="form-control", placeholder="Username" ) }}
-                        </p>
-                        <p>
-                            {{ form.password.label }}<br>
-                            {{ form.password(size=32, class_="form-control", placeholder="Password") }}
-                        </p>
-                        <p>{{ form.submit(class_="btn btn-primary") }}</p>
-                    </form>
-                    <a href="/register">Register a new account</a>
+    <div class="container">
+        <header class="pb-3 mb-4 border-bottom">
+            <h1>Sign in</h1>
+        </header>
+        <div class="row">
+            <div class="col-xs-4">
+                <div class="p-5 mb-4 bg-light text-dark border rounded-3 fw-bolder">
+                    <div class="container-fluid">
+                        <form action="/login" method="POST" class="form-group">
+                            {{ form.hidden_tag() }}
+                            <p>
+                                {{ form.username.label }}<br>
+                                {{ form.username(size=32, class_="form-control", placeholder="Username" ) }}
+                            </p>
+                            <p>
+                                {{ form.password.label }}<br>
+                                {{ form.password(size=32, class_="form-control", placeholder="Password") }}
+                            </p>
+                            <p>{{ form.submit(class_="btn btn-warning") }}</p>
+                        </form>
+                        <a href="/register" class="text-warning">Register a new account</a>
+                    </div>
                 </div>
             </div>
         </div>

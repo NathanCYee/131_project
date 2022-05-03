@@ -5,13 +5,13 @@
 {% block main %}
   
     {% if current_user.is_authenticated %}
-    <div class="bg-dark pb-0 text-white">
+    <div class="bg-primary pb-0 text-white border-top">
         <div class="container">
             <div class="d-flex align-items-center justify-content-around">
                 <h1 class="display-4">Hello, {{ current_user.username }}</h1>
                 <p class=" lead m-0 pb-2 ">Welcome back! Explore popular items below or view your cart.</p>
                 <p class="lead">
-                  <a class="btn btn-warning btn-md" href="/cart" role="button">Cart</a>
+                <a class="btn btn-warning btn-md" href="/cart" role="button">Cart</a>
                 </p>
             </div>
         </div>
@@ -94,7 +94,9 @@
               <!--Cards-->
               <div class="card col-4 p-2 mx-2" style="width: 18rem;">
                 {% if product.images[0] %}
+                <a href={{ 'product/%d' %product.id }}>
                 <img src={{ '%s' %product.images[0].path }} class="card-img-top" alt="Card Image" align="middle" style="max-width:100%; aspect-ratio: 1 / 1; ">
+                </a>
                 {% else %}
                 <img src="#" class="card-img-top" alt="Card Image">
                 {% endif %}
@@ -103,9 +105,9 @@
                         <h5 class="card-title fs-4">{{product.name}}</h5>
                         <p class="card-text fs-5 fw-bolder">${{product.price}}</p>
                     </div>
-                  <a href="#" class="btn btn-warning">View</a>
+                  <a href={{ 'product/%d' %product.id }} class="btn btn-warning">View</a>
                 </div>
-              </div>
+            </div>
               {% endfor %}
               <!--End Cards-->
             </div>

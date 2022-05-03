@@ -10,31 +10,32 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
+    <div class="container">          
+        </br>
+        <h1><strong>Total</strong>: {{ "$%.2f"|format(total) }}</h1></br>
 
-    </br>
-    <h1><strong>Total</strong>: {{ "$%.2f"|format(total) }}</h1></br>
-
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Product</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Total price</th>
-            <th scope="col">Remove</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for k, v in cart_items.items() %}
+        <table class="table">
+            <thead>
             <tr>
-                <th scope="row">{{ k }}</th>
-                <td><a href="{{ '/product/%s' %v.product.id }}">{{ v.product.name }}</a></td>
-                <td>{{ v.quantity }}</td>
-                <td>${{ v.quantity*v.product.price }}</td>
-                <td><a href="{{ '/cart/remove/%s' %v.id }}">Remove</a></td>
+                <th scope="col">#</th>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total price</th>
+                <th scope="col">Remove</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <a href="/checkout">Continue to Checkout</a>
+            </thead>
+            <tbody>
+            {% for k, v in cart_items.items() %}
+                <tr>
+                    <th scope="row">{{ k }}</th>
+                    <td><a href="{{ '/product/%s' %v.product.id }}">{{ v.product.name }}</a></td>
+                    <td>{{ v.quantity }}</td>
+                    <td>${{ v.quantity*v.product.price }}</td>
+                    <td><a href="{{ '/cart/remove/%s' %v.id }}">Remove</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="/checkout">Continue to Checkout</a>
+    </div>
 {% endblock %}
