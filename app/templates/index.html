@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="../static/main.css"/>
 
 {% block main %}
-  
+
     {% if current_user.is_authenticated %}
     <div class="bg-primary pb-0 text-white border-top">
         <div class="container">
@@ -15,50 +15,60 @@
                 </p>
             </div>
         </div>
-    </div>
     {% endif %}
-  
+
     <div id="CarouselSlider" class="carousel carousel-dark slide" data-bs-ride="carousel">
-      <div class="carousel-indicators">
-          <button type="button" data-bs-target="#CarouselSlider" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#CarouselSlider" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#CarouselSlider" data-bs-slide-to="2" aria-label="Slide 3"></button>
-      </div>
-      <div class="carousel-inner">
-        
-          <div class="carousel-item active" data-bs-interval="10000">
-              <img src="{{ url_for('static', filename='./images/pexels-artem-beliaikin-1051747.jpg')}}" style="width: 100%; height: 20vw; object-fit: cover;" alt="Carousel One">
-              <div class="carousel-caption text-white d-none d-md-block col-6">
-                  <h3 class="fs-1">Everything, a click away.</h3>
-                  <p class="fw-bolder fs-4" style="letter-spacing: .05rem">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.</p>
-                  <a href="#" class="btn btn-warning mt-3">Learn More</a>
-              </div>
-          </div>
-          <div class="carousel-item" data-bs-interval="2000">
-              <img src="{{ url_for('static', filename='./images/pexels-artem-beliaikin-1051747.jpg')}}" style="width: 100%; height: 20vw; object-fit: cover;" alt="Carousel Two">
-              <div class="carousel-caption text-white d-none d-md-block col-6">
-                  <h3 class="fs-1">Browse Hot Deals</h3>
-                  <p class="fw-bolder fs-4" style="letter-spacing: .05rem">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words.</p>
-                  <a href="#" class="btn btn-warning mt-3">Learn More</a>
-              </div>
-          </div>
-          <div class="carousel-item">
-              <img src="{{ url_for('static', filename='./images/pexels-artem-beliaikin-1051747.jpg')}}" style="width: 100%; height: 20vw; object-fit: cover;" style="object-fit: contain;" alt="Carousel Three">
-              <div class="carousel-caption text-white d-none d-md-block col-6">
-                  <h3 class="fs-1">Buy and Sell!</h3>
-                  <p class="fw-bolder fs-4" style="letter-spacing: .05rem">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum.</p>
-                  <a href="#" class="btn btn-warning mt-3">Learn More</a>
-              </div>
-          </div>
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#CarouselSlider" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#CarouselSlider" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-      </button>
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#CarouselSlider" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#CarouselSlider" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#CarouselSlider" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+
+            <div class="carousel-item active" data-bs-interval="10000">
+                <img src="{{ url_for('static', filename='./images/pexels-artem-beliaikin-1051747.jpg') }}"
+                     style="width: 100%; height: 20vw; object-fit: cover;" alt="Carousel One">
+                <div class="carousel-caption text-white d-none d-md-block col-6">
+                    <h3 class="fs-1">Everything, a click away.</h3>
+                    <p class="fw-bolder fs-4" style="letter-spacing: .05rem">Contrary to popular belief, Lorem Ipsum is
+                        not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making
+                        it over 2000 years old.</p>
+                    <a href="#" class="btn btn-warning mt-3">Learn More</a>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="2000">
+                <img src="{{ url_for('static', filename='./images/pexels-artem-beliaikin-1051747.jpg') }}"
+                     style="width: 100%; height: 20vw; object-fit: cover;" alt="Carousel Two">
+                <div class="carousel-caption text-white d-none d-md-block col-6">
+                    <h3 class="fs-1">Browse Hot Deals</h3>
+                    <p class="fw-bolder fs-4" style="letter-spacing: .05rem">There are many variations of passages of
+                        Lorem Ipsum available, but the majority have suffered alteration in some form, by injected
+                        humour, or randomised words.</p>
+                    <a href="#" class="btn btn-warning mt-3">Learn More</a>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{{ url_for('static', filename='./images/pexels-artem-beliaikin-1051747.jpg') }}"
+                     style="width: 100%; height: 20vw; object-fit: cover;" style="object-fit: contain;"
+                     alt="Carousel Three">
+                <div class="carousel-caption text-white d-none d-md-block col-6">
+                    <h3 class="fs-1">Buy and Sell!</h3>
+                    <p class="fw-bolder fs-4" style="letter-spacing: .05rem">It is a long established fact that a reader
+                        will be distracted by the readable content of a page when looking at its layout. The point of
+                        using Lorem Ipsum.</p>
+                    <a href="#" class="btn btn-warning mt-3">Learn More</a>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#CarouselSlider" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#CarouselSlider" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
 
 
@@ -84,64 +94,66 @@
 
       <!--Category-->
       {% for category, products in rows.items() %}
-      <div class="container my-5 py-2 border border-3 rounded">
-        <h4 class="fw-bolder px-3 py-1 pb-2" style="letter-spacing: .05rem;">{{category}}</h4>
-        <!--Outter card containter-->
-        <div class="container-fluid" style="overflow-y:hidden;" >
-            <!--Card container-->
-            <div class="row text-center flex-row flex-nowrap p-2" >
-            {% for product in products %}
-              <!--Cards-->
-              <div class="card col-4 p-2 mx-2" style="width: 18rem;">
-                {% if product.images[0] %}
-                <a href={{ 'product/%d' %product.id }}>
-                <img src={{ '%s' %product.images[0].path }} class="card-img-top" alt="Card Image" align="middle" style="max-width:100%; aspect-ratio: 1 / 1; ">
-                </a>
-                {% else %}
-                <img src="#" class="card-img-top" alt="Card Image">
-                {% endif %}
-                <div class="card-body my-0 py-0">
-                    <div class="d-flex justify-content-between align-items-center py-1">
-                        <h5 class="card-title fs-4">{{product.name}}</h5>
-                        <p class="card-text fs-5 fw-bolder">${{product.price}}</p>
+        <div class="container my-5 py-2 border border-3 rounded">
+            <h4 class="fw-bolder px-3 py-1 pb-2" style="letter-spacing: .05rem;">{{category}}</h4>
+            <!--Outter card containter-->
+            <div class="container-fluid" style="overflow-y:hidden;" >
+                <!--Card container-->
+                <div class="row text-center flex-row flex-nowrap p-2" >
+                {% for product in products %}
+                <!--Cards-->
+                    <div class="card col-4 p-2 mx-2" style="width: 18rem;">
+                        {% if product.images[0] %}
+                        <a href={{ 'product/%d' %product.id }}>
+                            <img src={{ '%s' %product.images[0].path }} class="card-img-top" alt="Card Image" 
+                                align="middle" style="max-width:100%; aspect-ratio: 1 / 1; ">
+                        </a>
+                        {% else %}
+                        <img src="#" class="card-img-top" alt="Card Image">
+                        {% endif %}
+                        <div class="card-body my-0 py-0">
+                            <div class="d-flex justify-content-between align-items-center py-1">
+                                <h5 class="card-title fs-4">{{product.name}}</h5>
+                                <p class="card-text fs-5 fw-bolder">${{product.price}}</p>
+                            </div>
+                        <a href={{ 'product/%d' %product.id }} class="btn btn-warning">View</a>
+                        </div>
                     </div>
-                  <a href={{ 'product/%d' %product.id }} class="btn btn-warning">View</a>
+                {% endfor %}
+                <!--End Cards-->
                 </div>
+                <!-- End Card container-->
             </div>
-              {% endfor %}
-              <!--End Cards-->
-            </div>
-            <!--End Card Container-->
+            <!--End Outter card containter-->
         </div>
-      </div>
-      <!--End Category-->
-      {% endfor %}
+        <!--End Category-->
+        {% endfor %}
 
 
-      <!--Below is a sample category section incase you make a mistake.-->
-      <!--
-      <div class="container my-5 py-2 bg-white ">
-        <h4 class="fw-bolder px-3 py-1 pb-2" style="letter-spacing: .05rem;">Category 4</h4>
-        <div class="container-fluid" style="overflow-y:hidden;" > 
-            <div class="row text-center flex-row flex-nowrap p-2" >
-              
-              <div class="card col-4 p-3 mx-3" style="width: 18rem;">
-                <img src="#" class="card-img-top" alt="Card Image">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+        <!--Below is a sample category section incase you make a mistake.-->
+        <!--
+        <div class="container my-5 py-2 bg-white ">
+          <h4 class="fw-bolder px-3 py-1 pb-2" style="letter-spacing: .05rem;">Category 4</h4>
+          <div class="container-fluid" style="overflow-y:hidden;" >
+              <div class="row text-center flex-row flex-nowrap p-2" >
+
+                <div class="card col-4 p-3 mx-3" style="width: 18rem;">
+                  <img src="#" class="card-img-top" alt="Card Image">
+                  <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                  </div>
                 </div>
               </div>
-            </div>
-            
+
+          </div>
         </div>
-      </div>
-      
-    -->
+
+      -->
 
     </div>
-  <!--End home main-->
+    <!--End home main-->
 
 {% endblock %}
 
