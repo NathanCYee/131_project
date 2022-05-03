@@ -20,13 +20,20 @@ E-Buy is a revolutionary E-Commerce website that connects merchants with custome
 
 - Login and register account functionality accessible through `/login` and `/register`
 - Account information, delete account, and change password accessible through `/account_info`
+- Previous orders for customers accessible through `/orders`
 - Merchant portal accessible through `/merchant`
     - Merchant login/register accessible through `/merchant/login` and `/merchant/register`
     - Create a new product accessible through `/merchant/new_product`
+        - Merchants can view and fill orders through `/merchant/orders`
 - Product pages with the url `/product/<id>`
     - Add to cart functionality with quantity on product pages
+    - Product reviews for customers that have ordered a product
+    - Displays product images uploaded by merchant
 - Product catalogs with the url `/catalog/<id>`
+- Merchant catalog accessible through `/merchant/<id>`
+- REGEX search accessible through search form in the navbar
 - Cart located at `/cart` for logged-in users
+- Checkout cart link located in the cart
 
 ## Setup and Install
 
