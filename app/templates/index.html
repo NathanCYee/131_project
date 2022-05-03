@@ -11,10 +11,11 @@
                 <h1 class="display-4">Hello, {{ current_user.username }}</h1>
                 <p class=" lead m-0 pb-2 ">Welcome back! Explore popular items below or view your cart.</p>
                 <p class="lead">
-                <a class="btn btn-warning btn-md" href="/cart" role="button">Cart</a>
+                    <a class="btn btn-warning btn-md" href="/cart" role="button">Cart</a>
                 </p>
             </div>
         </div>
+    </div>
     {% endif %}
 
     <div id="CarouselSlider" class="carousel carousel-dark slide" data-bs-ride="carousel">
@@ -94,7 +95,7 @@
 
       <!--Category-->
       {% for category, products in rows.items() %}
-        <div class="container my-5 py-2 border border-3 rounded">
+        <div class="container my-5 py-2 border border-1 border-dark rounded">
             <h4 class="fw-bolder px-3 py-1 pb-2" style="letter-spacing: .05rem;">{{category}}</h4>
             <!--Outter card containter-->
             <div class="container-fluid" style="overflow-y:hidden;" >
