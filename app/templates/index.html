@@ -5,17 +5,17 @@
 {% block main %}
 
     {% if current_user.is_authenticated %}
-    <div class="bg-primary pb-0 text-white border-top">
-        <div class="container">
-            <div class="d-flex align-items-center justify-content-around">
-                <h1 class="display-4">Hello, {{ current_user.username }}</h1>
-                <p class=" lead m-0 pb-2 ">Welcome back! Explore popular items below or view your cart.</p>
-                <p class="lead">
-                    <a class="btn btn-warning btn-md" href="/cart" role="button">Cart</a>
-                </p>
+        <div class="bg-primary pb-0 text-white border-top">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-around">
+                    <h1 class="display-4">Hello, {{ current_user.username }}</h1>
+                    <p class=" lead m-0 pb-2 ">Welcome back! Explore popular items below or view your cart.</p>
+                    <p class="lead">
+                        <a class="btn btn-warning btn-md" href="/cart" role="button">Cart</a>
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
     {% endif %}
 
     <div id="CarouselSlider" class="carousel carousel-dark slide" data-bs-ride="carousel">
@@ -76,58 +76,59 @@
     <!--Home Main-->
     <div class="containter pt-4 ">
 
-       <!--Deals 
-      <div class="container bg-warning p-4 rounded border border-5 border-dark">
-          <h2 class="d-flex justify-content-center pt-0 pb-2">Hot Deals!</h2>
-          
-          <div class="row text-center flex-row justify-content-evenly ">
-            
-            <div class="card col-4 p-3 mx-3" style="width: 18rem;">
-              <img src="#" class="card-img-top" alt="Card Image">
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <a href="#" class="btn btn-primary">View Item</a>
-              </div>
-            </div>
-        
-          </div>
-      </div> -->
+        <!--Deals
+       <div class="container bg-warning p-4 rounded border border-5 border-dark">
+           <h2 class="d-flex justify-content-center pt-0 pb-2">Hot Deals!</h2>
 
-      <!--Category-->
-      {% for category, products in rows.items() %}
-        <div class="container my-5 py-2 border border-1 border-dark rounded">
-            <h4 class="fw-bolder px-3 py-1 pb-2" style="letter-spacing: .05rem;">{{category}}</h4>
-            <!--Outter card containter-->
-            <div class="container-fluid" style="overflow-y:hidden;" >
-                <!--Card container-->
-                <div class="row text-center flex-row flex-nowrap p-2" >
-                {% for product in products %}
-                <!--Cards-->
-                    <div class="card col-4 p-2 mx-2" style="width: 18rem;">
-                        {% if product.images[0] %}
-                        <a href={{ 'product/%d' %product.id }}>
-                            <img src={{ '%s' %product.images[0].path }} class="card-img-top" alt="Card Image" 
-                                align="middle" style="max-width:100%; aspect-ratio: 1 / 1; ">
-                        </a>
-                        {% else %}
-                        <img src="#" class="card-img-top" alt="Card Image">
-                        {% endif %}
-                        <div class="card-body my-0 py-0">
-                            <div class="d-flex justify-content-between align-items-center py-1">
-                                <h5 class="card-title fs-4">{{product.name}}</h5>
-                                <p class="card-text fs-5 fw-bolder">${{product.price}}</p>
+           <div class="row text-center flex-row justify-content-evenly ">
+
+             <div class="card col-4 p-3 mx-3" style="width: 18rem;">
+               <img src="#" class="card-img-top" alt="Card Image">
+               <div class="card-body">
+                 <h5 class="card-title"></h5>
+                 <a href="#" class="btn btn-primary">View Item</a>
+               </div>
+             </div>
+
+           </div>
+       </div> -->
+
+        <!--Category-->
+        {% for category, products in rows.items() %}
+            <div class="container my-5 py-2 border border-1 border-dark rounded">
+                <h4 class="fw-bolder px-3 py-1 pb-2" style="letter-spacing: .05rem;">{{ category }}</h4>
+                <!--Outter card containter-->
+                <div class="container-fluid" style="overflow-y:hidden;">
+                    <!--Card container-->
+                    <div class="row text-center flex-row flex-nowrap p-2">
+                        {% for product in products %}
+                            <!--Cards-->
+                            <div class="card col-4 p-2 mx-2" style="width: 18rem;">
+                                {% if product.images[0] %}
+                                    <a href={{ 'product/%d' %product.id }}>
+                                        <img src={{ '%s' %product.images[0].path }} class="card-img-top"
+                                             alt="Card Image"
+                                             align="middle" style="max-width:100%; aspect-ratio: 1 / 1; ">
+                                    </a>
+                                {% else %}
+                                    <img src="#" class="card-img-top" alt="Card Image">
+                                {% endif %}
+                                <div class="card-body my-0 py-0">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <h5 class="card-title fs-4">{{ product.name }}</h5>
+                                        <p class="card-text fs-5 fw-bolder">${{ product.price }}</p>
+                                    </div>
+                                    <a href={{ 'product/%d' %product.id }} class="btn btn-warning">View</a>
+                                </div>
                             </div>
-                        <a href={{ 'product/%d' %product.id }} class="btn btn-warning">View</a>
-                        </div>
+                        {% endfor %}
+                        <!--End Cards-->
                     </div>
-                {% endfor %}
-                <!--End Cards-->
+                    <!-- End Card container-->
                 </div>
-                <!-- End Card container-->
+                <!--End Outter card containter-->
             </div>
-            <!--End Outter card containter-->
-        </div>
-        <!--End Category-->
+            <!--End Category-->
         {% endfor %}
 
 
