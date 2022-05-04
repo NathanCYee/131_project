@@ -14,6 +14,8 @@
     <h1><strong>Total</strong>: {{ "$%.2f"|format(total) }}</h1></br>
     <form action="/checkout" method="GET">
         <p>
+        <div class="input-group mb-3">
+
             {% if code %}
                 <input class="form-control mr-sm-2" id="code" name="code" placeholder="Discount Code"
                        aria-label="Discount Code" value="{{ code }}">
@@ -21,8 +23,10 @@
                 <input class="form-control mr-sm-2" id="code" name="code" placeholder="Discount Code"
                        aria-label="Discount Code">
             {% endif %}
-            <small  class="form-text text-muted">Type in your code and press enter to apply to your
-                cart.</small>
+            <button class="btn btn-secondary" type="submit" id="button-addon2">Apply</button>
+
+        </div>
+        <small class="form-text text-muted">Enter a discount code.</small>
         </p>
     </form>
     <header class="pb-3 mb-4 border-bottom">

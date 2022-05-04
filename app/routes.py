@@ -282,6 +282,7 @@ def orders_filled():
 
 
 @webapp.route("/product/<int:product_id>/review", methods=['GET', 'POST'])
+@prevent_merchant
 @login_required
 def product_review(product_id):
     """
@@ -320,6 +321,7 @@ def product_review(product_id):
 
 
 @webapp.route('/cart', methods=['GET', 'POST'])
+@prevent_merchant
 @login_required
 def cart():
     """
@@ -367,6 +369,7 @@ def cart():
 
 
 @webapp.route('/cart/remove/<int:row_id>', methods=['GET'])
+@prevent_merchant
 @login_required
 def cart_remove(row_id):
     """
@@ -428,6 +431,7 @@ def merchant_profile(merchant_id):
 
 
 @webapp.route("/checkout", methods=['GET', 'POST'])
+@prevent_merchant
 @login_required
 def checkout():
     """
@@ -478,7 +482,10 @@ def checkout():
             flash("You need to confirm to purchase cart")
             return redirect('/checkout')
     else:
-        print(form.discount_code.data)
+        # prevent access to checkout if cart is empty
+        if len(cart) == 0:
+            flash("Your cart is empty!")
+            return redirect('/cart')
         # get discount code from URL
         code = request.args.get('code')
         discount = False
