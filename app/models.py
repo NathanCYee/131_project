@@ -1,4 +1,8 @@
-from datetime import datetime
+import json
+from datetime import datetime, date
+
+from sqlalchemy import cast
+from sqlalchemy.dialects.postgresql import JSONB
 
 from app import db, login
 from flask_login import UserMixin
@@ -217,3 +221,55 @@ def load_user(id):
     :return: The User object that has the given ID
     """
     return User.query.get(int(id))
+
+
+class Discount(db.Model):
+    """
+    A Model object that represents a user. Also supports UserMixin for FlaskLogin
+    :attr id: The primary key of the discount
+    :attr code: The code of the discount that the user can use
+    :attr expiration: The expiration date of the discount
+    :attr details: A JSON attribute containing the details of the discount
+
+    details schema
+    details = {
+        'type':0(product),1(category),2(all),
+        'applicable_id': product_ids or category_ids,
+        percentage: True/False
+        amount: Float
+        }
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(64), nullable=False, unique=True)
+    expiration = db.Column(db.DateTime)
+    details = db.Column(db.JSON, nullable=False)
+
+    def is_valid(self):
+        cur_date = datetime.today()
+        return cur_date < self.expiration
+
+    def apply_discount(self, cart_item: int):
+        row = CartItem.query.get(cart_item)
+        if self.is_valid() and row is not None:
+            discount_details = self.details
+            product = Product.query.get(row.product_id)
+            if discount_details['type'] == 2:
+                if discount_details['percentage']:
+                    discount = discount_details['amount'] * product.price
+                    return discount
+                if not discount_details['percentage']:
+                    return discount_details['amount']
+            if discount_details['type'] == 1 and product.category_id in discount_details["applicable_id"]:
+                if discount_details['percentage']:
+                    discount = discount_details['amount'] * product.price
+                    return discount
+                if not discount_details['percentage']:
+                    return discount_details['amount']
+            if discount_details['type'] == 0 and product.id in discount_details["applicable_id"]:
+                if discount_details['percentage']:
+                    discount = discount_details['amount'] * product.price
+                    return discount
+                if not discount_details['percentage']:
+                    return discount_details['amount']
+            return 0
+        return 0

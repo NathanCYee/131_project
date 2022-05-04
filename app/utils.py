@@ -2,7 +2,7 @@ from functools import wraps
 from flask import flash, redirect
 from flask_login import current_user
 
-from app.models import Role, Category
+from app.models import Role, Category, Discount
 
 
 def get_merchant():
@@ -75,3 +75,8 @@ def get_category_dict():
     :return: A python dictionary with key=category name and value=category id
     """
     return {c.name: c.id for c in Category.query.all()}
+
+
+def create_discount(code: str, type: int, applicable_ids, percentage: bool, amount: float, end_date):
+    details = {'type': type, 'applicable_id': applicable_ids, 'percentage': percentage, 'amount': amount}
+    return Discount(code=code, expiration=end_date, details=details)

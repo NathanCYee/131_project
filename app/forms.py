@@ -1,11 +1,10 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, HiddenField, SelectField, \
-    MultipleFileField, DecimalField
+from wtforms.fields.html5 import DateField
+
 from wtforms.validators import DataRequired, Email, Optional
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField, HiddenField, \
-    SelectField, IntegerField
-from wtforms.validators import DataRequired, Email, NumberRange
+    SelectField, MultipleFileField, SelectMultipleField
 
 
 class LoginForm(FlaskForm):
@@ -89,6 +88,7 @@ class CheckoutForm(FlaskForm):
     :attr billing: Credit card information
     :attr submit: Submit input (should be True)
     """
+    discount_code = HiddenField("Discount")
     address = StringField("Address", validators=[DataRequired()])
     billing = StringField("Billing info", validators=[DataRequired()])
     submit = SubmitField("Place Order")
@@ -125,4 +125,12 @@ class FillOrderForm(FlaskForm):
     """
     merchant_id = HiddenField("Merchant ID", validators=[DataRequired()])
     order_id = HiddenField("Order ID", validators=[DataRequired()])
+    submit = SubmitField("Complete")
+
+
+class NewDiscountForm(FlaskForm):
+    code = StringField("Discount Code", validators=[DataRequired()])
+    amount = FloatField("Discount Amount", validators=[DataRequired()])
+    products = SelectMultipleField("Products", validators=[DataRequired()])
+    expiration_date = DateField("Expiration Date", validators=[DataRequired()])
     submit = SubmitField("Complete")
