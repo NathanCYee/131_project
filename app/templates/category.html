@@ -4,11 +4,12 @@
 <div class="container">
     </br>
     <h1>{{ category.name }}</h1>
-    <table class="table">
+    <table class="table table-hover table-striped ">
         <thead>
             <tr>
                 <th scope="col">Product</th>
                 <th scope="col">Price</th>
+                <th scope="col">
             </tr>
         </thead>
         <tbody>
@@ -29,7 +30,7 @@
                     <a>
                 </td>
                 {% endif %}
-                <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none text-black bolder fs-3">{{ product.name }}</a></td>
+                <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none text-black fw-bolder fs-3">{{ product.name }}</a></td>
                 <td>${{ product.price }}</td>
             </tr>
         {% endfor %}
