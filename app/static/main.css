@@ -1,2 +1,12 @@
+@media screen and (max-width: 480px){
+    #carousel-image {
+        height: 30vh !important;
+    }
+}
 
+@media screen and (min-width: 481px) and (max-width: 1300px){
+    #carousel-image {
+        height: 50vh !important;
+    }
+}
 
