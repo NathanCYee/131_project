@@ -15,6 +15,7 @@ E-Buy is a revolutionary E-Commerce website that connects merchants with custome
 - [Setup and Install](https://github.com/NathanCYee/131_project#Setup-and-Install)
 - [Technologies](https://github.com/NathanCYee/131_project#Technologies)
 - [Team Members](https://github.com/NathanCYee/131_project#Team-Members)
+- [Team Progress] (https://github.com/NathanCYee/131_project#Team-Progress)
 
 ## Features
 
