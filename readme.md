@@ -73,5 +73,9 @@ Project was built with:
 - Nicholas ([@StickOnAStick](https://github.com/StickOnAStick))
 - Nathan Yee ([@NathanCYee](https://github.com/NathanCYee))
 
+## Team Progress
+
+- Gantt Chart - [https://docs.google.com/spreadsheets/d/1MNufmraxPGaFWcTLx7IgA9EN_BQ6yrKa3Abu86le8Vo/edit?usp=sharing]
+
 ---
 ![Your Repository's Stats](https://contrib.rocks/image?repo=NathanCYee/131_project)
