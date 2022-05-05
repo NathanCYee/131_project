@@ -3,10 +3,15 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 import os
 
+"""
+Package containing classes and functions necessary for running the app
+"""
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 content_folder = os.path.join(basedir, 'static/uploads')
 
 webapp = Flask(__name__)
+"""The `Flask` object used to run the webapp."""
 webapp.static_folder = 'static'
 webapp.add_url_rule(
     "/images/<name>", endpoint="images", build_only=True
@@ -22,6 +27,7 @@ webapp.config.from_mapping(
 )
 
 db = SQLAlchemy(webapp)
+"""A `SQLAlchemy` object used to connect to the database"""
 login = LoginManager(webapp)
 login.login_view = 'login'
 

@@ -177,7 +177,8 @@ def delete_account():
 def product(prod_id):
     """
     Retrieve a product page for a given product id. Will abort with a 404 if the ID was not found.
-    :param prod_id: The id of the Product to retrieve
+
+    :param int prod_id: The id of the Product to retrieve
     """
 
     # query the database for the id
@@ -287,7 +288,8 @@ def orders_filled():
 def product_review(product_id):
     """
     Web route for logged in users to review a specific product
-    :param product_id: The ID of the product to review
+
+    :param int product_id: The ID of the product to review
     :return: A webpage allowing the user to review if they haven't already and have ordered the product, redirect back
     to the product page with a warning otherwise
     """
@@ -374,7 +376,8 @@ def cart():
 def cart_remove(row_id):
     """
     Allows a logged-in user to remove a row from their cart
-    :param row_id: The ID of the row to remove
+
+    :param int row_id: The ID of the row to remove
     """
     rows = CartItem.query.filter_by(id=row_id)
     if rows.count() != 1:  # row doesn't exist
@@ -400,7 +403,8 @@ def cart_remove(row_id):
 def category(category_id):
     """
     Generates a product catalog containing all the products of a given category
-    :param category_id: The category to fetch items for
+
+    :param int category_id: The category to fetch items for
     """
 
     # grab the category
@@ -417,7 +421,8 @@ def category(category_id):
 def merchant_profile(merchant_id):
     """
     Generates a product catalog containing all the products of a given merchant
-    :param merchant_id: The merchant to fetch items for
+
+    :param int merchant_id: The merchant to fetch items for
     """
 
     # grab the merchant
@@ -779,7 +784,8 @@ def merchant_orders_filled():
 def images(filename):
     """
     Retrieves an uploaded file
-    :param filename: The name of the file
+
+    :param str filename: The name of the file
     :return: an image (.png, .jpg, .jpeg) that was uploaded
     """
     return send_from_directory(webapp.config["UPLOAD_FOLDER"], filename)

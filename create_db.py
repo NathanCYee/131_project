@@ -13,7 +13,7 @@ merch = Role(name='merchant')
 db.session.add(cust)
 db.session.add(merch)
 
-categories = ["Clothing", "Video Games", "Electronics"]
+categories = ["Clothing", "Video Games", "Electronics", "Home Decor"]
 
 for category in categories:
     new_cat = Category(name=category)
