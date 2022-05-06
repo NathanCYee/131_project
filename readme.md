@@ -15,6 +15,7 @@ E-Buy is a revolutionary E-Commerce website that connects merchants with custome
 - [Setup and Install](https://github.com/NathanCYee/131_project#Setup-and-Install)
 - [Technologies](https://github.com/NathanCYee/131_project#Technologies)
 - [Team Members](https://github.com/NathanCYee/131_project#Team-Members)
+- [Team Progress](https://github.com/NathanCYee/131_project#Team-Progress)
 
 ## Features
 
@@ -72,6 +73,10 @@ Project was built with:
 - Selim Ishakbeyoglu ([@SelimIshakb](https://github.com/SelimIshakb))
 - Nicholas ([@StickOnAStick](https://github.com/StickOnAStick))
 - Nathan Yee ([@NathanCYee](https://github.com/NathanCYee))
+
+## Team Progress
+
+- [Gantt Chart](https://docs.google.com/spreadsheets/d/1MNufmraxPGaFWcTLx7IgA9EN_BQ6yrKa3Abu86le8Vo/edit?usp=sharing) - Chart to track team's progress on development 
 
 ---
 ![Your Repository's Stats](https://contrib.rocks/image?repo=NathanCYee/131_project)
