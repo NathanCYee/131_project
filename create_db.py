@@ -2,10 +2,18 @@ import os
 from os.path import exists
 from app import db
 
+# delete the images
+files = os.listdir('./app/static/uploads')
+for file in files:
+    if ".gitignore" not in file:
+        os.remove(file)
+
+# delete the existing database
 if exists('./app/webapp.db'):
     os.remove('./app/webapp.db')
 db.create_all()
 
+# construct the roles and categories in the database
 from app.models import Role, Category
 
 cust = Role(name='customer')
