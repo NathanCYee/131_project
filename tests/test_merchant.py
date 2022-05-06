@@ -1,6 +1,8 @@
+import datetime
+
 from sqlalchemy.orm import sessionmaker
 
-from app.models import User, UserRole, Product, Category, Order, OrderRow
+from app.models import User, UserRole, Product, Category, Order, OrderRow, Discount
 
 
 def test_merchant_denial(client):
@@ -325,28 +327,22 @@ def test_merchant_fill_orders(db, client):
     db.session.flush()
 
 
-def test_merchant_fill_orders(db, client):
+def test_merchant_discount(db, client):
     # test merchant account params
     username = "Test1"
     email = "test@mail.com"
     password = "Pass-1"
 
-    # test customer params
-    cust_username = "customer_test"
-    cust_email = "test2@mail.com"
-    cust_password = "Pass-1"
-    cust_address = "123 Sesame Street."
+    promo_name = "CODE10"
+    discount = 10
+
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
 
     Session = sessionmaker(db.engine)
     with Session() as session:
-        # create the customer
-        customer = User(username=cust_username, email=cust_email)
-        customer.set_password(cust_password)
-        session.add(customer)
-
         # test product params
         name = "iPhone"
-        price = 999.99
+        product_price = 999.99
         description = "The brand new iPhone. Lorem ipsum sit amet."
         category = Category.query.filter_by(name="Electronics").first()
         with client:
@@ -357,10 +353,61 @@ def test_merchant_fill_orders(db, client):
 
             user = User.query.filter_by(username=username).first()
 
-            # test params
-            name = "iPhone 1000"
-            product_price = 999.99
-            description = "The brand new iPhone. Lorem ipsum sit amet."
+            # create the product
+            product = Product(merchant_id=user.id, name=name, price=product_price, description=description,
+                              category_id=category.id)
+            session.add(product)
+            session.commit()
+
+            applicable_products = [product.id]
+
+            # post a response to the new promo site
+            response = client.post('/merchant/promo',
+                                   data={'code': promo_name, 'amount': discount, 'products': applicable_products,
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+            assert b"Successfully created discount" in response.data
+
+            discounts = Discount.query.filter_by(code=promo_name)
+            assert discounts.count() == 1
+            discount = discounts.all()[0]
+            assert discount.code == promo_name
+            assert discount.is_valid()
+
+    User.query.delete()
+    Product.query.delete()
+    Discount.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_bad_merchant_discount(db, client):
+    # test merchant account params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+
+    promo_name = "CODE10"
+    promo_name2 = "CODE5"
+    discount = 10
+    big_discount = 10000
+
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        # test product params
+        name = "iPhone"
+        product_price = 999.99
+        description = "The brand new iPhone. Lorem ipsum sit amet."
+        category = Category.query.filter_by(name="Electronics").first()
+        with client:
+            response = client.post('/merchant/register',
+                                   data={'username': username, 'email': email, 'password': password, 'submit': True})
+            print(response.data)
+            assert response.status_code == 302  # 302 successful redirect to home page
+
+            user = User.query.filter_by(username=username).first()
 
             # create the product
             product = Product(merchant_id=user.id, name=name, price=product_price, description=description,
@@ -368,42 +415,41 @@ def test_merchant_fill_orders(db, client):
             session.add(product)
             session.commit()
 
-            test_order = Order(user_id=customer.id, ship_address=cust_address)
-            session.add(test_order)
-            session.commit()
-            test_row = OrderRow(id=test_order.id, product_id=product.id, quantity=1, product_price=product.price)
-            session.add(test_row)
-            session.commit()
+            applicable_products = [product.id]
 
-            # check if the merchant can see their orders
-            response = client.get('/merchant/orders')
-            assert response.status_code == 200  # 302 successful redirect to product page
-            # check to see if info from the order is in the page
-            assert bytes(product.name, 'utf-8') in response.data
-            assert bytes(str(test_row.quantity), 'utf-8') in response.data
-            assert bytes(f'{test_row.product_price:.2f}', 'utf-8') in response.data
-            assert bytes(test_order.ship_address, 'utf-8') in response.data
-            assert bytes(customer.username, 'utf-8') in response.data
+            # post a good promo
+            response = client.post('/merchant/promo',
+                                   data={'code': promo_name, 'amount': discount, 'products': applicable_products,
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+            assert b"Successfully created discount" in response.data
 
-            # merchant fills their order
-            response = client.post('/merchant/orders',
-                                   data={'merchant_id': user.id, 'order_id': test_row.id, 'submit': True})
-            assert response.status_code == 302  # redirect back to the homepage
-            # check to see if info from the order removed from the page
-            response = client.get('/merchant/orders')
-            assert bytes(product.name, 'utf-8') not in response.data
-            find_row = OrderRow.query.filter_by(id=test_row.id).first()
-            assert find_row.filled
+            discounts = Discount.query.filter_by(code=promo_name)
+            assert discounts.count() == 1
+            discount = discounts.all()[0]
+            assert discount.code == promo_name
+            assert discount.is_valid()
 
-            # check to see if the order is seen as filled by the merchant
-            response = client.get('/merchant/orders/filled')
-            assert bytes(product.name, 'utf-8') in response.data
+            # post a promo with the same code
+            response = client.post('/merchant/promo',
+                                   data={'code': promo_name, 'amount': discount, 'products': applicable_products,
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+            assert b"Code has already been used" in response.data
 
-    # clean up any changes
+            discounts = Discount.query.filter_by(code=promo_name)
+            assert discounts.count() == 1
+
+            # post a promo with a large value
+            response = client.post('/merchant/promo',
+                                   data={'code': promo_name2, 'amount': big_discount, 'products': applicable_products,
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+            assert b"Discount amount is greater than the price" in response.data
+
+            discounts = Discount.query.filter_by(code=promo_name2)
+            assert discounts.count() == 0
+
     User.query.delete()
     Product.query.delete()
-    Order.query.delete()
-    OrderRow.query.delete()
+    Discount.query.delete()
     db.session.query(UserRole).delete()
     db.session.commit()
     db.session.flush()
