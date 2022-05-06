@@ -77,6 +77,6 @@ Project was built with:
 ## Team Progress
 
 - [Gantt Chart](https://docs.google.com/spreadsheets/d/1MNufmraxPGaFWcTLx7IgA9EN_BQ6yrKa3Abu86le8Vo/edit?usp=sharing) - Chart to track team's progress on development 
-
+- [Documentation](https://nathancyee.github.io/131_project/)
 ---
 ![Your Repository's Stats](https://contrib.rocks/image?repo=NathanCYee/131_project)
