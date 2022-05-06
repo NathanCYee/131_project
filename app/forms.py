@@ -1,10 +1,9 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
-from wtforms.fields.html5 import DateField
 
 from wtforms.validators import DataRequired, Email, Optional
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField, HiddenField, \
-    SelectField, MultipleFileField, SelectMultipleField
+    SelectField, MultipleFileField, SelectMultipleField, DateField
 
 
 class LoginForm(FlaskForm):
