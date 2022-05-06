@@ -26,6 +26,7 @@ E-Buy is a revolutionary E-Commerce website that connects merchants with custome
     - Merchant login/register accessible through `/merchant/login` and `/merchant/register`
     - Create a new product accessible through `/merchant/new_product`
         - Merchants can view and fill orders through `/merchant/orders`
+    - Merchants can create a new promotion for their products at `/merchant/promo`
 - Product pages with the url `/product/<id>`
     - Add to cart functionality with quantity on product pages
     - Product reviews for customers that have ordered a product
@@ -34,7 +35,8 @@ E-Buy is a revolutionary E-Commerce website that connects merchants with custome
 - Merchant catalog accessible through `/merchant/<id>`
 - REGEX search accessible through search form in the navbar
 - Cart located at `/cart` for logged-in users
-- Checkout cart link located in the cart
+    - Checkout cart link located in the cart
+    - Checkout with discount code support
 
 ## Setup and Install
 
@@ -43,7 +45,14 @@ Please make sure python 3 is installed (working on python 3.8).
 - Download the library as a zip or by cloning it using `git clone https://github.com/NathanCYee/131_project.git`
 - Navigate to the folder in which the project is stored (e.g. `cd 131_project`)
 - Install the prerequisites using `pip install .`
-- Setup and create the database by running the create_db.py file using ``python3 create_db.py``
+- Decide if you want to create a new database or use the provided database
+    - If you want to create a new database, setup and create the database by running the create_db.py file
+      using ``python3 create_db.py``
+    - If you are using the sample database, every account has the password `password`
+        - Merchant accounts: `SUPREME`, `HONDIPO`, `Gamestomp`, `Worst-Buy`
+        - Discounts:
+            - `CODE10` - $10 off Cool Shirt, Legit Sandals, Pants Chain
+            - `GAMETIME` - $5 off any Gamestomp video game
 - Run the webapp by running `python3 run.py`
 - If run on a local machine, site will be accessible at `localhost:5000` or `http://127.0.0.1:5000/` from a browser
 
@@ -67,16 +76,18 @@ Project was built with:
 - [CircleCI](https://circleci.com/) - Continuous integration/deployment
 - [Codecov](https://about.codecov.io/) - Code coverage metrics
 
+## Team Progress
+
+- [Gantt Chart](https://docs.google.com/spreadsheets/d/1MNufmraxPGaFWcTLx7IgA9EN_BQ6yrKa3Abu86le8Vo/edit?usp=sharing) -
+  Chart to track team's progress on development
+- [Documentation](https://nathancyee.github.io/131_project/) - Code documentation for the app package.
+
 ## Team Members
 
 - Sarah Singh-**LEAD** ([@SarahS16](https://github.com/SarahS16))
 - Selim Ishakbeyoglu ([@SelimIshakb](https://github.com/SelimIshakb))
 - Nicholas ([@StickOnAStick](https://github.com/StickOnAStick))
 - Nathan Yee ([@NathanCYee](https://github.com/NathanCYee))
-
-## Team Progress
-
-- [Gantt Chart](https://docs.google.com/spreadsheets/d/1MNufmraxPGaFWcTLx7IgA9EN_BQ6yrKa3Abu86le8Vo/edit?usp=sharing) - Chart to track team's progress on development 
 
 ---
 ![Your Repository's Stats](https://contrib.rocks/image?repo=NathanCYee/131_project)

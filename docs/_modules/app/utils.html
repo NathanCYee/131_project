@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.utils &mdash; E-Buy 0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> E-Buy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../app.html">app package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">E-Buy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>app.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">flash</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span>
+
+<span class="kn">from</span> <span class="nn">app.models</span> <span class="kn">import</span> <span class="n">Role</span><span class="p">,</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Discount</span>
+
+
+<div class="viewcode-block" id="get_merchant"><a class="viewcode-back" href="../../app.html#app.utils.get_merchant">[docs]</a><span class="k">def</span> <span class="nf">get_merchant</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieve a Role object representing a merchant</span>
+<span class="sd">    :return: a Role object with the name `merchant`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Role</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;merchant&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="merchant_required"><a class="viewcode-back" href="../../app.html#app.utils.merchant_required">[docs]</a><span class="k">def</span> <span class="nf">merchant_required</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    decorator to require the current_user to have the merchant role or else it redirects</span>
+<span class="sd">    :param func: The function to decorate</span>
+<span class="sd">    :return: A function instance that checks the current user is a merchant before returning the action</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :decorator: A decorator for a flask route function</span>
+<span class="sd">        :param args: Arguments</span>
+<span class="sd">        :param kwargs: Keyword arguments</span>
+<span class="sd">        :return: The correct page if the user is logged in as a merchant, redirection to the login page if otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span> <span class="ow">or</span> <span class="n">current_user</span><span class="o">.</span><span class="n">roles</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">get_merchant</span><span class="p">()</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You must be a merchant to access this page!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/merchant/login&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">inner</span></div>
+
+
+<div class="viewcode-block" id="prevent_merchant"><a class="viewcode-back" href="../../app.html#app.utils.prevent_merchant">[docs]</a><span class="k">def</span> <span class="nf">prevent_merchant</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    decorator to prevent merchants from accessing sites</span>
+
+<span class="sd">    :param func: func: The function to decorate</span>
+<span class="sd">    :return: A function instance that checks the current user is not a merchant before returning the action</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :decorator: A decorator for a flask route function</span>
+
+<span class="sd">        :param args: Arguments</span>
+<span class="sd">        :param kwargs: Keyword arguments</span>
+<span class="sd">        :return: The correct page if the user is not logged in as a merchant, redirection if otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span> <span class="ow">and</span> <span class="n">current_user</span><span class="o">.</span><span class="n">roles</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">get_merchant</span><span class="p">()</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You cannot be logged in as a merchant!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">inner</span></div>
+
+
+<div class="viewcode-block" id="get_categories"><a class="viewcode-back" href="../../app.html#app.utils.get_categories">[docs]</a><span class="k">def</span> <span class="nf">get_categories</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieve a list of category names from the database</span>
+
+<span class="sd">    :return: A python list containing the string names of all the categories</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">Category</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="get_category_dict"><a class="viewcode-back" href="../../app.html#app.utils.get_category_dict">[docs]</a><span class="k">def</span> <span class="nf">get_category_dict</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieve a dictionary of categories in the form name:id</span>
+
+<span class="sd">    :return: A python dictionary with key=category name and value=category id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">Category</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()}</span></div>
+
+
+<div class="viewcode-block" id="create_discount"><a class="viewcode-back" href="../../app.html#app.utils.create_discount">[docs]</a><span class="k">def</span> <span class="nf">create_discount</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">applicable_ids</span><span class="p">,</span> <span class="n">percentage</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new Discount object</span>
+
+<span class="sd">    :param str code: The code of the Discount</span>
+<span class="sd">    :param int type: The type of the discount (0=products, 1=categorywide, 2=sitewide)</span>
+<span class="sd">    :param list[int] applicable_ids: The applicable IDs (product IDs or category IDs) that the discount will apply to</span>
+<span class="sd">    :param bool percentage: `True` if the discount is percentage based (0 to 1). `False` if it is a fixed amount.</span>
+<span class="sd">    :param float amount: The amount of the discount</span>
+<span class="sd">    :param datetime.datetime end_date: The end date of the discount.</span>
+<span class="sd">    :return: a new `app.models.Discount` object</span>
+<span class="sd">    :rtype: app.models.Discount</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">details</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="s1">&#39;applicable_id&#39;</span><span class="p">:</span> <span class="n">applicable_ids</span><span class="p">,</span> <span class="s1">&#39;percentage&#39;</span><span class="p">:</span> <span class="n">percentage</span><span class="p">,</span> <span class="s1">&#39;amount&#39;</span><span class="p">:</span> <span class="n">amount</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">Discount</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">expiration</span><span class="o">=</span><span class="n">end_date</span><span class="p">,</span> <span class="n">details</span><span class="o">=</span><span class="n">details</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Yee, Sarah Singh, Selim Ishakbeyoglu, Nicholas Dimidik.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

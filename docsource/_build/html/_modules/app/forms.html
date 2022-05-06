@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.forms &mdash; E-Buy 0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> E-Buy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../app.html">app package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">E-Buy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>app.forms</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.forms</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">flask_wtf</span> <span class="kn">import</span> <span class="n">FlaskForm</span>
+<span class="kn">from</span> <span class="nn">flask_wtf.file</span> <span class="kn">import</span> <span class="n">FileAllowed</span>
+<span class="kn">from</span> <span class="nn">wtforms.fields.html5</span> <span class="kn">import</span> <span class="n">DateField</span>
+
+<span class="kn">from</span> <span class="nn">wtforms.validators</span> <span class="kn">import</span> <span class="n">DataRequired</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">StringField</span><span class="p">,</span> <span class="n">SubmitField</span><span class="p">,</span> <span class="n">PasswordField</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">,</span> <span class="n">FloatField</span><span class="p">,</span> <span class="n">TextAreaField</span><span class="p">,</span> <span class="n">HiddenField</span><span class="p">,</span> \
+    <span class="n">SelectField</span><span class="p">,</span> <span class="n">MultipleFileField</span><span class="p">,</span> <span class="n">SelectMultipleField</span>
+
+
+<div class="viewcode-block" id="LoginForm"><a class="viewcode-back" href="../../app.html#app.forms.LoginForm">[docs]</a><span class="k">class</span> <span class="nc">LoginForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s2">&quot;Username&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The username input of the form&quot;&quot;&quot;</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span><span class="s2">&quot;Password&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The password input of the form&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Submit&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="RegisterForm"><a class="viewcode-back" href="../../app.html#app.forms.RegisterForm">[docs]</a><span class="k">class</span> <span class="nc">RegisterForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A form object that receives input for registration of new accounts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s2">&quot;Username&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The username input of the form&quot;&quot;&quot;</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s2">&quot;Email&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">(),</span> <span class="n">Email</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The email input of the form&quot;&quot;&quot;</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span><span class="s2">&quot;Password&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The password input of the form&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Submit&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="PasswordForm"><a class="viewcode-back" href="../../app.html#app.forms.PasswordForm">[docs]</a><span class="k">class</span> <span class="nc">PasswordForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Form object used for password resets</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">original_password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span><span class="s2">&quot;Current password&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The original password of the account&quot;&quot;&quot;</span>
+    <span class="n">new_password</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span><span class="s2">&quot;Password&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The new choice for password for the account&quot;&quot;&quot;</span>
+    <span class="n">new_password_repeat</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span><span class="s2">&quot;Confirm password&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;A repeated user input for the password&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Submit&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="DeleteAccountForm"><a class="viewcode-back" href="../../app.html#app.forms.DeleteAccountForm">[docs]</a><span class="k">class</span> <span class="nc">DeleteAccountForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Form object used to confirm account deletes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">confirm</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s2">&quot;I want to delete my account.&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;A boolean input that confirms that the submitter wants their account to be deleted.&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Delete my account.&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ReviewForm"><a class="viewcode-back" href="../../app.html#app.forms.ReviewForm">[docs]</a><span class="k">class</span> <span class="nc">ReviewForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Form object used to add a review to a product</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rating</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span><span class="s2">&quot;Give a rating from 1 to 5&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)],</span> <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                         <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;A dropdown rating for the user to give a review from 1 to 5&quot;&quot;&quot;</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">TextAreaField</span><span class="p">(</span><span class="s2">&quot;Add a written review&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;The text body of the review&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Submit&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="CartForm"><a class="viewcode-back" href="../../app.html#app.forms.CartForm">[docs]</a><span class="k">class</span> <span class="nc">CartForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Form object used to add a product to the user&#39;s cart</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">product_id</span> <span class="o">=</span> <span class="n">HiddenField</span><span class="p">(</span><span class="s2">&quot;product&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;A hidden field containing the id of the product&quot;&quot;&quot;</span>
+    <span class="n">quantity</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span><span class="s2">&quot;Quantity&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)],</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The number of the item that the user wants to add to the cart&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Add to Cart&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="CheckoutForm"><a class="viewcode-back" href="../../app.html#app.forms.CheckoutForm">[docs]</a><span class="k">class</span> <span class="nc">CheckoutForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Form object used to receive order info in order to process the order</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">discount_code</span> <span class="o">=</span> <span class="n">HiddenField</span><span class="p">(</span><span class="s2">&quot;Discount&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;A discount code to apply to the order (optional).&quot;&quot;&quot;</span>
+    <span class="n">address</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s2">&quot;Address&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The address to ship the order to.&quot;&quot;&quot;</span>
+    <span class="n">billing</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s2">&quot;Billing info&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;Credit card information&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Place Order&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="NewProductForm"><a class="viewcode-back" href="../../app.html#app.forms.NewProductForm">[docs]</a><span class="k">class</span> <span class="nc">NewProductForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Form object used to receive input for a new product</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">merchant_id</span> <span class="o">=</span> <span class="n">HiddenField</span><span class="p">(</span><span class="s2">&quot;Merchant ID&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The id of the merchant submitting the new product&quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The name of the product to create&quot;&quot;&quot;</span>
+    <span class="n">price</span> <span class="o">=</span> <span class="n">FloatField</span><span class="p">(</span><span class="s2">&quot;Price&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The price of the product&quot;&quot;&quot;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">TextAreaField</span><span class="p">(</span><span class="s2">&quot;Description&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;A text description of the product&quot;&quot;&quot;</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span><span class="s2">&quot;Category&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;a select field to select the category that the product belongs to&quot;&quot;&quot;</span>
+    <span class="n">pictures</span> <span class="o">=</span> <span class="n">MultipleFileField</span><span class="p">(</span><span class="s2">&quot;Pictures&quot;</span><span class="p">,</span>
+                                 <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">Optional</span><span class="p">(),</span>
+                                             <span class="n">FileAllowed</span><span class="p">([</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="s1">&#39;jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;jpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;webp&#39;</span><span class="p">],</span> <span class="s1">&#39;Only images are allowed!&#39;</span><span class="p">)])</span>
+    <span class="sd">&quot;&quot;&quot;a file upload form that accepts multiple image uploads (png, jpg, jpeg, webp)&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Submit&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="FillOrderForm"><a class="viewcode-back" href="../../app.html#app.forms.FillOrderForm">[docs]</a><span class="k">class</span> <span class="nc">FillOrderForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Form object used by a merchant to fill orders</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">merchant_id</span> <span class="o">=</span> <span class="n">HiddenField</span><span class="p">(</span><span class="s2">&quot;Merchant ID&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The id of the merchant submitting the order filled request&quot;&quot;&quot;</span>
+    <span class="n">order_id</span> <span class="o">=</span> <span class="n">HiddenField</span><span class="p">(</span><span class="s2">&quot;Order ID&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The id of the order that the merchant has filled&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Complete&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="NewDiscountForm"><a class="viewcode-back" href="../../app.html#app.forms.NewDiscountForm">[docs]</a><span class="k">class</span> <span class="nc">NewDiscountForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Form object used by a merchant to create a new discount</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s2">&quot;Discount Code&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The code for the new discount&quot;&quot;&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="n">FloatField</span><span class="p">(</span><span class="s2">&quot;Discount Amount&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The numerical amount (in USD) of the discount&quot;&quot;&quot;</span>
+    <span class="n">products</span> <span class="o">=</span> <span class="n">SelectMultipleField</span><span class="p">(</span><span class="s2">&quot;Products&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;A multi-select field containing the products that the discount applies to&quot;&quot;&quot;</span>
+    <span class="n">expiration_date</span> <span class="o">=</span> <span class="n">DateField</span><span class="p">(</span><span class="s2">&quot;Expiration Date&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The date when the discount expires&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Complete&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Yee, Sarah Singh, Selim Ishakbeyoglu, Nicholas Dimidik.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
