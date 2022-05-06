@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app package &mdash; E-Buy 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to E-Buy’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> E-Buy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">app package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-app">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.forms">app.forms module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.models">app.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.routes">app.routes module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.utils">app.utils module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">E-Buy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>app package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/app.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="app-package">
+<h1>app package<a class="headerlink" href="#app-package" title="Permalink to this headline"></a></h1>
+<section id="module-app">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app" title="Permalink to this headline"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="app.db">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">db</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;SQLAlchemy</span> <span class="pre">engine=sqlite:////Users/nathanyee/Documents/131_project/app/webapp.db&gt;</span></em><a class="headerlink" href="#app.db" title="Permalink to this definition"></a></dt>
+<dd><p>A <cite>SQLAlchemy</cite> object used to connect to the database</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="app.webapp">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">webapp</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Flask</span> <span class="pre">'app'&gt;</span></em><a class="headerlink" href="#app.webapp" title="Permalink to this definition"></a></dt>
+<dd><p>The <cite>Flask</cite> object used to run the webapp.</p>
+</dd></dl>
+
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-app.forms">
+<span id="app-forms-module"></span><h2>app.forms module<a class="headerlink" href="#module-app.forms" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.CartForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">CartForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#CartForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.CartForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<p>Form object used to add a product to the user’s cart</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.CartForm.product_id">
+<span class="sig-name descname"><span class="pre">product_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(HiddenField,</span> <span class="pre">('product',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.CartForm.product_id" title="Permalink to this definition"></a></dt>
+<dd><p>A hidden field containing the id of the product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.CartForm.quantity">
+<span class="sig-name descname"><span class="pre">quantity</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SelectField,</span> <span class="pre">('Quantity',),</span> <span class="pre">{'choices':</span> <span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4,</span> <span class="pre">5,</span> <span class="pre">6,</span> <span class="pre">7,</span> <span class="pre">8,</span> <span class="pre">9,</span> <span class="pre">10],</span> <span class="pre">'default':</span> <span class="pre">1,</span> <span class="pre">'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.CartForm.quantity" title="Permalink to this definition"></a></dt>
+<dd><p>The number of the item that the user wants to add to the cart</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.CartForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Add</span> <span class="pre">to</span> <span class="pre">Cart',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.CartForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.CheckoutForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">CheckoutForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#CheckoutForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.CheckoutForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<p>Form object used to receive order info in order to process the order</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.CheckoutForm.address">
+<span class="sig-name descname"><span class="pre">address</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(StringField,</span> <span class="pre">('Address',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.CheckoutForm.address" title="Permalink to this definition"></a></dt>
+<dd><p>The address to ship the order to.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.CheckoutForm.billing">
+<span class="sig-name descname"><span class="pre">billing</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(StringField,</span> <span class="pre">('Billing</span> <span class="pre">info',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.CheckoutForm.billing" title="Permalink to this definition"></a></dt>
+<dd><p>Credit card information</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.CheckoutForm.discount_code">
+<span class="sig-name descname"><span class="pre">discount_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(HiddenField,</span> <span class="pre">('Discount',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.CheckoutForm.discount_code" title="Permalink to this definition"></a></dt>
+<dd><p>A discount code to apply to the order (optional).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.CheckoutForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Place</span> <span class="pre">Order',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.CheckoutForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.DeleteAccountForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">DeleteAccountForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#DeleteAccountForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.DeleteAccountForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<p>Form object used to confirm account deletes</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.DeleteAccountForm.confirm">
+<span class="sig-name descname"><span class="pre">confirm</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(BooleanField,</span> <span class="pre">('I</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">delete</span> <span class="pre">my</span> <span class="pre">account.',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.DeleteAccountForm.confirm" title="Permalink to this definition"></a></dt>
+<dd><p>A boolean input that confirms that the submitter wants their account to be deleted.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.DeleteAccountForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Delete</span> <span class="pre">my</span> <span class="pre">account.',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.DeleteAccountForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.FillOrderForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">FillOrderForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#FillOrderForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.FillOrderForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<p>Form object used by a merchant to fill orders</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.FillOrderForm.merchant_id">
+<span class="sig-name descname"><span class="pre">merchant_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(HiddenField,</span> <span class="pre">('Merchant</span> <span class="pre">ID',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.FillOrderForm.merchant_id" title="Permalink to this definition"></a></dt>
+<dd><p>The id of the merchant submitting the order filled request</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.FillOrderForm.order_id">
+<span class="sig-name descname"><span class="pre">order_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(HiddenField,</span> <span class="pre">('Order</span> <span class="pre">ID',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.FillOrderForm.order_id" title="Permalink to this definition"></a></dt>
+<dd><p>The id of the order that the merchant has filled</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.FillOrderForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Complete',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.FillOrderForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.LoginForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">LoginForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#LoginForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.LoginForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.LoginForm.password">
+<span class="sig-name descname"><span class="pre">password</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(PasswordField,</span> <span class="pre">('Password',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.LoginForm.password" title="Permalink to this definition"></a></dt>
+<dd><p>The password input of the form</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.LoginForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Submit',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.LoginForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.LoginForm.username">
+<span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(StringField,</span> <span class="pre">('Username',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.LoginForm.username" title="Permalink to this definition"></a></dt>
+<dd><p>The username input of the form</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.NewDiscountForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">NewDiscountForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#NewDiscountForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.NewDiscountForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<p>Form object used by a merchant to create a new discount</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewDiscountForm.amount">
+<span class="sig-name descname"><span class="pre">amount</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(FloatField,</span> <span class="pre">('Discount</span> <span class="pre">Amount',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewDiscountForm.amount" title="Permalink to this definition"></a></dt>
+<dd><p>The numerical amount (in USD) of the discount</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewDiscountForm.code">
+<span class="sig-name descname"><span class="pre">code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(StringField,</span> <span class="pre">('Discount</span> <span class="pre">Code',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewDiscountForm.code" title="Permalink to this definition"></a></dt>
+<dd><p>The code for the new discount</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewDiscountForm.expiration_date">
+<span class="sig-name descname"><span class="pre">expiration_date</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(DateField,</span> <span class="pre">('Expiration</span> <span class="pre">Date',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewDiscountForm.expiration_date" title="Permalink to this definition"></a></dt>
+<dd><p>The date when the discount expires</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewDiscountForm.products">
+<span class="sig-name descname"><span class="pre">products</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SelectMultipleField,</span> <span class="pre">('Products',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewDiscountForm.products" title="Permalink to this definition"></a></dt>
+<dd><p>A multi-select field containing the products that the discount applies to</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewDiscountForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Complete',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.NewDiscountForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.NewProductForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">NewProductForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#NewProductForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.NewProductForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<p>Form object used to receive input for a new product</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewProductForm.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SelectField,</span> <span class="pre">('Category',),</span> <span class="pre">{'default':</span> <span class="pre">1})&gt;</span></em><a class="headerlink" href="#app.forms.NewProductForm.category" title="Permalink to this definition"></a></dt>
+<dd><p>a select field to select the category that the product belongs to</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewProductForm.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(TextAreaField,</span> <span class="pre">('Description',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.NewProductForm.description" title="Permalink to this definition"></a></dt>
+<dd><p>A text description of the product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewProductForm.merchant_id">
+<span class="sig-name descname"><span class="pre">merchant_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(HiddenField,</span> <span class="pre">('Merchant</span> <span class="pre">ID',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewProductForm.merchant_id" title="Permalink to this definition"></a></dt>
+<dd><p>The id of the merchant submitting the new product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewProductForm.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(StringField,</span> <span class="pre">('Name',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewProductForm.name" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the product to create</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewProductForm.pictures">
+<span class="sig-name descname"><span class="pre">pictures</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(MultipleFileField,</span> <span class="pre">('Pictures',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.Optional</span> <span class="pre">object&gt;,</span> <span class="pre">&lt;flask_wtf.file.FileAllowed</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewProductForm.pictures" title="Permalink to this definition"></a></dt>
+<dd><p>a file upload form that accepts multiple image uploads (png, jpg, jpeg, webp)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewProductForm.price">
+<span class="sig-name descname"><span class="pre">price</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(FloatField,</span> <span class="pre">('Price',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewProductForm.price" title="Permalink to this definition"></a></dt>
+<dd><p>The price of the product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewProductForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Submit',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.NewProductForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.PasswordForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">PasswordForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#PasswordForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.PasswordForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<p>Form object used for password resets</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.PasswordForm.new_password">
+<span class="sig-name descname"><span class="pre">new_password</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(PasswordField,</span> <span class="pre">('Password',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.PasswordForm.new_password" title="Permalink to this definition"></a></dt>
+<dd><p>The new choice for password for the account</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.PasswordForm.new_password_repeat">
+<span class="sig-name descname"><span class="pre">new_password_repeat</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(PasswordField,</span> <span class="pre">('Confirm</span> <span class="pre">password',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.PasswordForm.new_password_repeat" title="Permalink to this definition"></a></dt>
+<dd><p>A repeated user input for the password</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.PasswordForm.original_password">
+<span class="sig-name descname"><span class="pre">original_password</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(PasswordField,</span> <span class="pre">('Current</span> <span class="pre">password',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.PasswordForm.original_password" title="Permalink to this definition"></a></dt>
+<dd><p>The original password of the account</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.PasswordForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Submit',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.PasswordForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.RegisterForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">RegisterForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#RegisterForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.RegisterForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<p>A form object that receives input for registration of new accounts.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.RegisterForm.email">
+<span class="sig-name descname"><span class="pre">email</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(StringField,</span> <span class="pre">('Email',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;,</span> <span class="pre">&lt;wtforms.validators.Email</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.RegisterForm.email" title="Permalink to this definition"></a></dt>
+<dd><p>The email input of the form</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.RegisterForm.password">
+<span class="sig-name descname"><span class="pre">password</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(PasswordField,</span> <span class="pre">('Password',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.RegisterForm.password" title="Permalink to this definition"></a></dt>
+<dd><p>The password input of the form</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.RegisterForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Submit',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.RegisterForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.RegisterForm.username">
+<span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(StringField,</span> <span class="pre">('Username',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.RegisterForm.username" title="Permalink to this definition"></a></dt>
+<dd><p>The username input of the form</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.ReviewForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">ReviewForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#ReviewForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.ReviewForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<p>Form object used to add a review to a product</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.ReviewForm.body">
+<span class="sig-name descname"><span class="pre">body</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(TextAreaField,</span> <span class="pre">('Add</span> <span class="pre">a</span> <span class="pre">written</span> <span class="pre">review',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.ReviewForm.body" title="Permalink to this definition"></a></dt>
+<dd><p>The text body of the review</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.ReviewForm.rating">
+<span class="sig-name descname"><span class="pre">rating</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SelectField,</span> <span class="pre">('Give</span> <span class="pre">a</span> <span class="pre">rating</span> <span class="pre">from</span> <span class="pre">1</span> <span class="pre">to</span> <span class="pre">5',),</span> <span class="pre">{'choices':</span> <span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4,</span> <span class="pre">5],</span> <span class="pre">'default':</span> <span class="pre">5,</span> <span class="pre">'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.ReviewForm.rating" title="Permalink to this definition"></a></dt>
+<dd><p>A dropdown rating for the user to give a review from 1 to 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.ReviewForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Submit',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.ReviewForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.models">
+<span id="app-models-module"></span><h2>app.models module<a class="headerlink" href="#module-app.models" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.CartItem">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">CartItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#CartItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.CartItem" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
+<p>A Model object that represents a row in a cart</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CartItem.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.CartItem.id" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the cart item</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CartItem.product_id">
+<span class="sig-name descname"><span class="pre">product_id</span></span><a class="headerlink" href="#app.models.CartItem.product_id" title="Permalink to this definition"></a></dt>
+<dd><p>The foreign key that relates the row to a product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CartItem.quantity">
+<span class="sig-name descname"><span class="pre">quantity</span></span><a class="headerlink" href="#app.models.CartItem.quantity" title="Permalink to this definition"></a></dt>
+<dd><p>The quantity of the product ordered</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CartItem.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><a class="headerlink" href="#app.models.CartItem.timestamp" title="Permalink to this definition"></a></dt>
+<dd><p>The time at which the item was created</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.CartItem.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#app.models.CartItem.user_id" title="Permalink to this definition"></a></dt>
+<dd><p>The foreign key that relates the row to a customer user</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.Category">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Category" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
+<p>A Model object that represents a category of products</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Category.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.Category.id" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the category</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Category.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#app.models.Category.name" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the category</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Category.products">
+<span class="sig-name descname"><span class="pre">products</span></span><a class="headerlink" href="#app.models.Category.products" title="Permalink to this definition"></a></dt>
+<dd><p>A queryable relationship representing the products that belong to the category</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.Discount">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Discount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Discount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Discount" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
+<p>A Model object that represents a user. Also supports UserMixin for FlaskLogin</p>
+<dl class="simple">
+<dt>details = {</dt><dd><p>‘type’:0(product),1(category),2(all),
+‘applicable_id’: product_ids or category_ids,
+percentage: True/False
+amount: Float
+}</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.Discount.apply_discount">
+<span class="sig-name descname"><span class="pre">apply_discount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cart_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Discount.apply_discount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Discount.apply_discount" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the discount amount for a given <code class="docutils literal notranslate"><span class="pre">app.models.CartItem</span></code> row id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cart_item</strong> – The id field of the <code class="docutils literal notranslate"><span class="pre">app.models.CartItem</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The discount amount for the given row.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Discount.code">
+<span class="sig-name descname"><span class="pre">code</span></span><a class="headerlink" href="#app.models.Discount.code" title="Permalink to this definition"></a></dt>
+<dd><p>The code of the discount that the user can use</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Discount.details">
+<span class="sig-name descname"><span class="pre">details</span></span><a class="headerlink" href="#app.models.Discount.details" title="Permalink to this definition"></a></dt>
+<dd><p>A JSON attribute containing the details of the discount</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Discount.expiration">
+<span class="sig-name descname"><span class="pre">expiration</span></span><a class="headerlink" href="#app.models.Discount.expiration" title="Permalink to this definition"></a></dt>
+<dd><p>The expiration date of the discount</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Discount.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.Discount.id" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the discount</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.Discount.is_valid">
+<span class="sig-name descname"><span class="pre">is_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Discount.is_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Discount.is_valid" title="Permalink to this definition"></a></dt>
+<dd><p>Compares the current datetime to the stored expiration date to confirm if the discount is still valid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><cite>True</cite> if the current date is on or before the expiration date. <cite>False</cite> if it is after.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.Image">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Image" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
+<p>A Model object that contains information about an uploaded image</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Image.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.Image.id" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the image</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Image.path">
+<span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#app.models.Image.path" title="Permalink to this definition"></a></dt>
+<dd><p>The path to the image</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Image.product">
+<span class="sig-name descname"><span class="pre">product</span></span><a class="headerlink" href="#app.models.Image.product" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Image.product_id">
+<span class="sig-name descname"><span class="pre">product_id</span></span><a class="headerlink" href="#app.models.Image.product_id" title="Permalink to this definition"></a></dt>
+<dd><p>The foreign key of which the image is related to</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.Order">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Order" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
+<p>A Model object that represents an order</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Order.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.Order.id" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the order</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Order.order_row">
+<span class="sig-name descname"><span class="pre">order_row</span></span><a class="headerlink" href="#app.models.Order.order_row" title="Permalink to this definition"></a></dt>
+<dd><p>A queryable relationship that retrieves the OrderRows belonging to an Order</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Order.ship_address">
+<span class="sig-name descname"><span class="pre">ship_address</span></span><a class="headerlink" href="#app.models.Order.ship_address" title="Permalink to this definition"></a></dt>
+<dd><p>The address that the order will be shipped to</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Order.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#app.models.Order.user" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Order.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#app.models.Order.user_id" title="Permalink to this definition"></a></dt>
+<dd><p>A foreign key that relates an order to a customer user</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.OrderRow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">OrderRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#OrderRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.OrderRow" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
+<p>A Model object that represents a row of an Order</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.OrderRow.filled">
+<span class="sig-name descname"><span class="pre">filled</span></span><a class="headerlink" href="#app.models.OrderRow.filled" title="Permalink to this definition"></a></dt>
+<dd><p>A boolean that represents if the order was filled or not. Defaults to <cite>False</cite>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.OrderRow.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.OrderRow.id" title="Permalink to this definition"></a></dt>
+<dd><p>A foreign key that relates to the Order that the row belongs to</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.OrderRow.order">
+<span class="sig-name descname"><span class="pre">order</span></span><a class="headerlink" href="#app.models.OrderRow.order" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.OrderRow.product">
+<span class="sig-name descname"><span class="pre">product</span></span><a class="headerlink" href="#app.models.OrderRow.product" title="Permalink to this definition"></a></dt>
+<dd><p>A relationship that links to the Product object purchased in the row</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.OrderRow.product_id">
+<span class="sig-name descname"><span class="pre">product_id</span></span><a class="headerlink" href="#app.models.OrderRow.product_id" title="Permalink to this definition"></a></dt>
+<dd><p>A foreign key that relates to the product purchased in the row</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.OrderRow.product_price">
+<span class="sig-name descname"><span class="pre">product_price</span></span><a class="headerlink" href="#app.models.OrderRow.product_price" title="Permalink to this definition"></a></dt>
+<dd><p>The price of each product at the time it was purchased</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.OrderRow.quantity">
+<span class="sig-name descname"><span class="pre">quantity</span></span><a class="headerlink" href="#app.models.OrderRow.quantity" title="Permalink to this definition"></a></dt>
+<dd><p>The number of the product that was purchased</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.OrderRow.row_id">
+<span class="sig-name descname"><span class="pre">row_id</span></span><a class="headerlink" href="#app.models.OrderRow.row_id" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the order row</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.OrderRow.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><a class="headerlink" href="#app.models.OrderRow.timestamp" title="Permalink to this definition"></a></dt>
+<dd><p>The time at which the OrderRow was created. Defaults to <cite>datetime.utcnow</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.Product">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Product" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
+<p>A Model object that represents a product</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.category">
+<span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#app.models.Product.category" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.category_id">
+<span class="sig-name descname"><span class="pre">category_id</span></span><a class="headerlink" href="#app.models.Product.category_id" title="Permalink to this definition"></a></dt>
+<dd><p>The foreign key of the category the product belongs to</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#app.models.Product.description" title="Permalink to this definition"></a></dt>
+<dd><p>The description of the product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.Product.id" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.images">
+<span class="sig-name descname"><span class="pre">images</span></span><a class="headerlink" href="#app.models.Product.images" title="Permalink to this definition"></a></dt>
+<dd><p>A instrumentedList that contains the Image objects related to the product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.merchant_id">
+<span class="sig-name descname"><span class="pre">merchant_id</span></span><a class="headerlink" href="#app.models.Product.merchant_id" title="Permalink to this definition"></a></dt>
+<dd><p>The foreign key of the merchant User the product belongs to</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#app.models.Product.name" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.orders">
+<span class="sig-name descname"><span class="pre">orders</span></span><a class="headerlink" href="#app.models.Product.orders" title="Permalink to this definition"></a></dt>
+<dd><p>A relationship that retrieves orders of the product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.price">
+<span class="sig-name descname"><span class="pre">price</span></span><a class="headerlink" href="#app.models.Product.price" title="Permalink to this definition"></a></dt>
+<dd><p>The price of the product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.reviews">
+<span class="sig-name descname"><span class="pre">reviews</span></span><a class="headerlink" href="#app.models.Product.reviews" title="Permalink to this definition"></a></dt>
+<dd><p>A queryable database relationship that retrieves the reviews of the product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Product.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#app.models.Product.user" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.Review">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Review</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Review"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Review" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
+<p>A Model object representing a review</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Review.body">
+<span class="sig-name descname"><span class="pre">body</span></span><a class="headerlink" href="#app.models.Review.body" title="Permalink to this definition"></a></dt>
+<dd><p>The text body of the review</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Review.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.Review.id" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the review</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Review.product">
+<span class="sig-name descname"><span class="pre">product</span></span><a class="headerlink" href="#app.models.Review.product" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Review.product_id">
+<span class="sig-name descname"><span class="pre">product_id</span></span><a class="headerlink" href="#app.models.Review.product_id" title="Permalink to this definition"></a></dt>
+<dd><p>A foreign key that relates the review to a product</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Review.rating">
+<span class="sig-name descname"><span class="pre">rating</span></span><a class="headerlink" href="#app.models.Review.rating" title="Permalink to this definition"></a></dt>
+<dd><p>A numerical rating given in the review</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Review.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><a class="headerlink" href="#app.models.Review.timestamp" title="Permalink to this definition"></a></dt>
+<dd><p>The time at which the review was written. Defaults to <cite>datetime.utcnow</cite>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Review.user_id">
+<span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#app.models.Review.user_id" title="Permalink to this definition"></a></dt>
+<dd><p>A foreign key that relates the review to a customer</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.Role">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Role" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
+<p>An Model object that contains the name of a role</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Role.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.Role.id" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the role</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.Role.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#app.models.Role.name" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the role</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.User">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">User</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#User"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.User" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_login.mixins.UserMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
+<p>A Model object that represents a user. Also supports UserMixin for FlaskLogin</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.cart_items">
+<span class="sig-name descname"><span class="pre">cart_items</span></span><a class="headerlink" href="#app.models.User.cart_items" title="Permalink to this definition"></a></dt>
+<dd><p>A queryable relationship that retrieves the rows in the cart related to the customer user</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.User.check_password">
+<span class="sig-name descname"><span class="pre">check_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#User.check_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.User.check_password" title="Permalink to this definition"></a></dt>
+<dd><p>Checks a password input against the password stored in the User</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>password</strong> (<em>str</em>) – The password to check</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if the passwords match, <cite>False</cite> if not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.email">
+<span class="sig-name descname"><span class="pre">email</span></span><a class="headerlink" href="#app.models.User.email" title="Permalink to this definition"></a></dt>
+<dd><p>The email of the user</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.User.id" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the user</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.orders">
+<span class="sig-name descname"><span class="pre">orders</span></span><a class="headerlink" href="#app.models.User.orders" title="Permalink to this definition"></a></dt>
+<dd><p>A queryable relationship that retrieves the orders related to the customer user</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.password_hash">
+<span class="sig-name descname"><span class="pre">password_hash</span></span><a class="headerlink" href="#app.models.User.password_hash" title="Permalink to this definition"></a></dt>
+<dd><p>The hashed password of the user</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.products">
+<span class="sig-name descname"><span class="pre">products</span></span><a class="headerlink" href="#app.models.User.products" title="Permalink to this definition"></a></dt>
+<dd><p>A queryable relationship that retrieves the products related to a merchant user</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.roles">
+<span class="sig-name descname"><span class="pre">roles</span></span><a class="headerlink" href="#app.models.User.roles" title="Permalink to this definition"></a></dt>
+<dd><p>A queryable database relationship that retrieves the roles related to the user</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.User.set_password">
+<span class="sig-name descname"><span class="pre">set_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#User.set_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.User.set_password" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the password of the given User object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>password</strong> (<em>str</em>) – The new password to set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.User.username">
+<span class="sig-name descname"><span class="pre">username</span></span><a class="headerlink" href="#app.models.User.username" title="Permalink to this definition"></a></dt>
+<dd><p>The username of the user</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.models.load_user">
+<span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">load_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#load_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.load_user" title="Permalink to this definition"></a></dt>
+<dd><p>A user loader for flask login</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> – The ID of the user to retrieve</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The User object that has the given ID</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app.models.User" title="app.models.User">app.models.User</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-app.routes">
+<span id="app-routes-module"></span><h2>app.routes module<a class="headerlink" href="#module-app.routes" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.account_info">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">account_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#account_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.account_info" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a page containing information about the username and email as well as a form to change the password.
+When accessed through POST, will validate and process the password change form.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.account_test">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">account_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#account_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.account_test" title="Permalink to this definition"></a></dt>
+<dd><p>Used for testing, should only be reachable if logged in, else it would redirect the user to the login page</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.add_categories">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">add_categories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#add_categories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.add_categories" title="Permalink to this definition"></a></dt>
+<dd><p>Decorator function that automatically adds categories to render_template</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.cart">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">cart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#cart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.cart" title="Permalink to this definition"></a></dt>
+<dd><p>Cart website for logged-in users to be able to see and edit their cart</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.cart_remove">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">cart_remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#cart_remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.cart_remove" title="Permalink to this definition"></a></dt>
+<dd><p>Allows a logged-in user to remove a row from their cart</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>row_id</strong> (<em>int</em>) – The ID of the row to remove</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.category">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.category" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a product catalog containing all the products of a given category</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>category_id</strong> (<em>int</em>) – The category to fetch items for</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.checkout">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">checkout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#checkout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.checkout" title="Permalink to this definition"></a></dt>
+<dd><p>Site to recieve input/handle checkout requests for a logged in user</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.delete_account">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">delete_account</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#delete_account"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.delete_account" title="Permalink to this definition"></a></dt>
+<dd><p>Contains a form for the user to confirm that they want to delete their account. When submitted through POST, will
+receive and validate the request before deleting the account from the database.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.home">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#home"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.home" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the home page of the website to the user. Allows non-logged in users and customer users to access.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.images">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.images" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieves an uploaded file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The name of the file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an image (.png, .jpg, .jpeg) that was uploaded</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.login">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.login" title="Permalink to this definition"></a></dt>
+<dd><p>Return a site that takes user input for login/password to login to an account. Will verify login information if
+accessed through a POST request.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.logout">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#logout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.logout" title="Permalink to this definition"></a></dt>
+<dd><p>Logs out the user using flask-login when accessed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.merchant">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a home page for a user logged in as a merchant. Redirects if not logged in as a merchant.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.merchant_account_test">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant_account_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant_account_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant_account_test" title="Permalink to this definition"></a></dt>
+<dd><p>Used for testing, should only be reachable if logged in as a merchant, else it would redirect the user to the
+login page</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.merchant_login">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant_login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant_login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant_login" title="Permalink to this definition"></a></dt>
+<dd><p>Return a site that takes user input for login/password to log in to a merchant account. Will verify login
+information if accessed through a POST request.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.merchant_new_product">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant_new_product</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant_new_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant_new_product" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a merchant input to submit a new product. When accessed through a POST request, will save inputs, create
+a new Product object, and redirect the user to the product page once submitted.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.merchant_orders">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant_orders" title="Permalink to this definition"></a></dt>
+<dd><p>Return a site with unfilled orders for a logged-in merchant. When accessed with a POST request with the correct form,
+will change the status of the order rows to filled.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.merchant_orders_filled">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant_orders_filled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant_orders_filled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant_orders_filled" title="Permalink to this definition"></a></dt>
+<dd><p>Return a site with filled orders for a logged-in merchant.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.merchant_profile">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">merchant_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant_profile" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a product catalog containing all the products of a given merchant</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>merchant_id</strong> (<em>int</em>) – The merchant to fetch items for</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.merchant_promo">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant_promo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant_promo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant_promo" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a merchant input to create a new promotion. When accessed through a POST request, will save inputs, create
+a new Product object, and redirect the user to the product page once submitted.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.merchant_register">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant_register</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant_register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant_register" title="Permalink to this definition"></a></dt>
+<dd><p>Return a site that takes user input to create a new merchant account. Will verify registration information if
+accessed through a POST request.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.orders">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.orders" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a page to a logged in customer user containing orders with unfilled rows. Redirects if logged in as a
+merchant or not logged in.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.orders_filled">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">orders_filled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#orders_filled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.orders_filled" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a page to a logged in customer user containing orders with filled rows. Redirects if logged in as a
+merchant or not logged in.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.product">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.product" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve a product page for a given product id. Will abort with a 404 if the ID was not found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prod_id</strong> (<em>int</em>) – The id of the Product to retrieve</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.product_review">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">product_review</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#product_review"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.product_review" title="Permalink to this definition"></a></dt>
+<dd><p>Web route for logged in users to review a specific product</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>product_id</strong> (<em>int</em>) – The ID of the product to review</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A webpage allowing the user to review if they haven’t already and have ordered the product, redirect back</p>
+</dd>
+</dl>
+<p>to the product page with a warning otherwise</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.register">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.register" title="Permalink to this definition"></a></dt>
+<dd><p>Return a site that takes user input to create a new customer account. Will verify registration information if
+accessed through a POST request.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.render_template">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">render_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.routes.render_template" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.search">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.search" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a page with search results from a regex search using the param q as the query from a get request.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.utils">
+<span id="app-utils-module"></span><h2>app.utils module<a class="headerlink" href="#module-app.utils" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.create_discount">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">create_discount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">applicable_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#create_discount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.create_discount" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a new Discount object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>code</strong> (<em>str</em>) – The code of the Discount</p></li>
+<li><p><strong>type</strong> (<em>int</em>) – The type of the discount (0=products, 1=categorywide, 2=sitewide)</p></li>
+<li><p><strong>applicable_ids</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The applicable IDs (product IDs or category IDs) that the discount will apply to</p></li>
+<li><p><strong>percentage</strong> (<em>bool</em>) – <cite>True</cite> if the discount is percentage based (0 to 1). <cite>False</cite> if it is a fixed amount.</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – The amount of the discount</p></li>
+<li><p><strong>end_date</strong> (<em>datetime.datetime</em>) – The end date of the discount.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new <cite>app.models.Discount</cite> object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app.models.Discount" title="app.models.Discount">app.models.Discount</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.get_categories">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">get_categories</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#get_categories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.get_categories" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve a list of category names from the database</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A python list containing the string names of all the categories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.get_category_dict">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">get_category_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#get_category_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.get_category_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve a dictionary of categories in the form name:id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A python dictionary with key=category name and value=category id</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.get_merchant">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">get_merchant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#get_merchant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.get_merchant" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve a Role object representing a merchant
+:return: a Role object with the name <cite>merchant</cite></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.merchant_required">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">merchant_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#merchant_required"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.merchant_required" title="Permalink to this definition"></a></dt>
+<dd><p>decorator to require the current_user to have the merchant role or else it redirects
+:param func: The function to decorate
+:return: A function instance that checks the current user is a merchant before returning the action</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.prevent_merchant">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">prevent_merchant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#prevent_merchant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.prevent_merchant" title="Permalink to this definition"></a></dt>
+<dd><p>decorator to prevent merchants from accessing sites</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> – func: The function to decorate</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A function instance that checks the current user is not a merchant before returning the action</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to E-Buy’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Yee, Sarah Singh, Selim Ishakbeyoglu, Nicholas Dimidik.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

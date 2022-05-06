@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.routes &mdash; E-Buy 0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> E-Buy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../app.html">app package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">E-Buy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>app.routes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.routes</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">insert</span><span class="p">,</span> <span class="n">select</span>
+<span class="kn">from</span> <span class="nn">werkzeug.utils</span> <span class="kn">import</span> <span class="n">secure_filename</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">render_template</span> <span class="k">as</span> <span class="n">r</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">send_from_directory</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span><span class="p">,</span> <span class="n">login_user</span><span class="p">,</span> <span class="n">logout_user</span><span class="p">,</span> <span class="n">login_required</span>
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">webapp</span><span class="p">,</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">app.forms</span> <span class="kn">import</span> <span class="n">CheckoutForm</span><span class="p">,</span> <span class="n">LoginForm</span><span class="p">,</span> <span class="n">RegisterForm</span><span class="p">,</span> <span class="n">PasswordForm</span><span class="p">,</span> <span class="n">DeleteAccountForm</span><span class="p">,</span> <span class="n">CartForm</span><span class="p">,</span> <span class="n">NewProductForm</span><span class="p">,</span> \
+    <span class="n">ReviewForm</span><span class="p">,</span> <span class="n">FillOrderForm</span><span class="p">,</span> <span class="n">NewDiscountForm</span>
+<span class="kn">from</span> <span class="nn">app.models</span> <span class="kn">import</span> <span class="n">CartItem</span><span class="p">,</span> <span class="n">Order</span><span class="p">,</span> <span class="n">OrderRow</span><span class="p">,</span> <span class="n">Product</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">UserRole</span><span class="p">,</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Review</span><span class="p">,</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Discount</span>
+<span class="kn">from</span> <span class="nn">app.utils</span> <span class="kn">import</span> <span class="n">get_merchant</span><span class="p">,</span> <span class="n">merchant_required</span><span class="p">,</span> <span class="n">get_category_dict</span><span class="p">,</span> <span class="n">get_categories</span><span class="p">,</span> <span class="n">prevent_merchant</span><span class="p">,</span> \
+    <span class="n">create_discount</span>
+
+
+<div class="viewcode-block" id="add_categories"><a class="viewcode-back" href="../../app.html#app.routes.add_categories">[docs]</a><span class="k">def</span> <span class="nf">add_categories</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator function that automatically adds categories to render_template&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">categories</span><span class="o">=</span><span class="n">get_category_dict</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">inner</span></div>
+
+
+<span class="n">render_template</span> <span class="o">=</span> <span class="n">add_categories</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># decorate function so that you don&#39;t have to manually add categories to each</span>
+
+
+<div class="viewcode-block" id="home"><a class="viewcode-back" href="../../app.html#app.routes.home">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="nd">@prevent_merchant</span>
+<span class="k">def</span> <span class="nf">home</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Returns the home page of the website to the user. Allows non-logged in users and customer users to access.&quot;&quot;&quot;</span>
+    <span class="n">categories</span> <span class="o">=</span> <span class="n">Category</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+        <span class="n">output</span><span class="p">[</span><span class="n">category</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">category</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">output</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="login"><a class="viewcode-back" href="../../app.html#app.routes.login">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a site that takes user input for login/password to login to an account. Will verify login information if</span>
+<span class="sd">    accessed through a POST request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">LoginForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+    <span class="c1"># validate the login</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+        <span class="c1"># retrieve form params</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># search for the username in the table</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">users</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># no users with the matching username</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;User not found.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;login.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># grab the first User object and check</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">users</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">check_password</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+                <span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">302</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># redirect with an error message</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Incorrect password.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;login.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># return the login form</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;login.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="register"><a class="viewcode-back" href="../../app.html#app.routes.register">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/register&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">register</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a site that takes user input to create a new customer account. Will verify registration information if</span>
+<span class="sd">    accessed through a POST request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">RegisterForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="c1"># validate the registration</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">email</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># query for the username and check if it is already taken</span>
+        <span class="k">if</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Username is already taken&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;register.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+        <span class="c1"># query for the email and check if it is already taken</span>
+        <span class="k">elif</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Email has already been used&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;register.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># create and register the new user</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">)</span>
+            <span class="n">user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">302</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;register.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="logout"><a class="viewcode-back" href="../../app.html#app.routes.logout">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/logout&quot;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Logs out the user using flask-login when accessed.&quot;&quot;&quot;</span>
+    <span class="n">logout_user</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="account_info"><a class="viewcode-back" href="../../app.html#app.routes.account_info">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/account_info&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">account_info</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a page containing information about the username and email as well as a form to change the password.</span>
+<span class="sd">    When accessed through POST, will validate and process the password change form.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">PasswordForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="c1"># process the password change form</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+
+        <span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">original_password</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># ensure that the password matches the current user</span>
+        <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">check_password</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+            <span class="c1"># confirm that the passwords match</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">new_password</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">form</span><span class="o">.</span><span class="n">new_password_repeat</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                <span class="c1"># change the password and update</span>
+                <span class="n">current_user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">new_password</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Password successfully changed&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;account_info.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># new password selection was wrong</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Passwords do not match&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;account_info.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># original password was wrong, abort password change</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Incorrect password. Please enter your original password.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;account_info.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;account_info.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="delete_account"><a class="viewcode-back" href="../../app.html#app.routes.delete_account">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/delete_account&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">delete_account</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Contains a form for the user to confirm that they want to delete their account. When submitted through POST, will</span>
+<span class="sd">    receive and validate the request before deleting the account from the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">DeleteAccountForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="c1"># Process the delete account form</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+        <span class="c1"># form.validate should validate confirm as true</span>
+        <span class="n">confirm</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">confirm</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># delete the account</span>
+        <span class="k">if</span> <span class="n">confirm</span><span class="p">:</span>
+            <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Account successfully deleted&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># form should only be submittable if true, this data should never be reached</span>
+            <span class="k">return</span> <span class="n">abort</span><span class="p">(</span><span class="mi">403</span><span class="p">,</span> <span class="s2">&quot;Invalid form data received&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;delete_account.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="product"><a class="viewcode-back" href="../../app.html#app.routes.product">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/product/&lt;int:prod_id&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">product</span><span class="p">(</span><span class="n">prod_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieve a product page for a given product id. Will abort with a 404 if the ID was not found.</span>
+
+<span class="sd">    :param int prod_id: The id of the Product to retrieve</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># query the database for the id</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">CartForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="n">prod_id</span><span class="p">)</span>
+
+    <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prod_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">product</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># product id was not found</span>
+        <span class="k">return</span> <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># retrieve the first object from the query</span>
+        <span class="n">reviews</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">Review</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Review</span><span class="o">.</span><span class="n">product_id</span> <span class="o">==</span> <span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id</span>
+                                                                                                <span class="o">==</span> <span class="n">Review</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="c1"># calculate the average rating</span>
+        <span class="n">rating_sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">rating_avg</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reviews</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">review</span> <span class="ow">in</span> <span class="n">reviews</span><span class="p">:</span>
+                <span class="n">rating_sum</span> <span class="o">+=</span> <span class="n">review</span><span class="o">.</span><span class="n">Review</span><span class="o">.</span><span class="n">rating</span>
+            <span class="n">rating_avg</span> <span class="o">=</span> <span class="n">rating_sum</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">reviews</span><span class="p">)</span>
+            <span class="n">rating_avg</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">rating_avg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># get the merchant of the product</span>
+        <span class="n">merchant</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">merchant_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;product.html&#39;</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="n">product</span><span class="p">,</span> <span class="n">merchant</span><span class="o">=</span><span class="n">merchant</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                               <span class="n">reviews</span><span class="o">=</span><span class="n">reviews</span><span class="p">,</span> <span class="n">avg</span><span class="o">=</span><span class="n">rating_avg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="search"><a class="viewcode-back" href="../../app.html#app.routes.search">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/search&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/search/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">search</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a page with search results from a regex search using the param q as the query from a get request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># retrieve the query string from the URL arguments</span>
+    <span class="n">form_query</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">)</span>
+
+    <span class="c1"># check if a value was inputted and not empty</span>
+    <span class="k">if</span> <span class="n">form_query</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">form_query</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># use regex match on the regex expression to find results</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">regexp_match</span><span class="p">(</span><span class="n">form_query</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="c1"># display search page</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;search.html&quot;</span><span class="p">,</span> <span class="n">products</span><span class="o">=</span><span class="n">results</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">form_query</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># invalid search</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;search.html&quot;</span><span class="p">,</span> <span class="n">products</span><span class="o">=</span><span class="p">[],</span> <span class="n">query</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="orders"><a class="viewcode-back" href="../../app.html#app.routes.orders">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/orders&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="nd">@prevent_merchant</span>
+<span class="k">def</span> <span class="nf">orders</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a page to a logged in customer user containing orders with unfilled rows. Redirects if logged in as a</span>
+<span class="sd">    merchant or not logged in.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># retrieve the order rows that belong to the customer</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="c1"># build a dictionary to send to Jinja</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="c1"># grab the rows belonging to the order which are not filled</span>
+        <span class="n">order_rows</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">order_row</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">filled</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">order_rows</span><span class="p">:</span>
+            <span class="c1"># add the new row to the dictionary if not present</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+                <span class="n">items</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="n">order</span><span class="p">,</span> <span class="s1">&#39;rows&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">o</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">product</span><span class="p">)]}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># modify an existing entry in the dictionary</span>
+                <span class="n">items</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="s1">&#39;rows&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">o</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">product</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;orders.html&#39;</span><span class="p">,</span> <span class="n">orders</span><span class="o">=</span><span class="n">items</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="orders_filled"><a class="viewcode-back" href="../../app.html#app.routes.orders_filled">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/orders/filled&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="nd">@prevent_merchant</span>
+<span class="k">def</span> <span class="nf">orders_filled</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a page to a logged in customer user containing orders with filled rows. Redirects if logged in as a</span>
+<span class="sd">    merchant or not logged in.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># retrieve the order rows that belong to the customer</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="c1"># build a dictionary to send to Jinja</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="c1"># grab the rows belonging to the order which are not filled</span>
+        <span class="n">order_rows</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">order_row</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">order_rows</span><span class="p">:</span>
+            <span class="c1"># add the new row to the dictionary if not present</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+                <span class="n">items</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="n">order</span><span class="p">,</span> <span class="s1">&#39;rows&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">o</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">product</span><span class="p">)]}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># modify an existing entry in the dictionary</span>
+                <span class="n">items</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="s1">&#39;rows&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">o</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">product</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;orders_filled.html&#39;</span><span class="p">,</span> <span class="n">orders</span><span class="o">=</span><span class="n">items</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="product_review"><a class="viewcode-back" href="../../app.html#app.routes.product_review">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/product/&lt;int:product_id&gt;/review&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@prevent_merchant</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">product_review</span><span class="p">(</span><span class="n">product_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Web route for logged in users to review a specific product</span>
+
+<span class="sd">    :param int product_id: The ID of the product to review</span>
+<span class="sd">    :return: A webpage allowing the user to review if they haven&#39;t already and have ordered the product, redirect back</span>
+<span class="sd">    to the product page with a warning otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if user has bought this product</span>
+    <span class="k">if</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Order</span><span class="p">,</span> <span class="n">OrderRow</span><span class="p">)</span> \
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">OrderRow</span><span class="o">.</span><span class="n">product_id</span> <span class="o">==</span> <span class="n">product_id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You need to have bought an item to review it.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/product/</span><span class="si">{</span><span class="n">product_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">302</span><span class="p">)</span>
+
+    <span class="c1"># check if user has already reviewed this product</span>
+    <span class="k">if</span> <span class="n">Review</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="n">product_id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You&#39;ve already reviewed this product&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/product/</span><span class="si">{</span><span class="n">product_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">302</span><span class="p">)</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">ReviewForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="c1"># process the review</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+        <span class="c1"># grab form data</span>
+        <span class="n">rating</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">rating</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># create and add a new review</span>
+        <span class="n">new_review</span> <span class="o">=</span> <span class="n">Review</span><span class="p">(</span><span class="n">rating</span><span class="o">=</span><span class="n">rating</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="n">product_id</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_review</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Review successfully posted!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/product/</span><span class="si">{</span><span class="n">product_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">302</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;review.html&quot;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="n">product_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cart"><a class="viewcode-back" href="../../app.html#app.routes.cart">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/cart&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@prevent_merchant</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">cart</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cart website for logged-in users to be able to see and edit their cart</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">CartForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+    <span class="c1"># process the form for a new item to add</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+
+        <span class="c1"># grab the data</span>
+        <span class="n">quantity</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">prod_id</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">product_id</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prod_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">product</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Product not found!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">current_rows</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">cart_items</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">product_id</span><span class="o">=</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+            <span class="c1"># update a current row</span>
+            <span class="k">if</span> <span class="n">current_rows</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">current_rows</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">quantity</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># insert a new row</span>
+                <span class="n">cart_item</span> <span class="o">=</span> <span class="n">CartItem</span><span class="p">(</span><span class="n">product_id</span><span class="o">=</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">quantity</span><span class="o">=</span><span class="n">quantity</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cart_item</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Item added to cart!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/cart&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cart_items</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">cart_items</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cart_items</span><span class="p">):</span>
+            <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">product_id</span><span class="p">)</span>
+            <span class="n">rows</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;product&#39;</span><span class="p">:</span> <span class="n">product</span><span class="p">,</span> <span class="s1">&#39;quantity&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">quantity</span><span class="p">}</span>
+
+        <span class="c1"># calculate the total</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cart_items</span><span class="p">:</span>
+            <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">i</span><span class="o">.</span><span class="n">product_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">price</span> <span class="o">*</span> <span class="n">i</span><span class="o">.</span><span class="n">quantity</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;cart.html&#39;</span><span class="p">,</span> <span class="n">cart_items</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cart_remove"><a class="viewcode-back" href="../../app.html#app.routes.cart_remove">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/cart/remove/&lt;int:row_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@prevent_merchant</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">cart_remove</span><span class="p">(</span><span class="n">row_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Allows a logged-in user to remove a row from their cart</span>
+
+<span class="sd">    :param int row_id: The ID of the row to remove</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">CartItem</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">row_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rows</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># row doesn&#39;t exist</span>
+        <span class="k">return</span> <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># grab the first row that equals the query</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">rows</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+        <span class="c1"># delete only if it belongs to the current user</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>  <span class="c1"># forbidden, cannot access another user&#39;s rows</span>
+            <span class="k">return</span> <span class="n">abort</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">product_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">qty</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">quantity</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">flash</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Removed </span><span class="si">{</span><span class="n">qty</span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/cart&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="category"><a class="viewcode-back" href="../../app.html#app.routes.category">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/category/&lt;int:category_id&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">category</span><span class="p">(</span><span class="n">category_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a product catalog containing all the products of a given category</span>
+
+<span class="sd">    :param int category_id: The category to fetch items for</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># grab the category</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">Category</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">category_id</span><span class="p">)</span>
+
+    <span class="c1"># display page if valid</span>
+    <span class="k">if</span> <span class="n">category</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;category.html&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">products</span><span class="o">=</span><span class="n">category</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merchant_profile"><a class="viewcode-back" href="../../app.html#app.routes.merchant_profile">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/merchant/&lt;int:merchant_id&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">merchant_profile</span><span class="p">(</span><span class="n">merchant_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a product catalog containing all the products of a given merchant</span>
+
+<span class="sd">    :param int merchant_id: The merchant to fetch items for</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># grab the merchant</span>
+    <span class="n">merchants</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">roles</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">merchant_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">merchants</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">merchant</span> <span class="o">=</span> <span class="n">merchants</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">merchant_id</span><span class="o">=</span><span class="n">merchant</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_profile.html&#39;</span><span class="p">,</span> <span class="n">merchant</span><span class="o">=</span><span class="n">merchant</span><span class="p">,</span> <span class="n">products</span><span class="o">=</span><span class="n">products</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="checkout"><a class="viewcode-back" href="../../app.html#app.routes.checkout">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/checkout&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@prevent_merchant</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">checkout</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Site to recieve input/handle checkout requests for a logged in user</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">CheckoutForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+    <span class="n">cart</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">cart_items</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="c1"># process a submission</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+        <span class="n">submit</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">submit</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">submit</span><span class="p">:</span>
+            <span class="c1"># takes in user info</span>
+            <span class="n">address</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">billing</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">billing</span><span class="o">.</span><span class="n">data</span>
+
+            <span class="c1"># handle discount</span>
+            <span class="n">discount_code</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">discount_code</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">discount</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">discount_code</span><span class="p">:</span>
+                <span class="n">discount_query</span> <span class="o">=</span> <span class="n">Discount</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">discount_code</span><span class="p">)</span>
+                <span class="c1"># discount exists and is still valid</span>
+                <span class="k">if</span> <span class="n">discount_query</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">discount_query</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+                    <span class="n">discount</span> <span class="o">=</span> <span class="n">discount_query</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+            <span class="c1"># create order</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">ship_address</span><span class="o">=</span><span class="n">address</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cart</span><span class="p">:</span>
+                <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">product_id</span><span class="p">)</span>
+                <span class="n">price</span> <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">price</span>
+                <span class="c1"># apply discount if present</span>
+                <span class="k">if</span> <span class="n">discount</span><span class="p">:</span>
+                    <span class="n">price</span> <span class="o">=</span> <span class="n">price</span> <span class="o">-</span> <span class="n">discount</span><span class="o">.</span><span class="n">apply_discount</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">order_row</span> <span class="o">=</span> <span class="n">OrderRow</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">product_id</span><span class="p">,</span> <span class="n">quantity</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">quantity</span><span class="p">,</span>
+                                     <span class="n">product_price</span><span class="o">=</span><span class="n">price</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">order_row</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cart</span><span class="p">:</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/orders&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You need to confirm to purchase cart&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/checkout&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># prevent access to checkout if cart is empty</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cart</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Your cart is empty!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/cart&#39;</span><span class="p">)</span>
+        <span class="c1"># get discount code from URL</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span>
+        <span class="n">discount</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">code</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># search for discount with matching code</span>
+            <span class="n">discount_query</span> <span class="o">=</span> <span class="n">Discount</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">)</span>
+            <span class="c1"># discount exists and is still valid</span>
+            <span class="k">if</span> <span class="n">discount_query</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">discount_query</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+                <span class="n">discount</span> <span class="o">=</span> <span class="n">discount_query</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">discount_code</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">discount</span><span class="o">.</span><span class="n">code</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flash</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Code: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2"> is not valid!&quot;</span><span class="p">)</span>
+
+        <span class="c1"># generate an order total</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">total_savings</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cart</span><span class="p">:</span>
+            <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">product_id</span><span class="p">)</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">price</span> <span class="o">*</span> <span class="n">i</span><span class="o">.</span><span class="n">quantity</span><span class="p">)</span>
+            <span class="n">saving</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># generate savings for each row</span>
+            <span class="k">if</span> <span class="n">discount</span><span class="p">:</span>
+                <span class="n">saving</span> <span class="o">=</span> <span class="n">discount</span><span class="o">.</span><span class="n">apply_discount</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">*</span> <span class="n">i</span><span class="o">.</span><span class="n">quantity</span>
+                <span class="n">total_savings</span> <span class="o">+=</span> <span class="n">saving</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="n">price</span> <span class="o">-</span> <span class="n">saving</span>
+        <span class="k">if</span> <span class="n">discount</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Applied discount: </span><span class="si">{</span><span class="n">discount</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2"> to save $</span><span class="si">{</span><span class="n">total_savings</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;checkout.html&#39;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">discount</span><span class="o">.</span><span class="n">code</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;checkout.html&#39;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="account_test"><a class="viewcode-back" href="../../app.html#app.routes.account_test">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/account_test&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">account_test</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Used for testing, should only be reachable if logged in, else it would redirect the user to the login page&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;You are logged in&quot;</span></div>
+
+
+<div class="viewcode-block" id="merchant_account_test"><a class="viewcode-back" href="../../app.html#app.routes.merchant_account_test">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/merchant/account_test&#39;</span><span class="p">)</span>
+<span class="nd">@merchant_required</span>
+<span class="k">def</span> <span class="nf">merchant_account_test</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Used for testing, should only be reachable if logged in as a merchant, else it would redirect the user to the</span>
+<span class="sd">    login page&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;You are logged in as a merchant&quot;</span></div>
+
+
+<div class="viewcode-block" id="merchant"><a class="viewcode-back" href="../../app.html#app.routes.merchant">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/merchant&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="nd">@merchant_required</span>
+<span class="k">def</span> <span class="nf">merchant</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Returns a home page for a user logged in as a merchant. Redirects if not logged in as a merchant.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;merchant_index.html&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merchant_register"><a class="viewcode-back" href="../../app.html#app.routes.merchant_register">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/merchant/register&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">merchant_register</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a site that takes user input to create a new merchant account. Will verify registration information if</span>
+<span class="sd">    accessed through a POST request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">RegisterForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="c1"># verify a registration</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+        <span class="c1"># retrieve form data</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">email</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># query for the username and check if it is already taken</span>
+        <span class="k">if</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Username is already taken&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_register.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+        <span class="c1"># query for the email and check if it is already taken</span>
+        <span class="k">elif</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Email has already been used&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_register.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># create and register the new user</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">)</span>
+            <span class="n">user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+            <span class="c1"># assign the merchant role to the user</span>
+            <span class="n">stmt</span> <span class="o">=</span> <span class="n">insert</span><span class="p">(</span><span class="n">UserRole</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">role_id</span><span class="o">=</span><span class="n">get_merchant</span><span class="p">()</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+            <span class="c1"># log the user into their account</span>
+            <span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/merchant&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">302</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_register.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merchant_login"><a class="viewcode-back" href="../../app.html#app.routes.merchant_login">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/merchant/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">merchant_login</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a site that takes user input for login/password to log in to a merchant account. Will verify login</span>
+<span class="sd">    information if accessed through a POST request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">LoginForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="c1"># verify a login</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+        <span class="c1"># retrieve form input</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># search for the username in users with merchant role</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">roles</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">get_merchant</span><span class="p">()</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">users</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;User not found.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_login.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">users</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>  <span class="c1"># grab the first match</span>
+            <span class="c1"># validate login</span>
+            <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">check_password</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+                <span class="c1"># successful login as a merchant</span>
+                <span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/merchant&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">302</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># redirect with an error message</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Incorrect password.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_login.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_login.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merchant_new_product"><a class="viewcode-back" href="../../app.html#app.routes.merchant_new_product">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/merchant/new_product&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@merchant_required</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">merchant_new_product</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a merchant input to submit a new product. When accessed through a POST request, will save inputs, create</span>
+<span class="sd">    a new Product object, and redirect the user to the product page once submitted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># create the form</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">NewProductForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">,</span> <span class="n">merchant_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">category</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="n">get_categories</span><span class="p">()</span>  <span class="c1"># set the choices as a list of available categories in the database</span>
+
+    <span class="c1"># validate the submission</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+        <span class="c1"># retrieve the information about the product</span>
+        <span class="n">merchant_id</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">merchant_id</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">category</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">category</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># fetch the category that the product belongs to</span>
+        <span class="n">category_id</span> <span class="o">=</span> <span class="n">Category</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">category</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># save the new product to the database</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="p">(</span><span class="n">merchant_id</span><span class="o">=</span><span class="n">merchant_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+                          <span class="n">category_id</span><span class="o">=</span><span class="n">category_id</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+        <span class="c1"># Retrieve files sent in the request</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">pictures</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>  <span class="c1"># check if there are files and the file name is not blank</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="c1"># generate a secure and random filename for the file</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">secure_filename</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="c1"># save the file to the upload folder</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">webapp</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;UPLOAD_FOLDER&#39;</span><span class="p">],</span> <span class="n">filename</span><span class="p">))</span>
+                <span class="c1"># generate an image and attach it to the product</span>
+                <span class="n">route</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span><span class="n">product_id</span><span class="o">=</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">filename</span><span class="p">))</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">route</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/product/</span><span class="si">{</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">302</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_product.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merchant_promo"><a class="viewcode-back" href="../../app.html#app.routes.merchant_promo">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/merchant/promo&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/merchant/promo/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@merchant_required</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">merchant_promo</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a merchant input to create a new promotion. When accessed through a POST request, will save inputs, create</span>
+<span class="sd">    a new Product object, and redirect the user to the product page once submitted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">products</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">merchant_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="c1"># create the form</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">NewDiscountForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="p">[(</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">product</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">products</span><span class="p">]</span>
+    <span class="c1"># validate the submission (form.validate() is broken)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">is_submitted</span><span class="p">():</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">amount</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">amount</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">expiration</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">expiration_date</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">Discount</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Code has already been used! Please enter a different code.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/merchant/promo&#39;</span><span class="p">)</span>
+        <span class="n">products_output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">products</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">products</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">product</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">abort</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">price</span> <span class="o">&lt;</span> <span class="n">amount</span><span class="p">:</span>
+                <span class="n">flash</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Discount amount is greater than the price for </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/merchant/promo&#39;</span><span class="p">)</span>
+            <span class="n">products_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">discount</span> <span class="o">=</span> <span class="n">create_discount</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">products_output</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">expiration</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">discount</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">flash</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully created discount &#39;</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/merchant/promo&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_promo.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merchant_orders"><a class="viewcode-back" href="../../app.html#app.routes.merchant_orders">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/merchant/orders&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@merchant_required</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">merchant_orders</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a site with unfilled orders for a logged-in merchant. When accessed with a POST request with the correct form,</span>
+<span class="sd">    will change the status of the order rows to filled.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">FillOrderForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="c1"># validate a order fill form</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+        <span class="c1"># get data from the form</span>
+        <span class="n">order_id</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">order_id</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">merchant_id</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">merchant_id</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="c1"># select rows that belong to the merchant</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">OrderRow</span><span class="p">,</span> <span class="n">Product</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">orders</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">OrderRow</span><span class="o">.</span><span class="n">filled</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> \
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">OrderRow</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">order_id</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">merchant_id</span> <span class="o">==</span> <span class="n">merchant_id</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="c1"># loop through and fill the orders</span>
+        <span class="k">for</span> <span class="n">order</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">filled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/merchant/orders&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># select all unfilled orders that belong to the merchant</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">OrderRow</span><span class="p">,</span> <span class="n">Product</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">orders</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">OrderRow</span><span class="o">.</span><span class="n">filled</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span> \
+            <span class="n">where</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">merchant_id</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">OrderRow</span><span class="o">.</span><span class="n">timestamp</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="c1"># build a dictionary to group together orders</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">order</span><span class="p">,</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">total_order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="n">customer</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">total_order</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+                <span class="n">items</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;customer&#39;</span><span class="p">:</span> <span class="n">customer</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="n">total_order</span><span class="p">,</span> <span class="s1">&#39;rows&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">order</span><span class="p">,</span> <span class="n">product</span><span class="p">)]}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">items</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="s1">&#39;rows&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">order</span><span class="p">,</span> <span class="n">product</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_orders.html&#39;</span><span class="p">,</span> <span class="n">orders</span><span class="o">=</span><span class="n">items</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merchant_orders_filled"><a class="viewcode-back" href="../../app.html#app.routes.merchant_orders_filled">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/merchant/orders/filled&#39;</span><span class="p">)</span>
+<span class="nd">@merchant_required</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">merchant_orders_filled</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a site with filled orders for a logged-in merchant.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># select all filled orders that belong to the merchant</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">OrderRow</span><span class="p">,</span> <span class="n">Product</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">orders</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">OrderRow</span><span class="o">.</span><span class="n">filled</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span><span class="o">.</span> \
+        <span class="n">where</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">merchant_id</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">OrderRow</span><span class="o">.</span><span class="n">timestamp</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="c1"># build a dictionary to group together orders</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">order</span><span class="p">,</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">total_order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">items</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="n">total_order</span><span class="p">,</span> <span class="s1">&#39;rows&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">order</span><span class="p">,</span> <span class="n">product</span><span class="p">)]}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">items</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="s1">&#39;rows&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">order</span><span class="p">,</span> <span class="n">product</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;merchant_orders_filled.html&#39;</span><span class="p">,</span> <span class="n">orders</span><span class="o">=</span><span class="n">items</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="images"><a class="viewcode-back" href="../../app.html#app.routes.images">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/images/&lt;string:filename&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/images/&lt;string:filename&gt;/&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">images</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves an uploaded file</span>
+
+<span class="sd">    :param str filename: The name of the file</span>
+<span class="sd">    :return: an image (.png, .jpg, .jpeg) that was uploaded</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">send_from_directory</span><span class="p">(</span><span class="n">webapp</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;UPLOAD_FOLDER&quot;</span><span class="p">],</span> <span class="n">filename</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Yee, Sarah Singh, Selim Ishakbeyoglu, Nicholas Dimidik.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
