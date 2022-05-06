@@ -67,6 +67,12 @@ Project was built with:
 - [CircleCI](https://circleci.com/) - Continuous integration/deployment
 - [Codecov](https://about.codecov.io/) - Code coverage metrics
 
+## Team Progress
+
+- [Gantt Chart](https://docs.google.com/spreadsheets/d/1MNufmraxPGaFWcTLx7IgA9EN_BQ6yrKa3Abu86le8Vo/edit?usp=sharing) -
+  Chart to track team's progress on development
+- [Documentation](https://nathancyee.github.io/131_project/) - Code documentation for the app package.
+
 ## Team Members
 
 - Sarah Singh-**LEAD** ([@SarahS16](https://github.com/SarahS16))
@@ -74,9 +80,5 @@ Project was built with:
 - Nicholas ([@StickOnAStick](https://github.com/StickOnAStick))
 - Nathan Yee ([@NathanCYee](https://github.com/NathanCYee))
 
-## Team Progress
-
-- [Gantt Chart](https://docs.google.com/spreadsheets/d/1MNufmraxPGaFWcTLx7IgA9EN_BQ6yrKa3Abu86le8Vo/edit?usp=sharing) - Chart to track team's progress on development 
-- [Documentation](https://nathancyee.github.io/131_project/)
 ---
 ![Your Repository's Stats](https://contrib.rocks/image?repo=NathanCYee/131_project)
