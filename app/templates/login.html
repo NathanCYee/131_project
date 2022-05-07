@@ -11,28 +11,25 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <header class="pb-3 mb-4 border-bottom">
-        <h1>Sign in</h1>
-    </header>
-    <div class="row">
-        <div class="col-xs-4">
-            <div class="p-5 mb-4 bg-light text-dark border rounded-3">
-                <div class="container-fluid">
-                    <form action="/login" method="POST" class="form-group">
-                        {{ form.hidden_tag() }}
-                        <p>
-                            {{ form.username.label }}<br>
-                            {{ form.username(size=32, class_="form-control", placeholder="Username" ) }}
-                        </p>
-                        <p>
-                            {{ form.password.label }}<br>
-                            {{ form.password(size=32, class_="form-control", placeholder="Password") }}
-                        </p>
-                        <p>{{ form.submit(class_="btn btn-primary") }}</p>
-                    </form>
-                    <a href="/register">Register a new account</a>
-                </div>
+    
+        <h2 class="fw-bolder mt-2" align="center">Sign in</h2>
+        <form action="/login" method="POST" class=" container d-flex justify-content-center py-4 mb-4">
+            <div class="d-flex flex-column bg-light p-5 border border-2 border-dark rounded-3">
+                {{ form.hidden_tag() }}
+                <p class="fw-bolder">
+                    {{ form.username.label }}<br>
+                    {{ form.username(size=32, class_="form-control", placeholder="Username" ) }}
+                </p>
+                <p class="fw-bolder">
+                    {{ form.password.label }}<br>
+                    {{ form.password(size=32, class_="form-control", placeholder="Password") }}
+                </p>
+                <p>{{ form.submit(class_="btn btn-warning") }}</p>
+                <a href="/register" class="text-primary">Register a new account</a>
+                <p>Or, <a href="/merchant/login" class="link-secondary mx-2">Login as Merchant</a></p>
             </div>
-        </div>
-    </div>
+        </form>
+                        
+                        
+    
 {% endblock %}

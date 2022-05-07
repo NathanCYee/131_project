@@ -2,6 +2,7 @@
 
 
 {% block main %}
+    <div class="container mt-4">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
@@ -39,4 +40,5 @@
             </div>
         </div>
     </div>
+    <div />
 {% endblock %}

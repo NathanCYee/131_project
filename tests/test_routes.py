@@ -14,7 +14,7 @@ def test_home(client):
     with client:  # use for safety in case there are errors with the client
         response = client.get('/')  # act like a client and retrieve the site
         # must check a bytes object b"" instead of a string ""
-        assert b"</br>" in response.data  # response.data returns the contents of the site
+        assert response.status_code == 200  # response.data returns the contents of the site
 
 
 def test_good_login(db, client):
