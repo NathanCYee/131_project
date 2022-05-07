@@ -1,10 +1,13 @@
+import datetime
+
 from sqlalchemy.orm import sessionmaker
 
 from app.forms import DeleteAccountForm
-from app.models import User, UserRole, Product, Order, OrderRow, Review
+from app.models import User, UserRole, Product, Order, OrderRow, Review, Discount
 from sqlalchemy.orm import sessionmaker
 
 from app.models import CartItem, Category, Order, OrderRow, Product, User, UserRole
+from app.utils import create_discount
 
 
 def test_home(client):
@@ -836,6 +839,268 @@ def test_merchant_profile(db, client):
     # reset the state of the db
     User.query.delete()
     Product.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_apply_discount(db, client):
+    category_name = "Electronics"
+    category = Category.query.filter_by(name=category_name).first()
+
+    # test params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+    test_addr = "test_blvd"
+    name = "iPhone 1000"
+    product_price = 999.99
+    description = "The brand new iPhone. Lorem ipsum sit amet."
+    promo_name = "CODE10"
+    discount_amount = 10
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        # add a test user to the database
+        user = User(username=username, email=email)
+        user.set_password(password)
+        session.add(user)
+        session.commit()
+
+        # create the product
+        product = Product(merchant_id=0, name=name, price=product_price, description=description,
+                          category_id=category.id)
+        session.add(product)
+        session.commit()
+
+        applicable_products = [product.id]
+
+        # create the discount
+        discount = create_discount(code=promo_name, type=0, applicable_ids=applicable_products, percentage=False,
+                                   amount=
+                                   discount_amount, end_date=expiration_date)
+        session.add(discount)
+        session.commit()
+
+        with client:
+            request = client.post('/login',
+                                  data={'username': username, 'password': password, 'submit': True})
+            assert request.status_code == 302  # successful login, redirected to homepage
+
+            # add to cart
+            request = client.post('/cart',
+                                  data={'product_id': product.id, 'quantity': 1, 'submit': True}, follow_redirects=True)
+
+            # go to checkout with normal price
+            request = client.get('/checkout')
+            assert bytes(f"${product.price:.2f}", "utf-8") in request.data
+
+            assert discount.apply_discount(user.cart_items[0].id) != 0
+
+            # apply discount
+            request = client.get('/checkout', query_string={'code': discount.code}, follow_redirects=True)
+            assert bytes(discount.code, "utf-8") in request.data
+            assert b"Applied discount" in request.data
+            assert bytes(f"${product.price - discount_amount:.2f}", "utf-8") in request.data
+
+            # apply bad discount
+            request = client.get('/checkout', query_string={'code': "FAKE_DEAL"}, follow_redirects=True)
+            assert b"is not valid" in request.data
+
+            # checkout with a discount
+            request = client.post(f'/checkout',
+                                  data={'discount_code': discount.code,
+                                        'billing': '123456789', 'address': test_addr, 'submit': True})
+            assert request.status_code == 302  # redirect to orders page
+
+            orders = user.orders
+            assert orders.count() == 1
+            order_row = orders.first().order_row
+            assert order_row.count() == 1
+            first_row = order_row.first()
+            assert first_row.product_price == product.price - discount_amount
+
+    # reset the state of the db
+    User.query.delete()
+    Product.query.delete()
+    Discount.query.delete()
+    Order.query.delete()
+    OrderRow.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_apply_category_discount(db, client):
+    category_name = "Electronics"
+    category = Category.query.filter_by(name=category_name).first()
+
+    # test params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+    test_addr = "test_blvd"
+    name = "iPhone 1000"
+    product_price = 999.99
+    description = "The brand new iPhone. Lorem ipsum sit amet."
+    promo_name = "CODE10"
+    discount_amount = 10
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        # add a test user to the database
+        user = User(username=username, email=email)
+        user.set_password(password)
+        session.add(user)
+        session.commit()
+
+        # create the product
+        product = Product(merchant_id=0, name=name, price=product_price, description=description,
+                          category_id=category.id)
+        session.add(product)
+        session.commit()
+
+        applicable_products = [category.id]
+
+        # create the discount
+        discount = create_discount(code=promo_name, type=1, applicable_ids=applicable_products, percentage=False,
+                                   amount=
+                                   discount_amount, end_date=expiration_date)
+        session.add(discount)
+        session.commit()
+
+        with client:
+            request = client.post('/login',
+                                  data={'username': username, 'password': password, 'submit': True})
+            assert request.status_code == 302  # successful login, redirected to homepage
+
+            # add to cart
+            request = client.post('/cart',
+                                  data={'product_id': product.id, 'quantity': 1, 'submit': True}, follow_redirects=True)
+
+            # go to checkout with normal price
+            request = client.get('/checkout')
+            assert bytes(f"${product.price:.2f}", "utf-8") in request.data
+
+            assert discount.apply_discount(user.cart_items[0].id) != 0
+
+            # apply discount
+            request = client.get('/checkout', query_string={'code': discount.code}, follow_redirects=True)
+            assert bytes(discount.code, "utf-8") in request.data
+            assert b"Applied discount" in request.data
+            assert bytes(f"${product.price - discount_amount:.2f}", "utf-8") in request.data
+
+            # apply bad discount
+            request = client.get('/checkout', query_string={'code': "FAKE_DEAL"}, follow_redirects=True)
+            assert b"is not valid" in request.data
+
+            # checkout with a discount
+            request = client.post(f'/checkout',
+                                  data={'discount_code': discount.code,
+                                        'billing': '123456789', 'address': test_addr, 'submit': True})
+            assert request.status_code == 302  # redirect to orders page
+
+            orders = user.orders
+            assert orders.count() == 1
+            order_row = orders.first().order_row
+            assert order_row.count() == 1
+            first_row = order_row.first()
+            assert first_row.product_price == product.price - discount_amount
+
+    # reset the state of the db
+    User.query.delete()
+    Product.query.delete()
+    Discount.query.delete()
+    Order.query.delete()
+    OrderRow.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_apply_sitewide_discount(db, client):
+    category_name = "Electronics"
+    category = Category.query.filter_by(name=category_name).first()
+
+    # test params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+    test_addr = "test_blvd"
+    name = "iPhone 1000"
+    product_price = 999.99
+    description = "The brand new iPhone. Lorem ipsum sit amet."
+    promo_name = "CODE10"
+    discount_amount = 10
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        # add a test user to the database
+        user = User(username=username, email=email)
+        user.set_password(password)
+        session.add(user)
+        session.commit()
+
+        # create the product
+        product = Product(merchant_id=0, name=name, price=product_price, description=description,
+                          category_id=category.id)
+        session.add(product)
+        session.commit()
+
+        # create the discount
+        discount = create_discount(code=promo_name, type=2, applicable_ids=[], percentage=False,
+                                   amount=
+                                   discount_amount, end_date=expiration_date)
+        session.add(discount)
+        session.commit()
+
+        with client:
+            request = client.post('/login',
+                                  data={'username': username, 'password': password, 'submit': True})
+            assert request.status_code == 302  # successful login, redirected to homepage
+
+            # add to cart
+            request = client.post('/cart',
+                                  data={'product_id': product.id, 'quantity': 1, 'submit': True}, follow_redirects=True)
+
+            # go to checkout with normal price
+            request = client.get('/checkout')
+            assert bytes(f"${product.price:.2f}", "utf-8") in request.data
+
+            assert discount.apply_discount(user.cart_items[0].id) != 0
+
+            # apply discount
+            request = client.get('/checkout', query_string={'code': discount.code}, follow_redirects=True)
+            assert bytes(discount.code, "utf-8") in request.data
+            assert b"Applied discount" in request.data
+            assert bytes(f"${product.price - discount_amount:.2f}", "utf-8") in request.data
+
+            # apply bad discount
+            request = client.get('/checkout', query_string={'code': "FAKE_DEAL"}, follow_redirects=True)
+            assert b"is not valid" in request.data
+
+            # checkout with a discount
+            request = client.post(f'/checkout',
+                                  data={'discount_code': discount.code,
+                                        'billing': '123456789', 'address': test_addr, 'submit': True})
+            assert request.status_code == 302  # redirect to orders page
+
+            orders = user.orders
+            assert orders.count() == 1
+            order_row = orders.first().order_row
+            assert order_row.count() == 1
+            first_row = order_row.first()
+            assert first_row.product_price == product.price - discount_amount
+
+    # reset the state of the db
+    User.query.delete()
+    Product.query.delete()
+    Discount.query.delete()
+    Order.query.delete()
+    OrderRow.query.delete()
     db.session.query(UserRole).delete()
     db.session.commit()
     db.session.flush()

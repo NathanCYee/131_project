@@ -8,9 +8,10 @@ from flask import render_template as r, flash, request, redirect, abort, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from app import webapp, db
 from app.forms import CheckoutForm, LoginForm, RegisterForm, PasswordForm, DeleteAccountForm, CartForm, NewProductForm, \
-    ReviewForm, FillOrderForm
-from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category, Review, Image
-from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant
+    ReviewForm, FillOrderForm, NewDiscountForm
+from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category, Review, Image, Discount
+from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant, \
+    create_discount
 
 
 def add_categories(func):
@@ -176,7 +177,8 @@ def delete_account():
 def product(prod_id):
     """
     Retrieve a product page for a given product id. Will abort with a 404 if the ID was not found.
-    :param prod_id: The id of the Product to retrieve
+
+    :param int prod_id: The id of the Product to retrieve
     """
 
     # query the database for the id
@@ -282,11 +284,13 @@ def orders_filled():
 
 
 @webapp.route("/product/<int:product_id>/review", methods=['GET', 'POST'])
+@prevent_merchant
 @login_required
 def product_review(product_id):
     """
     Web route for logged in users to review a specific product
-    :param product_id: The ID of the product to review
+
+    :param int product_id: The ID of the product to review
     :return: A webpage allowing the user to review if they haven't already and have ordered the product, redirect back
     to the product page with a warning otherwise
     """
@@ -320,6 +324,7 @@ def product_review(product_id):
 
 
 @webapp.route('/cart', methods=['GET', 'POST'])
+@prevent_merchant
 @login_required
 def cart():
     """
@@ -367,11 +372,13 @@ def cart():
 
 
 @webapp.route('/cart/remove/<int:row_id>', methods=['GET'])
+@prevent_merchant
 @login_required
 def cart_remove(row_id):
     """
     Allows a logged-in user to remove a row from their cart
-    :param row_id: The ID of the row to remove
+
+    :param int row_id: The ID of the row to remove
     """
     rows = CartItem.query.filter_by(id=row_id)
     if rows.count() != 1:  # row doesn't exist
@@ -397,7 +404,8 @@ def cart_remove(row_id):
 def category(category_id):
     """
     Generates a product catalog containing all the products of a given category
-    :param category_id: The category to fetch items for
+
+    :param int category_id: The category to fetch items for
     """
 
     # grab the category
@@ -414,7 +422,8 @@ def category(category_id):
 def merchant_profile(merchant_id):
     """
     Generates a product catalog containing all the products of a given merchant
-    :param merchant_id: The merchant to fetch items for
+
+    :param int merchant_id: The merchant to fetch items for
     """
 
     # grab the merchant
@@ -428,19 +437,14 @@ def merchant_profile(merchant_id):
 
 
 @webapp.route("/checkout", methods=['GET', 'POST'])
+@prevent_merchant
 @login_required
 def checkout():
     """
     Site to recieve input/handle checkout requests for a logged in user
     """
     form = CheckoutForm(request.form)
-
-    # generate an order total
     cart = current_user.cart_items.all()
-    total = 0
-    for i in cart:
-        product = Product.query.get(i.product_id)
-        total += (product.price * i.quantity)
 
     # process a submission
     if request.method == 'POST' and form.validate():
@@ -450,6 +454,15 @@ def checkout():
             address = form.address.data
             billing = form.billing.data
 
+            # handle discount
+            discount_code = form.discount_code.data
+            discount = False
+            if discount_code:
+                discount_query = Discount.query.filter_by(code=discount_code)
+                # discount exists and is still valid
+                if discount_query.count() != 0 and discount_query.first().is_valid():
+                    discount = discount_query.first()
+
             # create order
             order = Order(user_id=current_user.id, ship_address=address)
             db.session.add(order)
@@ -457,8 +470,12 @@ def checkout():
 
             for row in cart:
                 product = Product.query.get(row.product_id)
+                price = product.price
+                # apply discount if present
+                if discount:
+                    price = price - discount.apply_discount(row.id)
                 order_row = OrderRow(id=order.id, product_id=row.product_id, quantity=row.quantity,
-                                     product_price=product.price)
+                                     product_price=price)
                 db.session.add(order_row)
             db.session.commit()
 
@@ -466,12 +483,45 @@ def checkout():
                 db.session.delete(row)
 
             db.session.commit()
-            return render_template('checkout.html', total=total, form=form)
+            return redirect('/orders')
         else:
             flash("You need to confirm to purchase cart")
             return redirect('/checkout')
     else:
-        return render_template('checkout.html', total=total, form=form)
+        # prevent access to checkout if cart is empty
+        if len(cart) == 0:
+            flash("Your cart is empty!")
+            return redirect('/cart')
+        # get discount code from URL
+        code = request.args.get('code')
+        discount = False
+        if code is not None:
+            # search for discount with matching code
+            discount_query = Discount.query.filter_by(code=code)
+            # discount exists and is still valid
+            if discount_query.count() != 0 and discount_query.first().is_valid():
+                discount = discount_query.first()
+                form.discount_code.value = discount.code
+            else:
+                flash(f"Code: {code} is not valid!")
+
+        # generate an order total
+        total = 0
+        total_savings = 0
+        for i in cart:
+            product = Product.query.get(i.product_id)
+            price = (product.price * i.quantity)
+            saving = 0
+            # generate savings for each row
+            if discount:
+                saving = discount.apply_discount(i.id) * i.quantity
+                total_savings += saving
+            total += price - saving
+        if discount:
+            flash(f"Applied discount: {discount.code} to save ${total_savings:.2f}")
+            return render_template('checkout.html', total=total, form=form, code=discount.code)
+        else:
+            return render_template('checkout.html', total=total, form=form)
 
 
 @webapp.route('/account_test')
@@ -622,6 +672,46 @@ def merchant_new_product():
         return render_template('merchant_product.html', form=form, id=current_user.id)
 
 
+@webapp.route('/merchant/promo', methods=['GET', 'POST'])
+@webapp.route('/merchant/promo/', methods=['GET', 'POST'])
+@merchant_required
+@login_required
+def merchant_promo():
+    """
+    Returns a merchant input to create a new promotion. When accessed through a POST request, will save inputs, create
+    a new Product object, and redirect the user to the product page once submitted.
+    """
+    products = Product.query.filter_by(merchant_id=current_user.id).all()
+    # create the form
+    form = NewDiscountForm(request.form)
+    form.products.choices = [(product.id, product.name) for product in products]
+    # validate the submission (form.validate() is broken)
+    if request.method == 'POST' and form.is_submitted():
+        code = form.code.data
+        amount = form.amount.data
+        expiration = form.expiration_date.data
+        if Discount.query.filter_by(code=code).count() != 0:
+            flash("Code has already been used! Please enter a different code.")
+            return redirect('/merchant/promo')
+        products_output = []
+        products = form.products.data
+        for product in products:
+            p = Product.query.get(int(product))
+            if p is None:
+                return abort(403)
+            if p.price < amount:
+                flash(f"Discount amount is greater than the price for {p.name}.")
+                return redirect('/merchant/promo')
+            products_output.append(p.id)
+        discount = create_discount(code, 0, products_output, False, amount, expiration)
+        db.session.add(discount)
+        db.session.commit()
+        flash(f"Successfully created discount '{code}'.")
+        return redirect('/merchant/promo')
+    else:
+        return render_template('merchant_promo.html', form=form)
+
+
 @webapp.route('/merchant/orders', methods=['GET', 'POST'])
 @merchant_required
 @login_required
@@ -695,7 +785,8 @@ def merchant_orders_filled():
 def images(filename):
     """
     Retrieves an uploaded file
-    :param filename: The name of the file
+
+    :param str filename: The name of the file
     :return: an image (.png, .jpg, .jpeg) that was uploaded
     """
     return send_from_directory(webapp.config["UPLOAD_FOLDER"], filename)
