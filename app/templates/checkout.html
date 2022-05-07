@@ -1,53 +1,56 @@
 {% extends "base.html" %}
 
 {% block main %}
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-success" role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    </br>
-    <h1><strong>Total</strong>: {{ "$%.2f"|format(total) }}</h1></br>
-    <form action="/checkout" method="GET">
-        <p>
-        <div class="input-group mb-3">
+    <div class="container">
 
-            {% if code %}
-                <input class="form-control mr-sm-2" id="code" name="code" placeholder="Discount Code"
-                       aria-label="Discount Code" value="{{ code }}">
-            {% else %}
-                <input class="form-control mr-sm-2" id="code" name="code" placeholder="Discount Code"
-                       aria-label="Discount Code">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endif %}
-            <button class="btn btn-secondary" type="submit" id="button-addon2">Apply</button>
+        {% endwith %}
+        </br>
+        <h1><strong>Total</strong>: {{ "$%.2f"|format(total) }}</h1></br>
+        <form action="/checkout" method="GET">
+            <p>
+            <div class="input-group mb-3">
 
-        </div>
-        <small class="form-text text-muted">Enter a discount code.</small>
-        </p>
-    </form>
-    <header class="pb-3 mb-4 border-bottom">
-    </header>
-    <form action="/checkout" method="POST" class="form-group">
-        {% if 'csrf_token' in form %}
-            {{ form.csrf_token }}
-        {% endif %}
-        {% if code %}
-            {{ form.discount_code(value=code) }}
-        {% endif %}
-        <p>
-            {{ form.address.label }}
-            {{ form.address(size=32, class_="form-control") }}
-        </p>
-        <p>
-            {{ form.billing.label }}
-            {{ form.billing(size=32, class_="form-control") }}
-        </p>
-        <p>
-            {{ form.submit(class_="btn btn-primary") }}
-        </p>
-    </form>
+                {% if code %}
+                    <input class="form-control mr-sm-2" id="code" name="code" placeholder="Discount Code"
+                           aria-label="Discount Code" value="{{ code }}">
+                {% else %}
+                    <input class="form-control mr-sm-2" id="code" name="code" placeholder="Discount Code"
+                           aria-label="Discount Code">
+                {% endif %}
+                <button class="btn btn-secondary" type="submit" id="button-addon2">Apply</button>
+
+            </div>
+            <small class="form-text text-muted">Enter a discount code.</small>
+            </p>
+        </form>
+        <header class="pb-3 mb-4 border-bottom">
+        </header>
+        <form action="/checkout" method="POST" class="form-group">
+            {% if 'csrf_token' in form %}
+                {{ form.csrf_token }}
+            {% endif %}
+            {% if code %}
+                {{ form.discount_code(value=code) }}
+            {% endif %}
+            <p>
+                {{ form.address.label }}
+                {{ form.address(size=32, class_="form-control") }}
+            </p>
+            <p>
+                {{ form.billing.label }}
+                {{ form.billing(size=32, class_="form-control") }}
+            </p>
+            <p>
+                {{ form.submit(class_="btn btn-primary") }}
+            </p>
+        </form>
+    </div>
 {% endblock %} 
