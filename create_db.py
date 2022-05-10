@@ -3,10 +3,10 @@ from os.path import exists
 from app import db
 
 # delete the images
-"""files = os.listdir('./app/static/uploads')
+files = os.listdir('./app/static/uploads')
 for file in files:
     if ".gitignore" not in file:
-        os.remove(file)"""
+        os.remove(os.path.join("./app/static/uploads/", file))
 
 # delete the existing database
 if exists('./app/webapp.db'):
