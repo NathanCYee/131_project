@@ -15,14 +15,14 @@
         <tbody>
         {% for product in products %}
             <tr>
+                <!--Add image to table-->
                 {% if product.images[0] %}
                 <td>
                     <a href={{ '/product/%s' %product.id }}>
                         <img src={{ '%s' %product.images[0].path }} class="card-img-top rounded-3"
-                            alt="Card Image"
-                            align="middle" style="max-width: 60px; aspect-ratio: 1 / 1; ">
+                            alt="Card Image" align="middle" style="max-width: 60px; aspect-ratio: 1 / 1; ">
                     </a>
-                </td>
+                </td> 
                 {% else %}
                 <td>
                     <a href={{ '/product/%s' %product.id}} class="text-decoration-none">
@@ -30,6 +30,7 @@
                     <a>
                 </td>
                 {% endif %}
+
                 <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none text-black fw-bolder fs-3">{{ product.name }}</a></td>
                 <td>${{ product.price }}</td>
             </tr>
