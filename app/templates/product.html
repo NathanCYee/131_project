@@ -98,7 +98,7 @@
                                     <h5 class="card-title fs-4">{{ product.name }}</h5>
                                     <p class="card-text fs-5 fw-bolder">${{ product.price }}</p>
                                 </div>
-                                <a href={{ 'product/%d' %product.id }} class="btn btn-warning">View</a>
+                                <a href={{ '/product/%d' %product.id }} class="btn btn-warning">View</a>
                             </div>
                         </div>
                     {% endfor %}
@@ -112,8 +112,10 @@
     <!--End Category-->
 
     <!--TODO: Add reveiw section stars-->
+    
     <h2>{{ avg }} / 5.0 </h2>
     
+
     </br>
     <p><a href="/product/{{ product_id }}/review">Review</a></p>
     {% if reviews %}
