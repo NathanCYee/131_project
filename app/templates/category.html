@@ -30,7 +30,7 @@
                     <a>
                 </td>
                 {% endif %}
-                <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none text-black fw-bolder fs-3">{{ product.name }}</a></td>
+                <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none fs-3 fw-bolder" style="color: inherit;">{{ product.name }}</a></td>
                 <td>${{ product.price }}</td>
             </tr>
         {% endfor %}

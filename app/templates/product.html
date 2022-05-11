@@ -85,7 +85,7 @@
                         <!--Cards-->
                         <div class="card col-6 col-md-3 col-lg-2 p-2 mx-2">
                             {% if product.images[0] %}
-                                <a href={{ 'product/%d' %product.id }}>
+                                <a href={{ '/product/%d' %product.id }}>
                                     <img src={{ '%s' %product.images[0].path }} class="card-img-top rounded-3"
                                         alt="Card Image"
                                         align="middle" style=" aspect-ratio: 1 / 1; ">
@@ -98,7 +98,7 @@
                                     <h5 class="card-title fs-4">{{ product.name }}</h5>
                                     <p class="card-text fs-5 fw-bolder">${{ product.price }}</p>
                                 </div>
-                                <a href={{ 'product/%d' %product.id }} class="btn btn-warning">View</a>
+                                <a href={{ '/product/%d' %product.id }} class="btn btn-warning">View</a>
                             </div>
                         </div>
                     {% endfor %}
@@ -112,7 +112,20 @@
     <!--End Category-->
 
     <!--TODO: Add reveiw section stars-->
-    <h2>{{ avg }} / 5.0 </h2>
+    <div class="d-flex align-items-center justify-content-evenly">
+        <h2 class="fw-bolder">{{ avg }} / 5.0 </h2>
+        
+        {% set stars = avg | int %}
+        <ul class="d-flex px-2 align-items-center">
+        {% for i in range(5) %}
+            {% if i < stars %}
+                <li class="px-2 d-flex"><i class='fas fa-star fa-5x' style='color:#f0b000'></i></li>
+            {% else %}
+                <li class="px-2 d-flex"><i class='far fa-star fa-5x' style='color:#2b2b2b'></i></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    </div>
     
     </br>
     <p><a href="/product/{{ product_id }}/review">Review</a></p>
@@ -135,4 +148,5 @@
         {% endfor %}
     {% endif %}
 </div>
+
 {% endblock %}
