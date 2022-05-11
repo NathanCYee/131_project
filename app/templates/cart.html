@@ -17,21 +17,36 @@
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">#</th>
+                <th scope="col"></th>
                 <th scope="col">Product</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Total price</th>
                 <th scope="col">Remove</th>
             </tr>
             </thead>
-            <tbody>
-            {% for k, v in cart_items.items() %}
-                <tr>
-                    <th scope="row">{{ k }}</th>
-                    <td><a href="{{ '/product/%s' %v.product.id }}">{{ v.product.name }}</a></td>
-                    <td>{{ v.quantity }}</td>
-                    <td>${{ v.quantity*v.product.price }}</td>
-                    <td><a href="{{ '/cart/remove/%s' %v.id }}">Remove</a></td>
+            <tbody >
+            {% for cart_index, item in cart_items.items() %}
+                <tr class="">
+                    {% if item.product.images[0] %}
+                    <td>
+                        <a href={{ '/product/%s' %item.product.id }}>
+                            <img src={{ '%s' %item.product.images[0].path }} class="card-img-top rounded-3"
+                                alt="Card Image" align="middle" style="max-width: 75px; aspect-ratio: 1 / 1; ">
+                        </a>
+                    </td> 
+                    {% else %}
+                    <td>
+                        <a href={{ '/product/%s' %item.product.id}} class="text-decoration-none">
+                            <img src="#" class="card-img-top" alt="Card Image">
+                        <a>
+                    </td>
+                    {% endif %}
+
+                    
+                    <td><a href="{{ '/product/%s' %item.product.id }}" class="fs-3 fw-bolder text-decoration-none text-black">{{ item.product.name }}</a></td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.quantity*item.product.price }}</td>
+                    <td><a href="{{ '/cart/remove/%s' %item.id }}" class=" text-decoration-none bg-danger p-1 rounded text-white">Remove</a></td>
                 </tr>
             {% endfor %}
             </tbody>

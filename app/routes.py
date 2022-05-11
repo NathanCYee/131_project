@@ -585,6 +585,9 @@ def merchant_register():
             # log the user into their account
             login_user(user)
             return redirect('/merchant', code=302)
+    elif request.method == 'POST' and not form.validate_on_submit():
+        flash("Please enter all fields correctly")
+        return render_template('merchant_register.html', form=form)
     else:
         return render_template('merchant_register.html', form=form)
 
