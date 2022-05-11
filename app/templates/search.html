@@ -1,40 +1,42 @@
 {% extends "base.html" %}
 
 {% block main %}
-<div class="container mt-4">
-    <header class="pb-3 mb-4 border-bottom">
-        <h1>Results</h1>
-    </header>
-    <table class="table  table-hover table-striped ">
-        <thead>
-        <tr>
-            <th scope="col">Product</th>
-            <th scope="col">Price</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for product in products %}
+    <div class="container mt-4">
+        <header class="pb-3 mb-4 border-bottom">
+            <h1>Results</h1>
+        </header>
+        <table class="table  table-hover table-striped ">
+            <thead>
             <tr>
-                {% if product.images[0] %}
-                <td>
-                    <a href={{ '/product/%s' %product.id }}>
-                        <img src={{ '%s' %product.images[0].path }} class="card-img-top rounded-3"
-                            alt="Card Image"
-                            align="middle" style="max-width: 60px; aspect-ratio: 1 / 1; ">
-                    </a>
-                </td>
-                {% else %}
-                <td>
-                    <a href={{ '/product/%s' %product.id}} class="text-decoration-none">
-                        <img src="#" class="card-img-top" alt="Card Image">
-                    <a>
-                </td>
-                {% endif %}
-                <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none fs-3 fw-bolder" style="color: inherit;">{{ product.name }}</a></td>
-                <td>{{ "$%.2f"|format(product.price) }}</td>
+                <th scope="col"></th>
+                <th scope="col">Product</th>
+                <th scope="col">Price</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-<div/>
+            </thead>
+            <tbody>
+            {% for product in products %}
+                <tr>
+                    {% if product.images[0] %}
+                        <td>
+                            <a href={{ '/product/%s' %product.id }}>
+                                <img src={{ '%s' %product.images[0].path }} class="card-img-top rounded-3"
+                                alt="Card Image"
+                                align="middle" style="max-width: 60px; aspect-ratio: 1 / 1; ">
+                            </a>
+                        </td>
+                    {% else %}
+                        <td>
+                            <a href={{ '/product/%s' %product.id }} class="text-decoration-none">
+                                <img src="#" class="card-img-top" alt="Card Image">
+                                <a>
+                        </td>
+                    {% endif %}
+                    <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none fs-3 fw-bolder"
+                           style="color: inherit;">{{ product.name }}</a></td>
+                    <td class="fw-bolder fs-5">{{ "$%.2f"|format(product.price) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div/>
 {% endblock %}
