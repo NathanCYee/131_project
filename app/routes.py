@@ -888,6 +888,85 @@ def product_page(prod_id):
                                reviews=reviews, avg=rating_avg, suggested=suggested)
 
 
+@webapp.route('/admin/promo', methods=['GET', 'POST'])
+@webapp.route('/admin/promo/', methods=['GET', 'POST'])
+def admin_promo():
+    """
+    Returns a admin input to create a new promotion. When accessed through a POST request, will save inputs, create
+    a new Product object, and redirect the user to the product page once submitted.
+    """
+    categories = Category.query.all()
+    # create the form
+    form = NewDiscountForm(request.form)
+    form.products.choices = [(-1, "ALL")] + [(cat.id, cat.name) for cat in categories]
+    # validate the submission (form.validate() is broken)
+    if request.method == 'POST' and form.is_submitted():
+        code = form.code.data
+        amount = form.amount.data
+        expiration = form.expiration_date.data
+        if Discount.query.filter_by(code=code).count() != 0:
+            flash("Code has already been used! Please enter a different code.")
+            return redirect('/admin/promo')
+        cat_output = []
+        categories = form.products.data
+        for cat in categories:
+            if int(cat) == -1:
+                discount = create_discount(code, 2, [], False, amount, expiration)
+                db.session.add(discount)
+                db.session.commit()
+                flash(f"Successfully created sitewide discount '{code}'.")
+                return redirect('/admin/promo')
+            cat_output.append(int(cat))
+        discount = create_discount(code, 1, cat_output, False, amount, expiration)
+        db.session.add(discount)
+        db.session.commit()
+        flash(f"Successfully created category discount '{code}'.")
+        return redirect('/admin/promo')
+    else:
+        return render_template('admin_promo.html', form=form)
+
+
+@webapp.route('/admin/promo/percentage', methods=['GET', 'POST'])
+@webapp.route('/admin/promo/percentage/', methods=['GET', 'POST'])
+def admin_promo_percentage():
+    """
+    Returns a admin input to create a new promotion. When accessed through a POST request, will save inputs, create
+    a new Product object, and redirect the user to the product page once submitted.
+    """
+    categories = Category.query.all()
+    # create the form
+    form = NewDiscountForm(request.form)
+    form.products.choices = [(-1, "ALL")] + [(cat.id, cat.name) for cat in categories]
+    # validate the submission (form.validate() is broken)
+    if request.method == 'POST' and form.is_submitted():
+        code = form.code.data
+        amount = form.amount.data
+        expiration = form.expiration_date.data
+        if amount >= 100 or amount < 1:
+            flash("Invalid percentage! Please enter an amount between 1 and 100.")
+            return redirect('/admin/promo/percentage')
+        if Discount.query.filter_by(code=code).count() != 0:
+            flash("Code has already been used! Please enter a different code.")
+            return redirect('/admin/promo/percentage')
+        cat_output = []
+        categories = form.products.data
+        for cat in categories:
+            if int(cat) == -1:
+                discount = create_discount(code, 2, [], True, amount / 100, expiration)
+                db.session.add(discount)
+                db.session.commit()
+                flash(f"Successfully created sitewide discount '{code}'.")
+                return redirect('/admin/promo/percentage')
+            cat_output.append(int(cat))
+        discount = create_discount(code, 1, cat_output, True, amount / 100, expiration)
+        db.session.add(discount)
+        db.session.commit()
+        flash(f"Successfully created category discount '{code}'.")
+        return redirect('/admin/promo/percentage')
+    else:
+        return render_template('admin_promo_percentage.html', form=form)
+
+
 @webapp.route('/images/<string:filename>')
 @webapp.route('/images/<string:filename>/')
 def images(filename):
