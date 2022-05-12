@@ -282,13 +282,14 @@
 <div class="viewcode-block" id="Discount"><a class="viewcode-back" href="../../app.html#app.models.Discount">[docs]</a><span class="k">class</span> <span class="nc">Discount</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Model object that represents a user. Also supports UserMixin for FlaskLogin</span>
-
+<span class="sd">    ```</span>
 <span class="sd">    details = {</span>
 <span class="sd">        &#39;type&#39;:0(product),1(category),2(all),</span>
 <span class="sd">        &#39;applicable_id&#39;: product_ids or category_ids,</span>
 <span class="sd">        percentage: True/False</span>
 <span class="sd">        amount: Float</span>
 <span class="sd">        }</span>
+<span class="sd">    ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The primary key of the discount&quot;&quot;&quot;</span>

@@ -278,14 +278,6 @@ class Discount(db.Model):
             return 0
         return 0
 
-    def __repr__(self):
-        output = self.code
-        if self.discount_details["percentage"]:
-            output += f' {self.discount_details["amount"].amount}% off'
-        else:
-            output += f' ${self.discount_details["amount"].amount} off'
-        output += f" expires {str(self.expiration)}"
-        return output
 
 @login.user_loader
 def load_user(id):
