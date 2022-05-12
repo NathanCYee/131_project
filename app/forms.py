@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
 from wtforms.fields.html5 import DateField
 
-from wtforms.validators import DataRequired, Email, Optional
+from wtforms.validators import DataRequired, Email, Optional, NumberRange
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, FloatField, TextAreaField, HiddenField, \
     SelectField, MultipleFileField, SelectMultipleField
 
@@ -134,7 +134,22 @@ class NewDiscountForm(FlaskForm):
     code = StringField("Discount Code", validators=[DataRequired()])
     """The code for the new discount"""
     amount = FloatField("Discount Amount", validators=[DataRequired()])
-    """The numerical amount (in USD) of the discount"""
+    """The numerical amount of the discount"""
+    products = SelectMultipleField("Products", validators=[DataRequired()])
+    """A multi-select field containing the products that the discount applies to"""
+    expiration_date = DateField("Expiration Date", validators=[DataRequired()])
+    """The date when the discount expires"""
+    submit = SubmitField("Complete")
+    """Submit input (should be `True`)"""
+
+class NewPercentageDiscountForm(FlaskForm):
+    """
+    Form object used by a merchant to create a new discount
+    """
+    code = StringField("Discount Code", validators=[DataRequired()])
+    """The code for the new discount"""
+    amount = FloatField("Discount Amount", validators=[NumberRange(min=1, max=100), DataRequired()])
+    """The percentage amount of the discount"""
     products = SelectMultipleField("Products", validators=[DataRequired()])
     """A multi-select field containing the products that the discount applies to"""
     expiration_date = DateField("Expiration Date", validators=[DataRequired()])

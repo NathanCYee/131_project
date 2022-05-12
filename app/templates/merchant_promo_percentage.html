@@ -1,0 +1,53 @@
+{% extends "merchant_base.html" %}
+
+
+{% block main %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    </br>
+    <div class="row">
+        <div class="col-xs-4">
+            <h1>Create a new discount</h1>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/merchant/promo">Static Amount</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/merchant/promo/percentage">Percentage Amount</a>
+                </li>
+            </ul>
+            <form action="/merchant/promo/percentage" method="POST" class="form-group">
+                {% if 'csrf_token' in form %}
+                    {{ form.csrf_token() }}
+                {% endif %}
+                <p>
+                    {{ form.code.label }}<br>
+                    {{ form.code(size=32, class_="form-control", placeholder="Discount Code" ) }}
+                </p>
+                <p>
+                    {{ form.amount.label }}<br>
+                    {{ form.amount(size=32, class_="form-control", placeholder="Discount Amount" ) }}
+                    <small class="form-text text-muted">Enter the amount (in percent) that the discount saves.</small>
+                </p>
+                <p>
+                    {{ form.products.label }}<br>
+                    {{ form.products(coerce=int, class="form-select") }}
+                    <small class="form-text text-muted">Hold down shift to select multiple products.</small>
+                </p>
+                <p>
+                    {{ form.expiration_date.label }}<br>
+                    {{ form.expiration_date(class_="form-control") }}
+                </p>
+                <p>
+                <p>{{ form.submit(class_="btn btn-primary") }}</p>
+            </form>
+        </div>
+    </div>
+{% endblock %}

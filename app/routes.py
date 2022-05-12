@@ -256,6 +256,38 @@ def orders():
     return render_template('orders.html', orders=items)
 
 
+@webapp.route('/discounts')
+def discounts():
+    rows = Discount.query.all()
+    product_output = []
+    output = []
+    category_output = []
+    for discount in rows:
+        if discount.is_valid():
+            if discount.details['type'] == 0:
+                amount = '$' + f"{discount.details['amount']:.2f}" if not discount.details['percentage'] else \
+                    str(100 * discount.details['amount']) + '%'
+                products = []
+                for id in discount.details["applicable_id"]:
+                    products.append(Product.query.get(id))
+                product_output.append({"code": discount.code, "expiration": discount.expiration, "amount": amount,
+                                       "products": products})
+            elif discount.details['type'] == 1:
+                amount = '$' + f"{discount.details['amount']:.2f}" if not discount.details['percentage'] else \
+                    str(100 * discount.details['amount']) + '%'
+                categories = []
+                for id in discount.details["applicable_id"]:
+                    categories.append(Category.query.get(id))
+                category_output.append({"code": discount.code, "expiration": discount.expiration, "amount": amount,
+                                        "categories": categories})
+            else:
+                amount = '$' + f"{discount.details['amount']:.2f}" if not discount.details['percentage'] else \
+                    str(100 * discount.details['amount']) + '%'
+                output.append({"code": discount.code, "expiration": discount.expiration, "amount": amount})
+    return render_template("discounts.html", a_discounts=output, p_discounts=product_output,
+                           c_discounts=category_output)
+
+
 @webapp.route('/orders/filled')
 @login_required
 @prevent_merchant
@@ -713,6 +745,44 @@ def merchant_promo():
         return redirect('/merchant/promo')
     else:
         return render_template('merchant_promo.html', form=form)
+
+
+@webapp.route('/merchant/promo/percentage', methods=['GET', 'POST'])
+@webapp.route('/merchant/promo/percentage/', methods=['GET', 'POST'])
+@merchant_required
+@login_required
+def merchant_promo_percentage():
+    """
+    Returns a merchant input to create a new promotion. When accessed through a POST request, will save inputs, create
+    a new Product object, and redirect the user to the product page once submitted.
+    """
+    products = Product.query.filter_by(merchant_id=current_user.id).all()
+    # create the form
+    form = NewDiscountForm(request.form)
+    form.products.choices = [(product.id, product.name) for product in products]
+    # validate the submission (form.validate() is broken)
+    if request.method == 'POST' and form.is_submitted():
+        code = form.code.data
+        amount = form.amount.data
+        if amount >= 100 or amount < 1:
+            flash("Invalid percentage! Please enter an amount between 1 and 100.")
+            return redirect('/merchant/promo/percentage')
+        expiration = form.expiration_date.data
+        if Discount.query.filter_by(code=code).count() != 0:
+            flash("Code has already been used! Please enter a different code.")
+            return redirect('/merchant/promo/percentage')
+        products_output = []
+        products = form.products.data
+        for product in products:
+            p = Product.query.get(int(product))
+            products_output.append(p.id)
+        discount = create_discount(code, 0, products_output, True, amount / 100, expiration)
+        db.session.add(discount)
+        db.session.commit()
+        flash(f"Successfully created discount '{code}'.")
+        return redirect('/merchant/promo/percentage')
+    else:
+        return render_template('merchant_promo_percentage.html', form=form)
 
 
 @webapp.route('/merchant/orders', methods=['GET', 'POST'])

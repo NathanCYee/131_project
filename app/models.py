@@ -217,13 +217,14 @@ class Review(db.Model):
 class Discount(db.Model):
     """
     A Model object that represents a user. Also supports UserMixin for FlaskLogin
-
+    ```
     details = {
         'type':0(product),1(category),2(all),
         'applicable_id': product_ids or category_ids,
         percentage: True/False
         amount: Float
         }
+    ```
     """
     id = db.Column(db.Integer, primary_key=True)
     """The primary key of the discount"""
@@ -277,6 +278,14 @@ class Discount(db.Model):
             return 0
         return 0
 
+    def __repr__(self):
+        output = self.code
+        if self.discount_details["percentage"]:
+            output += f' {self.discount_details["amount"].amount}% off'
+        else:
+            output += f' ${self.discount_details["amount"].amount} off'
+        output += f" expires {str(self.expiration)}"
+        return output
 
 @login.user_loader
 def load_user(id):
