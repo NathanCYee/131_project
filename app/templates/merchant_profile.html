@@ -1,23 +1,39 @@
 {% extends "base.html" %}
 
 {% block main %}
-
-    </br>
-    <h1>{{ merchant.username }}</h1>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Product</th>
-            <th scope="col">Price</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for product in products %}
+    <div class="container">
+        </br>
+        <h1>{{ merchant.username }}</h1>
+        <table class="table  table-hover table-striped ">
+            <thead>
             <tr>
-                <td><a href="{{ '/product/%s' %product.id }}">{{ product.name }}</a></td>
-                <td>${{ product.price }}</td>
+                <th scope="col">Product</th>
+                <th scope="col">Price</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for product in products %}
+                <tr>
+                    {% if product.images[0] %}
+                    <td>
+                        <a href={{ '/product/%s' %product.id }}>
+                            <img src={{ '%s' %product.images[0].path }} class="card-img-top rounded-3"
+                                alt="Card Image"
+                                align="middle" style="max-width: 60px; aspect-ratio: 1 / 1; ">
+                        </a>
+                    </td>
+                    {% else %}
+                    <td>
+                        <a href={{ '/product/%s' %product.id}} class="text-decoration-none">
+                            <img src="#" class="card-img-top" alt="Card Image">
+                        <a>
+                    </td>
+                    {% endif %}
+                    <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none fs-3 fw-bolder" style="color: inherit;">{{ product.name }}</a></td>
+                    <td class="fw-normal fs-4">${{ product.price }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    <div>
 {% endblock %} 

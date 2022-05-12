@@ -1,41 +1,40 @@
 {% extends "base.html" %}
 
 {% block main %}
-<div class="container">
-    </br>
-    <h1>{{ category.name }}</h1>
-    <table class="table table-hover table-striped ">
-        <thead>
+    <div class="container">
+        </br>
+        <h1>{{ category.name }}</h1>
+        <table class="table table-hover table-striped ">
+            <thead>
             <tr>
+                <th scope="col"></th>
                 <th scope="col">Product</th>
                 <th scope="col">Price</th>
-                <th scope="col">
-            </tr>
-        </thead>
-        <tbody>
-        {% for product in products %}
-            <tr>
-                <!--Add image to table-->
-                {% if product.images[0] %}
-                <td>
-                    <a href={{ '/product/%s' %product.id }}>
-                        <img src={{ '%s' %product.images[0].path }} class="card-img-top rounded-3"
-                            alt="Card Image" align="middle" style="max-width: 60px; aspect-ratio: 1 / 1; ">
-                    </a>
-                </td> 
-                {% else %}
-                <td>
-                    <a href={{ '/product/%s' %product.id}} class="text-decoration-none">
-                        <img src="#" class="card-img-top" alt="Card Image">
-                    <a>
-                </td>
-                {% endif %}
-
-                <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none text-black fw-bolder fs-3">{{ product.name }}</a></td>
-                <td>${{ product.price }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+            {% for product in products %}
+                <tr>
+                    <!--Add image to table-->
+                    {% if product.images[0] %}
+                        <td>
+                            <a href={{ '/product/%s' %product.id }}>
+                                <img src={{ '%s' %product.images[0].path }} class="card-img-top rounded-3"
+                                alt="Card Image" align="middle" style="max-width: 60px; aspect-ratio: 1 / 1;">
+                            </a>
+                        </td>
+                    {% else %}
+                        <td>
+                            <a href={{ '/product/%s' %product.id }} class="text-decoration-none">
+                                <img src="#" class="card-img-top" alt="Card Image">
+                                <a>
+                        </td>
+                    {% endif %}
+                    <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none fs-3 fw-bolder"
+                           style="color: inherit;">{{ product.name }}</a></td>
+                    <td class="fw-bolder fs-5">${{ "$%.2f"|format(product.price) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %} 

@@ -10,43 +10,45 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <div class="container">          
+    <div class="container">
         </br>
         <h1><strong>Total</strong>: {{ "$%.2f"|format(total) }}</h1></br>
 
-        <table class="table">
+        <table class="table table-hover table-striped">
             <thead>
             <tr>
-                <th scope="col">#</th>
+                <th scope="col"></th>
                 <th scope="col">Product</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Total price</th>
                 <th scope="col">Remove</th>
             </tr>
             </thead>
-            <tbody >
+            <tbody>
             {% for cart_index, item in cart_items.items() %}
                 <tr class="">
                     {% if item.product.images[0] %}
-                    <td>
-                        <a href={{ '/product/%s' %item.product.id }}>
-                            <img src={{ '%s' %item.product.images[0].path }} class="card-img-top rounded-3"
+                        <td>
+                            <a href={{ '/product/%s' %item.product.id }}>
+                                <img src={{ '%s' %item.product.images[0].path }} class="card-img-top rounded-3"
                                 alt="Card Image" align="middle" style="max-width: 75px; aspect-ratio: 1 / 1; ">
-                        </a>
-                    </td> 
+                            </a>
+                        </td>
                     {% else %}
-                    <td>
-                        <a href={{ '/product/%s' %item.product.id}} class="text-decoration-none">
-                            <img src="#" class="card-img-top" alt="Card Image">
-                        <a>
-                    </td>
+                        <td>
+                            <a href={{ '/product/%s' %item.product.id }} class="text-decoration-none">
+                                <img src="#" class="card-img-top" alt="Card Image">
+                                <a>
+                        </td>
                     {% endif %}
 
-                    <th scope="row" >{{ cart_index }}</th>
-                    <td><a href="{{ '/product/%s' %item.product.id }}" class="fs-3 fw-bolder text-decoration-none text-black">{{ item.product.name }}</a></td>
+
+                    <td><a href="{{ '/product/%s' %item.product.id }}" class="text-decoration-none fs-3 fw-bolder"
+                           style="color: inherit;">{{ item.product.name }}</a></td>
                     <td>{{ item.quantity }}</td>
                     <td>${{ item.quantity*item.product.price }}</td>
-                    <td><a href="{{ '/cart/remove/%s' %item.id }}" class=" text-decoration-none bg-danger p-1 rounded text-white">Remove</a></td>
+                    <td><a href="{{ '/cart/remove/%s' %item.id }}"
+                           class=" text-decoration-none bg-danger p-1 rounded text-white">Remove</a></td>
                 </tr>
             {% endfor %}
             </tbody>
