@@ -11,7 +11,7 @@ from app.forms import CheckoutForm, LoginForm, RegisterForm, PasswordForm, Delet
     ReviewForm, FillOrderForm, NewDiscountForm
 from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category, Review, Image, Discount
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant, \
-    create_discount
+    create_discount, is_merchant
 
 
 def add_categories(func):
@@ -189,6 +189,8 @@ def product(prod_id):
         # product id was not found
         return abort(404)
     else:
+        if current_user.is_authenticated and is_merchant(current_user):
+            return redirect(f'/merchant/product_page/{prod_id}')
         # retrieve the first object from the query
         reviews = db.session.query(User, Review).filter(Review.product_id == product.id).filter(User.id
                                                                                                 == Review.user_id).all()
@@ -576,7 +578,8 @@ def merchant_account_test():
 @merchant_required
 def merchant():
     """Returns a home page for a user logged in as a merchant. Redirects if not logged in as a merchant."""
-    return render_template("merchant_index.html")
+    products = Product.query.filter_by(merchant_id=current_user.id).all()
+    return render_template("merchant_index.html", products=products)
 
 
 @webapp.route('/merchant/register', methods=['GET', 'POST'])
@@ -851,6 +854,38 @@ def merchant_orders_filled():
         else:
             items[order.id]['rows'].append((order, product))
     return render_template('merchant_orders_filled.html', orders=items)
+
+
+@webapp.route('/merchant/product_page/<int:prod_id>')
+def product_page(prod_id):
+    """
+    Retrieve a product page for a given product id. Will abort with a 404 if the ID was not found.
+
+    :param int prod_id: The id of the Product to retrieve
+    """
+
+    product = Product.query.get(prod_id)
+    if product is None:
+        # product id was not found
+        return abort(404)
+    else:
+        # retrieve the first object from the query
+        reviews = db.session.query(User, Review).filter(Review.product_id == product.id).filter(User.id
+                                                                                                == Review.user_id).all()
+
+        # calculate the average rating
+        rating_sum = 0
+        rating_avg = 0
+        if len(reviews) != 0:
+            for review in reviews:
+                rating_sum += review.Review.rating
+            rating_avg = rating_sum / len(reviews)
+            rating_avg = round(rating_avg, 1)
+        # get the merchant of the product
+        merchant = User.query.get(product.merchant_id)
+        suggested = Category.query.get(product.category_id).products[:10]
+        return render_template('merchant_product_page.html', product=product, merchant=merchant, product_id=product.id,
+                               reviews=reviews, avg=rating_avg, suggested=suggested)
 
 
 @webapp.route('/images/<string:filename>')

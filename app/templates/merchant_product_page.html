@@ -1,0 +1,114 @@
+
+
+{% extends "merchant_base.html" %}
+
+
+{% block main %}
+<br/>
+<br/>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-5">
+            <div id="productImages" class="carousel slide w-100 h-50" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in product.images %}
+                        {% if loop.index == 1 %}
+                            <div class="carousel-item active" data-bs-interval="2000">
+                                <a href={{ '%s' %image.path }} class="img-fluid">
+                                    <img class="d-block h-50 img-fluid" src={{ '%s' %image.path }}/>
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="carousel-item" data-bs-interval="2000">
+                                <a href={{ '%s' %image.path }} class="img-fluid">
+                                    <img class="d-block h-50 img-fluid" src={{ '%s' %image.path }}/>
+                                </a>
+                            </div>
+                        {% endif %}
+                        </a>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#productImages"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productImages"
+                        data-bs-slide="next">
+                    <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-7">
+            <h5><a href="{{ '/merchant/%s' %merchant.id }}">{{ merchant.username }}</a></h5>
+            <h1 class="display-5 fw-bold">{{ product.name }}</h1>
+            <h5>Average Rating: {{ avg }}</h5>
+            <h3>{{ "$%.2f"|format(product.price) }}</h3>
+            <p>{{ product.description }}</p>
+        </div>
+    </div>
+    
+
+    <!--Category-->
+    <div class="container my-5 py-2 p-1 ">
+        <div class="bg-light rounded">
+            <h4 class="fw-bolder px-3 py-2 text-black" style="letter-spacing: .05rem;">Similar Products</h4>
+            <!--Outter card containter-->
+            <div class="container-fluid" style="overflow-y:hidden;">
+                <!--Card container-->
+                <div class="row text-center flex-row flex-nowrap p-2">
+                    {% for product in suggested %}
+                        <!--Cards-->
+                        <div class="card col-6 col-md-3 col-lg-2 p-2 mx-2">
+                            {% if product.images[0] %}
+                                <a href={{ 'product/%d' %product.id }}>
+                                    <img src={{ '%s' %product.images[0].path }} class="card-img-top rounded-3"
+                                        alt="Card Image"
+                                        align="middle" style=" aspect-ratio: 1 / 1; ">
+                                </a>
+                            {% else %}
+                                <img src="#" class="card-img-top" alt="Card Image">
+                            {% endif %}
+                            <div class="d-flex flex-column card-body my-0 py-0">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center py-1">
+                                    <h5 class="card-title fs-4">{{ product.name }}</h5>
+                                    <p class="card-text fs-5 fw-bolder">${{ product.price }}</p>
+                                </div>
+                                <a href={{ '/product/%d' %product.id }} class="btn btn-warning">View</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <!--End Cards-->
+                </div>
+                <!-- End Card container-->
+            </div>
+            <!--End Outter card containter-->
+        </div>
+    </div>
+    <!--End Category-->
+
+    <h2>{{ avg }} / 5.0 </h2>
+    
+
+    </br>
+    {% if reviews %}
+        <br>
+        {% for review in reviews %}
+            {% if review.Review.body %}
+                <p>
+                    <b>{{ review.User.username }}</b> gave a rating of {{ review.Review.rating }}:
+                    <br>
+                    {{ review.Review.body }}
+                </p>
+                <br>
+            {% else %}
+                <p>
+                    <b>{{ review.User.username }}</b> gave a rating of {{ review.Review.rating }}
+                </p>
+                <br>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

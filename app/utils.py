@@ -96,3 +96,7 @@ def create_discount(code: str, type: int, applicable_ids, percentage: bool, amou
     """
     details = {'type': type, 'applicable_id': applicable_ids, 'percentage': percentage, 'amount': amount}
     return Discount(code=code, expiration=end_date, details=details)
+
+
+def is_merchant(user):
+    return user.roles.filter_by(id=get_merchant().id).count() == 1
