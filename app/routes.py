@@ -189,7 +189,7 @@ def product(prod_id):
         # product id was not found
         return abort(404)
     else:
-        # retrieve the first object from the query
+        # retrieve all objects from the query
         reviews = db.session.query(User, Review).filter(Review.product_id == product.id).filter(User.id
                                                                                                 == Review.user_id).all()
 
@@ -296,7 +296,8 @@ def product_review(product_id):
     """
     # check if user has bought this product
     if db.session.query(Order, OrderRow) \
-            .filter(Order.user_id == current_user.id).filter(OrderRow.product_id == product_id).count() == 0:
+            .filter(OrderRow.id == Order.id, Order.user_id == current_user.id, OrderRow.product_id == product_id) \
+            .count() == 0:
         flash("You need to have bought an item to review it.")
         return redirect(f'/product/{product_id}', code=302)
 
