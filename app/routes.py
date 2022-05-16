@@ -329,8 +329,11 @@ def product_review(product_id):
     to the product page with a warning otherwise
     """
     # check if user has bought this product
-    if db.session.query(Order, OrderRow) \
-            .filter(Order.user_id == current_user.id).filter(OrderRow.product_id == product_id).count() == 0:
+    query = select(OrderRow, Order).join(Order.order_row).where(OrderRow.product_id == product_id). \
+        where(Order.user_id == current_user.id)
+    results = len(db.session.execute(query).all())
+
+    if results == 0:
         flash("You need to have bought an item to review it.")
         return redirect(f'/product/{product_id}', code=302)
 
