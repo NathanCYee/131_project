@@ -226,7 +226,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="app.forms.NewDiscountForm.amount">
 <span class="sig-name descname"><span class="pre">amount</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(FloatField,</span> <span class="pre">('Discount</span> <span class="pre">Amount',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewDiscountForm.amount" title="Permalink to this definition"></a></dt>
-<dd><p>The numerical amount (in USD) of the discount</p>
+<dd><p>The numerical amount of the discount</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -250,6 +250,43 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="app.forms.NewDiscountForm.submit">
 <span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Complete',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.NewDiscountForm.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit input (should be <cite>True</cite>)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.forms.NewPercentageDiscountForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.forms.</span></span><span class="sig-name descname"><span class="pre">NewPercentageDiscountForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/forms.html#NewPercentageDiscountForm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.forms.NewPercentageDiscountForm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_wtf.form.FlaskForm</span></code></p>
+<p>Form object used by a merchant to create a new discount</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewPercentageDiscountForm.amount">
+<span class="sig-name descname"><span class="pre">amount</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(FloatField,</span> <span class="pre">('Discount</span> <span class="pre">Amount',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.NumberRange</span> <span class="pre">object&gt;,</span> <span class="pre">&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewPercentageDiscountForm.amount" title="Permalink to this definition"></a></dt>
+<dd><p>The percentage amount of the discount</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewPercentageDiscountForm.code">
+<span class="sig-name descname"><span class="pre">code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(StringField,</span> <span class="pre">('Discount</span> <span class="pre">Code',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewPercentageDiscountForm.code" title="Permalink to this definition"></a></dt>
+<dd><p>The code for the new discount</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewPercentageDiscountForm.expiration_date">
+<span class="sig-name descname"><span class="pre">expiration_date</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(DateField,</span> <span class="pre">('Expiration</span> <span class="pre">Date',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewPercentageDiscountForm.expiration_date" title="Permalink to this definition"></a></dt>
+<dd><p>The date when the discount expires</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewPercentageDiscountForm.products">
+<span class="sig-name descname"><span class="pre">products</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SelectMultipleField,</span> <span class="pre">('Products',),</span> <span class="pre">{'validators':</span> <span class="pre">[&lt;wtforms.validators.DataRequired</span> <span class="pre">object&gt;]})&gt;</span></em><a class="headerlink" href="#app.forms.NewPercentageDiscountForm.products" title="Permalink to this definition"></a></dt>
+<dd><p>A multi-select field containing the products that the discount applies to</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.forms.NewPercentageDiscountForm.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnboundField(SubmitField,</span> <span class="pre">('Complete',),</span> <span class="pre">{})&gt;</span></em><a class="headerlink" href="#app.forms.NewPercentageDiscountForm.submit" title="Permalink to this definition"></a></dt>
 <dd><p>Submit input (should be <cite>True</cite>)</p>
 </dd></dl>
 
@@ -460,15 +497,8 @@
 <dt class="sig sig-object py" id="app.models.Discount">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Discount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Discount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Discount" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
-<p>A Model object that represents a user. Also supports UserMixin for FlaskLogin</p>
-<dl class="simple">
-<dt>details = {</dt><dd><p>‘type’:0(product),1(category),2(all),
-‘applicable_id’: product_ids or category_ids,
-percentage: True/False
-amount: Float
-}</p>
-</dd>
-</dl>
+<p>A Model object that represents a user. Also supports UserMixin for FlaskLogin. Construct a discount using the
+<code class="docutils literal notranslate"><span class="pre">app.utils.create_discount</span></code> method.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="app.models.Discount.apply_discount">
 <span class="sig-name descname"><span class="pre">apply_discount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cart_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Discount.apply_discount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Discount.apply_discount" title="Permalink to this definition"></a></dt>
@@ -913,6 +943,20 @@ When accessed through POST, will validate and process the password change form.<
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="app.routes.admin_promo">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">admin_promo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#admin_promo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.admin_promo" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a admin input to create a new promotion. When accessed through a POST request, will save inputs, create
+a new Product object, and redirect the user to the product page once submitted.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.admin_promo_percentage">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">admin_promo_percentage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#admin_promo_percentage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.admin_promo_percentage" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a admin input to create a new promotion. When accessed through a POST request, will save inputs, create
+a new Product object, and redirect the user to the product page once submitted.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="app.routes.cart">
 <span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">cart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#cart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.cart" title="Permalink to this definition"></a></dt>
 <dd><p>Cart website for logged-in users to be able to see and edit their cart</p>
@@ -952,6 +996,11 @@ When accessed through POST, will validate and process the password change form.<
 <dd><p>Contains a form for the user to confirm that they want to delete their account. When submitted through POST, will
 receive and validate the request before deleting the account from the database.</p>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.discounts">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">discounts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#discounts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.discounts" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routes.home">
@@ -1045,6 +1094,13 @@ a new Product object, and redirect the user to the product page once submitted.<
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="app.routes.merchant_promo_percentage">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant_promo_percentage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant_promo_percentage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant_promo_percentage" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a merchant input to create a new promotion. When accessed through a POST request, will save inputs, create
+a new Product object, and redirect the user to the product page once submitted.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="app.routes.merchant_register">
 <span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">merchant_register</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#merchant_register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.merchant_register" title="Permalink to this definition"></a></dt>
 <dd><p>Return a site that takes user input to create a new merchant account. Will verify registration information if
@@ -1068,6 +1124,17 @@ merchant or not logged in.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.routes.product">
 <span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.product" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve a product page for a given product id. Will abort with a 404 if the ID was not found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prod_id</strong> (<em>int</em>) – The id of the Product to retrieve</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.routes.product_page">
+<span class="sig-prename descclassname"><span class="pre">app.routes.</span></span><span class="sig-name descname"><span class="pre">product_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/routes.html#product_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.routes.product_page" title="Permalink to this definition"></a></dt>
 <dd><p>Retrieve a product page for a given product id. Will abort with a 404 if the ID was not found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1113,6 +1180,14 @@ accessed through a POST request.</p>
 <section id="module-app.utils">
 <span id="app-utils-module"></span><h2>app.utils module<a class="headerlink" href="#module-app.utils" title="Permalink to this headline"></a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="app.utils.admin_required">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">admin_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#admin_required"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.admin_required" title="Permalink to this definition"></a></dt>
+<dd><p>decorator to require the current_user to have the merchant role or else it redirects
+:param func: The function to decorate
+:return: A function instance that checks the current user is a merchant before returning the action</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="app.utils.create_discount">
 <span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">create_discount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">applicable_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#create_discount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.create_discount" title="Permalink to this definition"></a></dt>
 <dd><p>Creates a new Discount object</p>
@@ -1134,6 +1209,13 @@ accessed through a POST request.</p>
 <dd class="field-odd"><p><a class="reference internal" href="#app.models.Discount" title="app.models.Discount">app.models.Discount</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.get_admin">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">get_admin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#get_admin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.get_admin" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve a Role object representing an admin
+:return: a Role object with the name <cite>admin</cite></p>
 </dd></dl>
 
 <dl class="py function">
@@ -1164,6 +1246,11 @@ accessed through a POST request.</p>
 <dd><p>Retrieve a Role object representing a merchant
 :return: a Role object with the name <cite>merchant</cite></p>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.is_merchant">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">is_merchant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#is_merchant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.is_merchant" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.utils.merchant_required">

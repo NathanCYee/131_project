@@ -216,14 +216,8 @@ class Review(db.Model):
 
 class Discount(db.Model):
     """
-    A Model object that represents a user. Also supports UserMixin for FlaskLogin
-
-    details = {
-        'type':0(product),1(category),2(all),
-        'applicable_id': product_ids or category_ids,
-        percentage: True/False
-        amount: Float
-        }
+    A Model object that represents a user. Also supports UserMixin for FlaskLogin. Construct a discount using the
+    ``app.utils.create_discount`` method.
     """
     id = db.Column(db.Integer, primary_key=True)
     """The primary key of the discount"""

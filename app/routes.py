@@ -11,7 +11,7 @@ from app.forms import CheckoutForm, LoginForm, RegisterForm, PasswordForm, Delet
     ReviewForm, FillOrderForm, NewDiscountForm
 from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category, Review, Image, Discount
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant, \
-    create_discount
+    create_discount, is_merchant, admin_required
 
 
 def add_categories(func):
@@ -189,6 +189,8 @@ def product(prod_id):
         # product id was not found
         return abort(404)
     else:
+        if current_user.is_authenticated and is_merchant(current_user):
+            return redirect(f'/merchant/product_page/{prod_id}')
         # retrieve the first object from the query
         reviews = db.session.query(User, Review).filter(Review.product_id == product.id).filter(User.id
                                                                                                 == Review.user_id).all()
@@ -256,6 +258,38 @@ def orders():
     return render_template('orders.html', orders=items)
 
 
+@webapp.route('/discounts')
+def discounts():
+    rows = Discount.query.all()
+    product_output = []
+    output = []
+    category_output = []
+    for discount in rows:
+        if discount.is_valid():
+            if discount.details['type'] == 0:
+                amount = '$' + f"{discount.details['amount']:.2f}" if not discount.details['percentage'] else \
+                    str(100 * discount.details['amount']) + '%'
+                products = []
+                for id in discount.details["applicable_id"]:
+                    products.append(Product.query.get(id))
+                product_output.append({"code": discount.code, "expiration": discount.expiration, "amount": amount,
+                                       "products": products})
+            elif discount.details['type'] == 1:
+                amount = '$' + f"{discount.details['amount']:.2f}" if not discount.details['percentage'] else \
+                    str(100 * discount.details['amount']) + '%'
+                categories = []
+                for id in discount.details["applicable_id"]:
+                    categories.append(Category.query.get(id))
+                category_output.append({"code": discount.code, "expiration": discount.expiration, "amount": amount,
+                                        "categories": categories})
+            else:
+                amount = '$' + f"{discount.details['amount']:.2f}" if not discount.details['percentage'] else \
+                    str(100 * discount.details['amount']) + '%'
+                output.append({"code": discount.code, "expiration": discount.expiration, "amount": amount})
+    return render_template("discounts.html", a_discounts=output, p_discounts=product_output,
+                           c_discounts=category_output)
+
+
 @webapp.route('/orders/filled')
 @login_required
 @prevent_merchant
@@ -295,8 +329,11 @@ def product_review(product_id):
     to the product page with a warning otherwise
     """
     # check if user has bought this product
-    if db.session.query(Order, OrderRow) \
-            .filter(Order.user_id == current_user.id).filter(OrderRow.product_id == product_id).count() == 0:
+    query = select(OrderRow, Order).join(Order.order_row).where(OrderRow.product_id == product_id). \
+        where(Order.user_id == current_user.id)
+    results = len(db.session.execute(query).all())
+
+    if results == 0:
         flash("You need to have bought an item to review it.")
         return redirect(f'/product/{product_id}', code=302)
 
@@ -544,7 +581,8 @@ def merchant_account_test():
 @merchant_required
 def merchant():
     """Returns a home page for a user logged in as a merchant. Redirects if not logged in as a merchant."""
-    return render_template("merchant_index.html")
+    products = Product.query.filter_by(merchant_id=current_user.id).all()
+    return render_template("merchant_index.html", products=products)
 
 
 @webapp.route('/merchant/register', methods=['GET', 'POST'])
@@ -715,6 +753,44 @@ def merchant_promo():
         return render_template('merchant_promo.html', form=form)
 
 
+@webapp.route('/merchant/promo/percentage', methods=['GET', 'POST'])
+@webapp.route('/merchant/promo/percentage/', methods=['GET', 'POST'])
+@merchant_required
+@login_required
+def merchant_promo_percentage():
+    """
+    Returns a merchant input to create a new promotion. When accessed through a POST request, will save inputs, create
+    a new Product object, and redirect the user to the product page once submitted.
+    """
+    products = Product.query.filter_by(merchant_id=current_user.id).all()
+    # create the form
+    form = NewDiscountForm(request.form)
+    form.products.choices = [(product.id, product.name) for product in products]
+    # validate the submission (form.validate() is broken)
+    if request.method == 'POST' and form.is_submitted():
+        code = form.code.data
+        amount = form.amount.data
+        if amount >= 100 or amount < 1:
+            flash("Invalid percentage! Please enter an amount between 1 and 100.")
+            return redirect('/merchant/promo/percentage')
+        expiration = form.expiration_date.data
+        if Discount.query.filter_by(code=code).count() != 0:
+            flash("Code has already been used! Please enter a different code.")
+            return redirect('/merchant/promo/percentage')
+        products_output = []
+        products = form.products.data
+        for product in products:
+            p = Product.query.get(int(product))
+            products_output.append(p.id)
+        discount = create_discount(code, 0, products_output, True, amount / 100, expiration)
+        db.session.add(discount)
+        db.session.commit()
+        flash(f"Successfully created discount '{code}'.")
+        return redirect('/merchant/promo/percentage')
+    else:
+        return render_template('merchant_promo_percentage.html', form=form)
+
+
 @webapp.route('/merchant/orders', methods=['GET', 'POST'])
 @merchant_required
 @login_required
@@ -781,6 +857,119 @@ def merchant_orders_filled():
         else:
             items[order.id]['rows'].append((order, product))
     return render_template('merchant_orders_filled.html', orders=items)
+
+
+@webapp.route('/merchant/product_page/<int:prod_id>')
+def product_page(prod_id):
+    """
+    Retrieve a product page for a given product id. Will abort with a 404 if the ID was not found.
+
+    :param int prod_id: The id of the Product to retrieve
+    """
+
+    product = Product.query.get(prod_id)
+    if product is None:
+        # product id was not found
+        return abort(404)
+    else:
+        # retrieve the first object from the query
+        reviews = db.session.query(User, Review).filter(Review.product_id == product.id).filter(User.id
+                                                                                                == Review.user_id).all()
+
+        # calculate the average rating
+        rating_sum = 0
+        rating_avg = 0
+        if len(reviews) != 0:
+            for review in reviews:
+                rating_sum += review.Review.rating
+            rating_avg = rating_sum / len(reviews)
+            rating_avg = round(rating_avg, 1)
+        # get the merchant of the product
+        merchant = User.query.get(product.merchant_id)
+        suggested = Category.query.get(product.category_id).products[:10]
+        return render_template('merchant_product_page.html', product=product, merchant=merchant, product_id=product.id,
+                               reviews=reviews, avg=rating_avg, suggested=suggested)
+
+
+@webapp.route('/admin/promo', methods=['GET', 'POST'])
+@webapp.route('/admin/promo/', methods=['GET', 'POST'])
+@admin_required
+def admin_promo():
+    """
+    Returns a admin input to create a new promotion. When accessed through a POST request, will save inputs, create
+    a new Product object, and redirect the user to the product page once submitted.
+    """
+    categories = Category.query.all()
+    # create the form
+    form = NewDiscountForm(request.form)
+    form.products.choices = [(-1, "ALL")] + [(cat.id, cat.name) for cat in categories]
+    # validate the submission (form.validate() is broken)
+    if request.method == 'POST' and form.is_submitted():
+        code = form.code.data
+        amount = form.amount.data
+        expiration = form.expiration_date.data
+        if Discount.query.filter_by(code=code).count() != 0:
+            flash("Code has already been used! Please enter a different code.")
+            return redirect('/admin/promo')
+        cat_output = []
+        categories = form.products.data
+        for cat in categories:
+            if int(cat) == -1:
+                discount = create_discount(code, 2, [], False, amount, expiration)
+                db.session.add(discount)
+                db.session.commit()
+                flash(f"Successfully created sitewide discount '{code}'.")
+                return redirect('/admin/promo')
+            cat_output.append(int(cat))
+        discount = create_discount(code, 1, cat_output, False, amount, expiration)
+        db.session.add(discount)
+        db.session.commit()
+        flash(f"Successfully created category discount '{code}'.")
+        return redirect('/admin/promo')
+    else:
+        return render_template('admin_promo.html', form=form)
+
+
+@webapp.route('/admin/promo/percentage', methods=['GET', 'POST'])
+@webapp.route('/admin/promo/percentage/', methods=['GET', 'POST'])
+@admin_required
+def admin_promo_percentage():
+    """
+    Returns a admin input to create a new promotion. When accessed through a POST request, will save inputs, create
+    a new Product object, and redirect the user to the product page once submitted.
+    """
+    categories = Category.query.all()
+    # create the form
+    form = NewDiscountForm(request.form)
+    form.products.choices = [(-1, "ALL")] + [(cat.id, cat.name) for cat in categories]
+    # validate the submission (form.validate() is broken)
+    if request.method == 'POST' and form.is_submitted():
+        code = form.code.data
+        amount = form.amount.data
+        expiration = form.expiration_date.data
+        if amount >= 100 or amount < 1:
+            flash("Invalid percentage! Please enter an amount between 1 and 100.")
+            return redirect('/admin/promo/percentage')
+        if Discount.query.filter_by(code=code).count() != 0:
+            flash("Code has already been used! Please enter a different code.")
+            return redirect('/admin/promo/percentage')
+        cat_output = []
+        categories = form.products.data
+        for cat in categories:
+            if int(cat) == -1:
+                discount = create_discount(code, 2, [], True, amount / 100, expiration)
+                db.session.add(discount)
+                db.session.commit()
+                flash(f"Successfully created sitewide discount '{code}'.")
+                return redirect('/admin/promo/percentage')
+            cat_output.append(int(cat))
+        discount = create_discount(code, 1, cat_output, True, amount / 100, expiration)
+        db.session.add(discount)
+        db.session.commit()
+        flash(f"Successfully created category discount '{code}'.")
+        return redirect('/admin/promo/percentage')
+    else:
+        return render_template('admin_promo_percentage.html', form=form)
 
 
 @webapp.route('/images/<string:filename>')

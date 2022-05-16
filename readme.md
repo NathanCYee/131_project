@@ -14,8 +14,8 @@ E-Buy is a revolutionary E-Commerce website that connects merchants with custome
 - [Features](https://github.com/NathanCYee/131_project#Features)
 - [Setup and Install](https://github.com/NathanCYee/131_project#Setup-and-Install)
 - [Technologies](https://github.com/NathanCYee/131_project#Technologies)
-- [Team Members](https://github.com/NathanCYee/131_project#Team-Members)
 - [Team Progress](https://github.com/NathanCYee/131_project#Team-Progress)
+- [Team Members](https://github.com/NathanCYee/131_project#Team-Members)
 
 ## Features
 
@@ -37,6 +37,7 @@ E-Buy is a revolutionary E-Commerce website that connects merchants with custome
 - Cart located at `/cart` for logged-in users
     - Checkout cart link located in the cart
     - Checkout with discount code support
+- Available discounts accessible at `/discounts`
 
 ## Setup and Install
 
@@ -49,10 +50,8 @@ Please make sure python 3 is installed (working on python 3.8).
     - If you want to create a new database, setup and create the database by running the create_db.py file
       using ``python3 create_db.py``
     - If you are using the sample database, every account has the password `password`
-        - Merchant accounts: `SUPREME`, `HONDIPO`, `Gamestomp`, `Worst-Buy`
-        - Discounts:
-            - `CODE10` - $10 off Cool Shirt, Legit Sandals, Pants Chain
-            - `GAMETIME` - $5 off any Gamestomp video game
+        - Merchant accounts: `SUPREME`, `Hondipo`, `Gamestomp`, `Worst-Buy`
+        - Discounts visible at `/discounts`
 - Run the webapp by running `python3 run.py`
 - If run on a local machine, site will be accessible at `localhost:5000` or `http://127.0.0.1:5000/` from a browser
 

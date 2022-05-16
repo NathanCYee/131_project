@@ -175,7 +175,7 @@ def test_bad_register(db, client):
         assert b"Email has already been used" in response.data
 
         # check to see if the user is in the database
-        users = User.query.filter_by()
+        users = User.query.filter_by(username=username)
         assert users.count() == 1  # should only have 1 matching user
 
         # check props of user to make sure they are inserted correctly
@@ -539,14 +539,17 @@ def test_review(db, client):
     db.session.add(product)
     order = Order(user_id=user.id)
     db.session.add(order)
+    db.session.commit()
     order_row = OrderRow(id=order.id, product_id=product.id)
     db.session.add(order_row)
     order2 = Order(user_id=user2.id)
     db.session.add(order2)
+    db.session.commit()
     order_row2 = OrderRow(id=order2.id, product_id=product.id)
     db.session.add(order_row2)
     order3 = Order(user_id=user3.id)
     db.session.add(order3)
+    db.session.commit()
     order_row3 = OrderRow(id=order3.id, product_id=product.id)
     db.session.add(order_row3)
     db.session.commit()
@@ -764,6 +767,10 @@ def test_checkout(db, client):
         assert OrderRow.query.all()
         assert order_rows.all()
         assert order_rows.first().product_id == product.id
+
+        # cart should be empty, test to make sure client cannot access checkout page with empty cart
+        request = client.get('/checkout')
+        assert request.status_code == 302
 
     # clean up changes
     User.query.delete()
@@ -1104,3 +1111,347 @@ def test_apply_sitewide_discount(db, client):
     db.session.query(UserRole).delete()
     db.session.commit()
     db.session.flush()
+
+
+def test_apply_sitewide_percentage_discount(db, client):
+    category_name = "Electronics"
+    category = Category.query.filter_by(name=category_name).first()
+
+    # test params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+    test_addr = "test_blvd"
+    name = "iPhone 1000"
+    product_price = 1000
+    description = "The brand new iPhone. Lorem ipsum sit amet."
+    promo_name = "CODE10"
+    discount_amount = 10
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        # add a test user to the database
+        user = User(username=username, email=email)
+        user.set_password(password)
+        session.add(user)
+        session.commit()
+
+        # create the product
+        product = Product(merchant_id=0, name=name, price=product_price, description=description,
+                          category_id=category.id)
+        session.add(product)
+        session.commit()
+
+        # create the discount
+        discount = create_discount(code=promo_name, type=2, applicable_ids=[], percentage=True,
+                                   amount=
+                                   discount_amount/100, end_date=expiration_date)
+        session.add(discount)
+        session.commit()
+
+        with client:
+            request = client.post('/login',
+                                  data={'username': username, 'password': password, 'submit': True})
+            assert request.status_code == 302  # successful login, redirected to homepage
+
+            # add to cart
+            request = client.post('/cart',
+                                  data={'product_id': product.id, 'quantity': 1, 'submit': True}, follow_redirects=True)
+
+            # go to checkout with normal price
+            request = client.get('/checkout')
+            assert bytes(f"${product.price:.2f}", "utf-8") in request.data
+
+            assert discount.apply_discount(user.cart_items[0].id) != 0
+
+            # apply discount
+            request = client.get('/checkout', query_string={'code': discount.code}, follow_redirects=True)
+            assert bytes(discount.code, "utf-8") in request.data
+            assert b"Applied discount" in request.data
+            assert bytes(f"${product.price*((100-discount_amount)/100):.2f}", "utf-8") in request.data
+
+            # apply bad discount
+            request = client.get('/checkout', query_string={'code': "FAKE_DEAL"}, follow_redirects=True)
+            assert b"is not valid" in request.data
+
+            # checkout with a discount
+            request = client.post(f'/checkout',
+                                  data={'discount_code': discount.code,
+                                        'billing': '123456789', 'address': test_addr, 'submit': True})
+            assert request.status_code == 302  # redirect to orders page
+
+            orders = user.orders
+            assert orders.count() == 1
+            order_row = orders.first().order_row
+            assert order_row.count() == 1
+            first_row = order_row.first()
+            assert first_row.product_price == product.price*((100-discount_amount)/100)
+
+    # reset the state of the db
+    User.query.delete()
+    Product.query.delete()
+    Discount.query.delete()
+    Order.query.delete()
+    OrderRow.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_admin_discount(db, client):
+    promo_name = "CODE10"
+    promo_name2 = "CODE5"
+    discount = 10
+
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        category = Category.query.filter_by(name="Electronics").first()
+        with client:
+            request = client.post('/login',
+                                  data={'username': 'admin', 'password': 'password', 'submit': True})
+            assert request.status_code == 302  # successful login, redirected to homepage
+
+            # post a response to the new promo site
+            response = client.post('/admin/promo/',
+                                   data={'code': promo_name, 'amount': discount, 'products': [category.id],
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+
+            discounts = Discount.query.filter_by(code=promo_name)
+            assert discounts.count() == 1
+            discount = discounts.all()[0]
+            assert discount.code == promo_name
+            assert discount.is_valid()
+            assert discount.details["type"] == 1
+
+            # post a response to the new promo site
+            response = client.post('/admin/promo/',
+                                   data={'code': promo_name2, 'amount': discount, 'products': [-1],
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+
+            discounts = Discount.query.filter_by(code=promo_name2)
+            assert discounts.count() == 1
+            discount = discounts.all()[0]
+            assert discount.code == promo_name2
+            assert discount.is_valid()
+            assert discount.details["type"] == 2
+
+    Discount.query.delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_admin_percentage_discount(db, client):
+    promo_name = "CODE10"
+    promo_name2 = "CODE5"
+    discount_amount = 10
+
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        category = Category.query.filter_by(name="Electronics").first()
+        with client:
+            request = client.post('/login',
+                                  data={'username': 'admin', 'password': 'password', 'submit': True})
+            # post a response to the new promo site
+            response = client.post('/admin/promo/percentage/',
+                                   data={'code': promo_name, 'amount': discount_amount, 'products': [category.id],
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+
+            discounts = Discount.query.filter_by(code=promo_name)
+            assert discounts.count() == 1
+            discount = discounts.all()[0]
+            assert discount.code == promo_name
+            assert discount.is_valid()
+            assert discount.details["type"] == 1
+            assert discount.details["percentage"]
+
+            # post a response to the new promo site
+            response = client.post('/admin/promo/percentage/',
+                                   data={'code': promo_name2, 'amount': discount_amount, 'products': [-1],
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+
+            discounts = Discount.query.filter_by(code=promo_name2)
+            assert discounts.count() == 1
+            discount = discounts.all()[0]
+            assert discount.code == promo_name2
+            assert discount.is_valid()
+            assert discount.details["type"] == 2
+            assert discount.details["percentage"]
+
+    Discount.query.delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_bad_admin_discount(db, client):
+    promo_name = "CODE10"
+    promo_name2 = "CODE5"
+    discount = 10
+    big_discount = 10000
+
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        # test product params
+        name = "iPhone"
+        product_price = 999.99
+        description = "The brand new iPhone. Lorem ipsum sit amet."
+        with client:
+            request = client.post('/login',
+                                  data={'username': 'admin', 'password': 'password', 'submit': True})
+            # post a good promo
+            response = client.post('/admin/promo',
+                                   data={'code': promo_name, 'amount': discount, 'products': [1],
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+
+            discounts = Discount.query.filter_by(code=promo_name)
+            assert discounts.count() == 1
+            discount = discounts.all()[0]
+            assert discount.code == promo_name
+            assert discount.is_valid()
+
+            # post a promo with the same code
+            response = client.post('/admin/promo',
+                                   data={'code': promo_name, 'amount': discount, 'products': [1],
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+
+            discounts = Discount.query.filter_by(code=promo_name)
+            assert discounts.count() == 1
+
+            # post a promo with a large percentage value
+            response = client.post('/admin/promo/percentage',
+                                   data={'code': promo_name2, 'amount': big_discount, 'products': [1],
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+
+            discounts = Discount.query.filter_by(code=promo_name2)
+            assert discounts.count() == 0
+
+    User.query.delete()
+    Product.query.delete()
+    Discount.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_product_page(db, client):
+    # test account params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+
+    # test product params
+    name = "iPhone"
+    price = 999.99
+    description = "The brand new iPhone. Lorem ipsum sit amet."
+    category = Category.query.filter_by(name="Electronics").first()
+    with client:
+        response = client.post('/merchant/register',
+                               data={'username': username, 'email': email, 'password': password, 'submit': True})
+        assert response.status_code == 302  # 302 successful redirect to home page
+
+        user = User.query.filter_by(username=username).first()
+
+        response = client.post('/merchant/new_product',
+                               data={'merchant_id': user.id, 'name': name, 'price': price, 'description': description,
+                                     'category': category.name, 'pictures': [], 'submit': True})
+        assert response.status_code == 302  # 302 successful redirect to product page
+        response = client.get('/logout')
+
+        products = Product.query.filter_by(name=name)
+        assert products.count() == 1
+        product = products.first()
+        response = client.get(f'/product/{product.id}', follow_redirects=True)
+        assert bytes(product.name, 'utf-8') in response.data
+        assert bytes(product.description, 'utf-8') in response.data
+
+        # make sure the site returns 404 if not found
+        response = client.get(f'/product/40000', follow_redirects=True)
+        assert response.status_code == 404
+    # clean up any changes
+    User.query.delete()
+    Product.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_discount_page(db, client):
+    category_name = "Electronics"
+    category = Category.query.filter_by(name=category_name).first()
+
+    # test params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+    test_addr = "test_blvd"
+    name = "iPhone 1000"
+    product_price = 999.99
+    description = "The brand new iPhone. Lorem ipsum sit amet."
+    promo_name = "CODE10"
+    promo_name2 = "ELECTRONICS10"
+    promo_name3 = "10OFF"
+    discount_amount = 10
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        # add a test user to the database
+        user = User(username=username, email=email)
+        user.set_password(password)
+        session.add(user)
+        session.commit()
+
+        # create the product
+        product = Product(merchant_id=0, name=name, price=product_price, description=description,
+                          category_id=category.id)
+        session.add(product)
+        session.commit()
+
+        # create the product discount
+        discount = create_discount(code=promo_name, type=0, applicable_ids=[product.id], percentage=False,
+                                   amount=
+                                   discount_amount, end_date=expiration_date)
+        session.add(discount)
+        session.commit()
+
+        # create the category discount
+        discount = create_discount(code=promo_name2, type=1, applicable_ids=[category.id], percentage=False,
+                                   amount=
+                                   discount_amount, end_date=expiration_date)
+        session.add(discount)
+        session.commit()
+
+        # create the sitewide discount
+        discount = create_discount(code=promo_name3, type=2, applicable_ids=[], percentage=True,
+                                   amount=
+                                   discount_amount, end_date=expiration_date)
+        session.add(discount)
+        session.commit()
+
+        with client:
+            results = client.get('/discounts')
+            assert bytes(promo_name, 'utf-8') in results.data
+            assert bytes(promo_name2, 'utf-8') in results.data
+            assert bytes(promo_name3, 'utf-8') in results.data
+            assert b"$10.00" in results.data
+            assert b"%" in results.data
+
+    Product.query.delete()
+    Discount.query.delete()
+    Order.query.delete()
+    OrderRow.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
+
+def test_admin_redirect(client):
+    with client:
+        response = client.get('/admin/promo')
+        assert response.status_code == 302

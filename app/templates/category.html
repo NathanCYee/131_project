@@ -31,7 +31,7 @@
                     {% endif %}
                     <td><a href="{{ '/product/%s' %product.id }}" class="text-decoration-none fs-3 fw-bolder"
                            style="color: inherit;">{{ product.name }}</a></td>
-                    <td class="fw-bolder fs-5">${{ "$%.2f"|format(product.price) }}</td>
+                    <td class="fw-bolder fs-5">{{ "$%.2f"|format(product.price) }}</td>
                 </tr>
             {% endfor %}
             </tbody>

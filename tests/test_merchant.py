@@ -77,7 +77,7 @@ def test_bad_register(db, client):
         assert b"Email has already been used" in response.data
 
         # check to see if the user is in the database
-        users = User.query.filter_by()
+        users = User.query.filter_by(username=username)
         assert users.count() == 1  # should only have 1 matching user
 
         # check props of user to make sure they are inserted correctly
@@ -232,7 +232,7 @@ def test_product_page(db, client):
         assert products.count() == 1
         response = client.post('/')
         product = products.first()
-        response = client.get(f'/product/{product.id}')
+        response = client.get(f'/product/{product.id}', follow_redirects=True)
         assert bytes(product.name, 'utf-8') in response.data
         assert bytes(product.description, 'utf-8') in response.data
     # clean up any changes
@@ -381,6 +381,59 @@ def test_merchant_discount(db, client):
     db.session.flush()
 
 
+def test_merchant_percentage_discount(db, client):
+    # test merchant account params
+    username = "Test1"
+    email = "test@mail.com"
+    password = "Pass-1"
+
+    promo_name = "CODE10"
+    discount = 10
+
+    expiration_date = datetime.date.today() + datetime.timedelta(days=10)
+
+    Session = sessionmaker(db.engine)
+    with Session() as session:
+        # test product params
+        name = "iPhone"
+        product_price = 999.99
+        description = "The brand new iPhone. Lorem ipsum sit amet."
+        category = Category.query.filter_by(name="Electronics").first()
+        with client:
+            response = client.post('/merchant/register',
+                                   data={'username': username, 'email': email, 'password': password, 'submit': True})
+            print(response.data)
+            assert response.status_code == 302  # 302 successful redirect to home page
+
+            user = User.query.filter_by(username=username).first()
+
+            # create the product
+            product = Product(merchant_id=user.id, name=name, price=product_price, description=description,
+                              category_id=category.id)
+            session.add(product)
+            session.commit()
+
+            applicable_products = [product.id]
+
+            # post a response to the new promo site
+            response = client.post('/merchant/promo/percentage',
+                                   data={'code': promo_name, 'amount': discount, 'products': applicable_products,
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+            assert b"Successfully created discount" in response.data
+
+            discounts = Discount.query.filter_by(code=promo_name)
+            assert discounts.count() == 1
+            discount = discounts.all()[0]
+            assert discount.code == promo_name
+            assert discount.is_valid()
+
+    User.query.delete()
+    Product.query.delete()
+    Discount.query.delete()
+    db.session.query(UserRole).delete()
+    db.session.commit()
+    db.session.flush()
+
 def test_bad_merchant_discount(db, client):
     # test merchant account params
     username = "Test1"
@@ -443,6 +496,15 @@ def test_bad_merchant_discount(db, client):
                                    data={'code': promo_name2, 'amount': big_discount, 'products': applicable_products,
                                          'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
             assert b"Discount amount is greater than the price" in response.data
+
+            discounts = Discount.query.filter_by(code=promo_name2)
+            assert discounts.count() == 0
+
+            # post a promo with a large percentage value
+            response = client.post('/merchant/promo/percentage',
+                                   data={'code': promo_name2, 'amount': big_discount, 'products': applicable_products,
+                                         'expiration_date': expiration_date, 'submit': True}, follow_redirects=True)
+            assert b"Invalid percentage" in response.data
 
             discounts = Discount.query.filter_by(code=promo_name2)
             assert discounts.count() == 0

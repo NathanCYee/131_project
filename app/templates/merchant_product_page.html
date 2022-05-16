@@ -1,21 +1,12 @@
 
 
-{% extends "base.html" %}
+{% extends "merchant_base.html" %}
 
 
 {% block main %}
 <br/>
 <br/>
 <div class="container mt-4">
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-warning" role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
     <div class="row">
         <div class="col-5">
             <div id="productImages" class="carousel slide w-100 h-50" data-bs-ride="carousel">
@@ -55,20 +46,6 @@
             <h5>Average Rating: {{ avg }}</h5>
             <h3>{{ "$%.2f"|format(product.price) }}</h3>
             <p>{{ product.description }}</p>
-            <div class="container">
-                <form action="/cart" method="POST">
-                    {{ form.hidden_tag() }}
-                    {{ form.product_id(value=product.id) }}
-                    <div class="row">
-                        <div class="col-5">
-                            {{ form.quantity(class_="form-control mb-2 mr-sm-2") }}
-                        </div>
-                        <div class="col-7">
-                            {{ form.submit(class_="btn btn-primary mb-2") }}
-                        </div>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
     
@@ -85,7 +62,7 @@
                         <!--Cards-->
                         <div class="card col-6 col-md-3 col-lg-2 p-2 mx-2">
                             {% if product.images[0] %}
-                                <a href={{ '/product/%d' %product.id }}>
+                                <a href={{ 'product/%d' %product.id }}>
                                     <img src={{ '%s' %product.images[0].path }} class="card-img-top rounded-3"
                                         alt="Card Image"
                                         align="middle" style=" aspect-ratio: 1 / 1; ">
@@ -111,25 +88,10 @@
     </div>
     <!--End Category-->
 
-    <!--TODO: Add reveiw section stars-->
-    <div class="d-flex align-items-center justify-content-evenly">
-        <h2 class="fw-bolder">{{ avg }} / 5.0 </h2>
-        
-        {% set stars = avg | int %}
-        <ul class="d-flex px-2 align-items-center">
-        {% for i in range(5) %}
-            {% if i < stars %}
-                <li class="px-2 d-flex"><i class='fas fa-star fa-5x' style='color:#f0b000'></i></li>
-            {% else %}
-                <li class="px-2 d-flex"><i class='far fa-star fa-5x' style='color:#2b2b2b'></i></li>
-            {% endif %}
-        {% endfor %}
-        </ul>
-    </div>
+    <h2>{{ avg }} / 5.0 </h2>
     
 
     </br>
-    <p><a href="/product/{{ product_id }}/review" class="btn btn-lg btn-secondary">Add Your Review</a></p>
     {% if reviews %}
         <br>
         {% for review in reviews %}
@@ -149,5 +111,4 @@
         {% endfor %}
     {% endif %}
 </div>
-
 {% endblock %}

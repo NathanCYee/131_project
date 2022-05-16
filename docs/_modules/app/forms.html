@@ -67,7 +67,7 @@
 <span class="kn">from</span> <span class="nn">flask_wtf.file</span> <span class="kn">import</span> <span class="n">FileAllowed</span>
 <span class="kn">from</span> <span class="nn">wtforms.fields.html5</span> <span class="kn">import</span> <span class="n">DateField</span>
 
-<span class="kn">from</span> <span class="nn">wtforms.validators</span> <span class="kn">import</span> <span class="n">DataRequired</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">wtforms.validators</span> <span class="kn">import</span> <span class="n">DataRequired</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">NumberRange</span>
 <span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">StringField</span><span class="p">,</span> <span class="n">SubmitField</span><span class="p">,</span> <span class="n">PasswordField</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">,</span> <span class="n">FloatField</span><span class="p">,</span> <span class="n">TextAreaField</span><span class="p">,</span> <span class="n">HiddenField</span><span class="p">,</span> \
     <span class="n">SelectField</span><span class="p">,</span> <span class="n">MultipleFileField</span><span class="p">,</span> <span class="n">SelectMultipleField</span>
 
@@ -199,7 +199,22 @@
     <span class="n">code</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s2">&quot;Discount Code&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
     <span class="sd">&quot;&quot;&quot;The code for the new discount&quot;&quot;&quot;</span>
     <span class="n">amount</span> <span class="o">=</span> <span class="n">FloatField</span><span class="p">(</span><span class="s2">&quot;Discount Amount&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
-    <span class="sd">&quot;&quot;&quot;The numerical amount (in USD) of the discount&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The numerical amount of the discount&quot;&quot;&quot;</span>
+    <span class="n">products</span> <span class="o">=</span> <span class="n">SelectMultipleField</span><span class="p">(</span><span class="s2">&quot;Products&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;A multi-select field containing the products that the discount applies to&quot;&quot;&quot;</span>
+    <span class="n">expiration_date</span> <span class="o">=</span> <span class="n">DateField</span><span class="p">(</span><span class="s2">&quot;Expiration Date&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The date when the discount expires&quot;&quot;&quot;</span>
+    <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s2">&quot;Complete&quot;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Submit input (should be `True`)&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="NewPercentageDiscountForm"><a class="viewcode-back" href="../../app.html#app.forms.NewPercentageDiscountForm">[docs]</a><span class="k">class</span> <span class="nc">NewPercentageDiscountForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Form object used by a merchant to create a new discount</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">StringField</span><span class="p">(</span><span class="s2">&quot;Discount Code&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The code for the new discount&quot;&quot;&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="n">FloatField</span><span class="p">(</span><span class="s2">&quot;Discount Amount&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">NumberRange</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span> <span class="n">DataRequired</span><span class="p">()])</span>
+    <span class="sd">&quot;&quot;&quot;The percentage amount of the discount&quot;&quot;&quot;</span>
     <span class="n">products</span> <span class="o">=</span> <span class="n">SelectMultipleField</span><span class="p">(</span><span class="s2">&quot;Products&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>
     <span class="sd">&quot;&quot;&quot;A multi-select field containing the products that the discount applies to&quot;&quot;&quot;</span>
     <span class="n">expiration_date</span> <span class="o">=</span> <span class="n">DateField</span><span class="p">(</span><span class="s2">&quot;Expiration Date&quot;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">DataRequired</span><span class="p">()])</span>

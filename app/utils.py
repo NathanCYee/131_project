@@ -12,6 +12,36 @@ def get_merchant():
     """
     return Role.query.filter_by(name='merchant').first()
 
+def get_admin():
+    """
+    Retrieve a Role object representing an admin
+    :return: a Role object with the name `admin`
+    """
+    return Role.query.filter_by(name='admin').first()
+
+
+def admin_required(func):
+    """
+    decorator to require the current_user to have the merchant role or else it redirects
+    :param func: The function to decorate
+    :return: A function instance that checks the current user is a merchant before returning the action
+    """
+
+    @wraps(func)
+    def inner(*args, **kwargs):
+        """
+        :decorator: A decorator for a flask route function
+        :param args: Arguments
+        :param kwargs: Keyword arguments
+        :return: The correct page if the user is logged in as a merchant, redirection to the login page if otherwise
+        """
+        if not current_user.is_authenticated or current_user.roles.filter_by(id=get_admin().id).count() == 0:
+            flash("You must be an admin to access this page!")
+            return redirect('/login')
+        else:
+            return func(*args, **kwargs)
+
+    return inner
 
 def merchant_required(func):
     """
@@ -96,3 +126,7 @@ def create_discount(code: str, type: int, applicable_ids, percentage: bool, amou
     """
     details = {'type': type, 'applicable_id': applicable_ids, 'percentage': percentage, 'amount': amount}
     return Discount(code=code, expiration=end_date, details=details)
+
+
+def is_merchant(user):
+    return user.roles.filter_by(id=get_merchant().id).count() == 1
