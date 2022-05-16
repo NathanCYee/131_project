@@ -76,7 +76,7 @@
     <span class="n">ReviewForm</span><span class="p">,</span> <span class="n">FillOrderForm</span><span class="p">,</span> <span class="n">NewDiscountForm</span>
 <span class="kn">from</span> <span class="nn">app.models</span> <span class="kn">import</span> <span class="n">CartItem</span><span class="p">,</span> <span class="n">Order</span><span class="p">,</span> <span class="n">OrderRow</span><span class="p">,</span> <span class="n">Product</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">UserRole</span><span class="p">,</span> <span class="n">Category</span><span class="p">,</span> <span class="n">Review</span><span class="p">,</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Discount</span>
 <span class="kn">from</span> <span class="nn">app.utils</span> <span class="kn">import</span> <span class="n">get_merchant</span><span class="p">,</span> <span class="n">merchant_required</span><span class="p">,</span> <span class="n">get_category_dict</span><span class="p">,</span> <span class="n">get_categories</span><span class="p">,</span> <span class="n">prevent_merchant</span><span class="p">,</span> \
-    <span class="n">create_discount</span><span class="p">,</span> <span class="n">is_merchant</span>
+    <span class="n">create_discount</span><span class="p">,</span> <span class="n">is_merchant</span><span class="p">,</span> <span class="n">admin_required</span>
 
 
 <div class="viewcode-block" id="add_categories"><a class="viewcode-back" href="../../app.html#app.routes.add_categories">[docs]</a><span class="k">def</span> <span class="nf">add_categories</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
@@ -394,8 +394,11 @@
 <span class="sd">    to the product page with a warning otherwise</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># check if user has bought this product</span>
-    <span class="k">if</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Order</span><span class="p">,</span> <span class="n">OrderRow</span><span class="p">)</span> \
-            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">OrderRow</span><span class="o">.</span><span class="n">product_id</span> <span class="o">==</span> <span class="n">product_id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">OrderRow</span><span class="p">,</span> <span class="n">Order</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Order</span><span class="o">.</span><span class="n">order_row</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">OrderRow</span><span class="o">.</span><span class="n">product_id</span> <span class="o">==</span> <span class="n">product_id</span><span class="p">)</span><span class="o">.</span> \
+        <span class="n">where</span><span class="p">(</span><span class="n">Order</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">results</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You need to have bought an item to review it.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/product/</span><span class="si">{</span><span class="n">product_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">302</span><span class="p">)</span>
 
@@ -955,6 +958,7 @@
 
 <div class="viewcode-block" id="admin_promo"><a class="viewcode-back" href="../../app.html#app.routes.admin_promo">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/admin/promo&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/admin/promo/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@admin_required</span>
 <span class="k">def</span> <span class="nf">admin_promo</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a admin input to create a new promotion. When accessed through a POST request, will save inputs, create</span>
@@ -993,6 +997,7 @@
 
 <div class="viewcode-block" id="admin_promo_percentage"><a class="viewcode-back" href="../../app.html#app.routes.admin_promo_percentage">[docs]</a><span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/admin/promo/percentage&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@webapp</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/admin/promo/percentage/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@admin_required</span>
 <span class="k">def</span> <span class="nf">admin_promo_percentage</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a admin input to create a new promotion. When accessed through a POST request, will save inputs, create</span>

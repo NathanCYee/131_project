@@ -497,17 +497,8 @@
 <dt class="sig sig-object py" id="app.models.Discount">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.models.</span></span><span class="sig-name descname"><span class="pre">Discount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Discount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Discount" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Model</span></code></p>
-<p>A Model object that represents a user. Also supports UserMixin for FlaskLogin
-<a href="#id1"><span class="problematic" id="id2">``</span></a>`
-details = {</p>
-<blockquote>
-<div><p>‘type’:0(product),1(category),2(all),
-‘applicable_id’: product_ids or category_ids,
-percentage: True/False
-amount: Float
-}</p>
-</div></blockquote>
-<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>A Model object that represents a user. Also supports UserMixin for FlaskLogin. Construct a discount using the
+<code class="docutils literal notranslate"><span class="pre">app.utils.create_discount</span></code> method.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="app.models.Discount.apply_discount">
 <span class="sig-name descname"><span class="pre">apply_discount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cart_item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models.html#Discount.apply_discount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.Discount.apply_discount" title="Permalink to this definition"></a></dt>
@@ -1189,6 +1180,14 @@ accessed through a POST request.</p>
 <section id="module-app.utils">
 <span id="app-utils-module"></span><h2>app.utils module<a class="headerlink" href="#module-app.utils" title="Permalink to this headline"></a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="app.utils.admin_required">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">admin_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#admin_required"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.admin_required" title="Permalink to this definition"></a></dt>
+<dd><p>decorator to require the current_user to have the merchant role or else it redirects
+:param func: The function to decorate
+:return: A function instance that checks the current user is a merchant before returning the action</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="app.utils.create_discount">
 <span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">create_discount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">applicable_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#create_discount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.create_discount" title="Permalink to this definition"></a></dt>
 <dd><p>Creates a new Discount object</p>
@@ -1210,6 +1209,13 @@ accessed through a POST request.</p>
 <dd class="field-odd"><p><a class="reference internal" href="#app.models.Discount" title="app.models.Discount">app.models.Discount</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.utils.get_admin">
+<span class="sig-prename descclassname"><span class="pre">app.utils.</span></span><span class="sig-name descname"><span class="pre">get_admin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/utils.html#get_admin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.utils.get_admin" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve a Role object representing an admin
+:return: a Role object with the name <cite>admin</cite></p>
 </dd></dl>
 
 <dl class="py function">
