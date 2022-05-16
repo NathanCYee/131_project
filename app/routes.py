@@ -11,7 +11,7 @@ from app.forms import CheckoutForm, LoginForm, RegisterForm, PasswordForm, Delet
     ReviewForm, FillOrderForm, NewDiscountForm
 from app.models import CartItem, Order, OrderRow, Product, User, UserRole, Category, Review, Image, Discount
 from app.utils import get_merchant, merchant_required, get_category_dict, get_categories, prevent_merchant, \
-    create_discount, is_merchant
+    create_discount, is_merchant, admin_required
 
 
 def add_categories(func):
@@ -893,6 +893,7 @@ def product_page(prod_id):
 
 @webapp.route('/admin/promo', methods=['GET', 'POST'])
 @webapp.route('/admin/promo/', methods=['GET', 'POST'])
+@admin_required
 def admin_promo():
     """
     Returns a admin input to create a new promotion. When accessed through a POST request, will save inputs, create
@@ -931,6 +932,7 @@ def admin_promo():
 
 @webapp.route('/admin/promo/percentage', methods=['GET', 'POST'])
 @webapp.route('/admin/promo/percentage/', methods=['GET', 'POST'])
+@admin_required
 def admin_promo_percentage():
     """
     Returns a admin input to create a new promotion. When accessed through a POST request, will save inputs, create
