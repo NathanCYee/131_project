@@ -77,7 +77,7 @@ def test_bad_register(db, client):
         assert b"Email has already been used" in response.data
 
         # check to see if the user is in the database
-        users = User.query.filter_by()
+        users = User.query.filter_by(username=username)
         assert users.count() == 1  # should only have 1 matching user
 
         # check props of user to make sure they are inserted correctly

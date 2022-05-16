@@ -175,7 +175,7 @@ def test_bad_register(db, client):
         assert b"Email has already been used" in response.data
 
         # check to see if the user is in the database
-        users = User.query.filter_by()
+        users = User.query.filter_by(username=username)
         assert users.count() == 1  # should only have 1 matching user
 
         # check props of user to make sure they are inserted correctly
@@ -539,14 +539,17 @@ def test_review(db, client):
     db.session.add(product)
     order = Order(user_id=user.id)
     db.session.add(order)
+    db.session.commit()
     order_row = OrderRow(id=order.id, product_id=product.id)
     db.session.add(order_row)
     order2 = Order(user_id=user2.id)
     db.session.add(order2)
+    db.session.commit()
     order_row2 = OrderRow(id=order2.id, product_id=product.id)
     db.session.add(order_row2)
     order3 = Order(user_id=user3.id)
     db.session.add(order3)
+    db.session.commit()
     order_row3 = OrderRow(id=order3.id, product_id=product.id)
     db.session.add(order_row3)
     db.session.commit()
@@ -1117,6 +1120,10 @@ def test_admin_discount(db, client):
     with Session() as session:
         category = Category.query.filter_by(name="Electronics").first()
         with client:
+            request = client.post('/login',
+                                  data={'username': 'admin', 'password': 'password', 'submit': True})
+            assert request.status_code == 302  # successful login, redirected to homepage
+
             # post a response to the new promo site
             response = client.post('/admin/promo/',
                                    data={'code': promo_name, 'amount': discount, 'products': [category.id],
@@ -1157,6 +1164,8 @@ def test_admin_percentage_discount(db, client):
     with Session() as session:
         category = Category.query.filter_by(name="Electronics").first()
         with client:
+            request = client.post('/login',
+                                  data={'username': 'admin', 'password': 'password', 'submit': True})
             # post a response to the new promo site
             response = client.post('/admin/promo/percentage/',
                                    data={'code': promo_name, 'amount': discount, 'products': [category.id],
@@ -1190,6 +1199,8 @@ def test_bad_admin_discount(db, client):
         product_price = 999.99
         description = "The brand new iPhone. Lorem ipsum sit amet."
         with client:
+            request = client.post('/login',
+                                  data={'username': 'admin', 'password': 'password', 'submit': True})
             # post a good promo
             response = client.post('/admin/promo',
                                    data={'code': promo_name, 'amount': discount, 'products': [1],
