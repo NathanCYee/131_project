@@ -38,6 +38,7 @@ E-Buy is a revolutionary E-Commerce website that connects merchants with custome
     - Checkout cart link located in the cart
     - Checkout with discount code support
 - Available discounts accessible at `/discounts`
+- Admin page accessible from `/admin/promo`
 
 ## Setup and Install
 
@@ -52,6 +53,8 @@ Please make sure python 3 is installed (working on python 3.8).
     - If you are using the sample database, every account has the password `password`
         - Merchant accounts: `SUPREME`, `Hondipo`, `Gamestomp`, `Worst-Buy`
         - Discounts visible at `/discounts`
+        - Admin account: `admin` (login from customer portal)
+          - access promo page at `/admin/promo`
 - Run the webapp by running `python3 run.py`
 - If run on a local machine, site will be accessible at `localhost:5000` or `http://127.0.0.1:5000/` from a browser
 
